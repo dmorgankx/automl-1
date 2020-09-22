@@ -35,9 +35,7 @@ post.report:{[dict;dt;fname;ptype]
  f:cell[pdf;f;30;"Breakdown of Pre-Processing"];
 
  font[pdf;"Helvetica";11];
- f:cell[pdf;f;30;dict[`typ]," feature extraction was performed with a total of ",string[dict`cnt_feats]," features produced."];
-
- f:cell[pdf;f;30;"Feature extraction took ",string[dict`feat_time]," time in total."];
+ f:cell[pdf;f;30;string[dict[`typ]]," feature extraction was performed with a total of ",string[dict`cnt_feats]," features produced."];
 
  font[pdf;"Helvetica-Bold";13];
  f:cell[pdf;f;30;"Initial Scores"];

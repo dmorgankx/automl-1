@@ -8,6 +8,7 @@
 /. r      > returns save path to console, save to file
 post.save_report:{[params;spaths;ptype;dtdict]
   -1 i.runout[`save],i.ssrsv[spaths[1]`report];
+  // Retrieve the current directory
   cmd:$[.z.o like "w*";"cd";"pwd"];
   initial_dir:system cmd;
   $[0~checkimport[2];
@@ -16,6 +17,8 @@ post.save_report:{[params;spaths;ptype;dtdict]
       {[params;err] -1"The following error occurred when attempting to run latex report generation";-1 err,"\n";
        post.report . params;}[(params;dtdict;spaths[0]`report;ptype)]];
     post.report[params;dtdict;spaths[0]`report;ptype]];
+  // Move to the original directory location if a failure of tex report generation 
+  // has caused the current directory to change without rectification. 
   report_dir:system cmd;
   if[not initial_dir~report_dir;system raze "cd ",initial_dir];
   }

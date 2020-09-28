@@ -66,8 +66,8 @@ dataCheck.NLPLoad:{[cfg]
 // @kind function
 // @category dataCheck
 // @fileoverview Ensure the data contains an appropriate type for application of NLP
+// @param cfg  {dict} configuration information relating to the current run of AutoML
 // @param feat {tab} the feature data as a table
-// @param cfg {dict} configuration information relating to the current run of AutoML
 // @return     {(Null;err)} error indicating inappropriate data or generic null on success
 dataCheck.NLPSchema:{[cfg;feat]
   if[not `nlp~cfg`featExtractType;:()];

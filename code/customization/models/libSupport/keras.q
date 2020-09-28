@@ -9,7 +9,7 @@
 // @param mname {sym} name of the model being applied
 // @return      {int;float;bool} the predicted values for a given model as applied to input data
 models.keras.fitScore:{[data;seed;mname]
-  mdl:get[".automl.models.keras.",string[mname]".mdl"][data;seed];
+  mdl:get[".automl.models.keras.",string[mname]".model"][data;seed];
   mdl:get[".automl.models.keras.",string[mname],".fit"][data;mdl];
   get[".automl.models.",string[mname],".predict"][data;mdl]
   }

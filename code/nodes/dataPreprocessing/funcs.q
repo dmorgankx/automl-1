@@ -17,7 +17,7 @@ dataPreprocessing.symEncoding:{[feat;cfg;symEncode]
             raze .ml.freqencode[;symEncode`freq]each flip each 0!cfg[`aggcol] xgroup feat;
             .ml.freqencode[feat;symEncode`freq]
             ]; 
-      ]
+      ];
    feat:.ml.onehot[0!feat;symEncode`ohe];
    // Extract symbol columns from dictionary
    symbolCols:distinct raze symEncode;
@@ -46,9 +46,7 @@ dataPreprocessing.featPreprocess:{[feat;cfg]
              dataPreprocessing.textPreprocess[feat]
              ];
   // rejoin the separated aggregate columns for FRESH
-  $[`fresh=typ;
-   flip[aggData],';
-   ]featTable
+  $[`fresh=typ;flip[aggData],';]featTable
   }
 
 // @kind function
@@ -70,7 +68,7 @@ dataPreprocessing.nonTextPreprocess:{[feat]
 dataPreprocessing.textPreprocess:{[feat]
   if[count[cols feat]>count charCol:.ml.i.fndcols[feat;"C"];
     nonTextPreproc:dataPreprocessing.nonTextPreprocess (charCol)_feat;
-    feat:?[feat;();0b;charCol!charCol],'nonTextPreproc
+    :?[feat;();0b;charCol!charCol],'nonTextPreproc
     ];
     feat
    }

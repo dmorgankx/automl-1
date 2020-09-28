@@ -63,10 +63,10 @@ oheFreqEncodeReturn:`freq`ohe!(enlist `freqList;enlist`oheList)
 // Expected return tables
 oheEncodeReturnTab         :![oheEncodeTab           ;();0b;enlist`oheList   ],'flip oheListReturn
 freqReturnEncodeTab        :![freqEncodeTab          ;();0b;enlist`freqList  ],'flip freqListReturn
-oheFreqReturnEncodeTab     :![oheFreqEncodeTab       ;();0b;`freqList`oheList],'flip oheListReturn,freqListReturn
+oheFreqReturnEncodeTab     :![oheFreqEncodeTab       ;();0b;`freqList`oheList],'flip freqListReturn,oheListReturn
 freshOheEncodeReturnTab    :![0!freshOheEncodeTab    ;();0b;enlist`oheList   ],'flip oheListReturn
 freshFreqReturnEncodeTab   :![0!freshFreqEncodeTab   ;();0b;enlist`freqList  ],'flip freshFreqListReturn
-freshOheFreqReturnEncodeTab:![0!freshOheFreqEncodeTab;();0b;`freqList`oheList],'flip oheListReturn,freshFreqListReturn
+freshOheFreqReturnEncodeTab:![0!freshOheFreqEncodeTab;();0b;`freqList`oheList],'flip freshFreqListReturn,oheListReturn
 
 // Testing appropriate input types for sym encoding
 passingTest[.automl.dataPreprocessing.symEncoding;(noEncodeTab  ;nonFreshConfig;noEncodeReturn  );0b;noEncodeTab]

@@ -18,12 +18,12 @@ dataPreprocessing.symEncoding:{[feat;cfg;symEncode]
             .ml.freqencode[feat;symEncode`freq]
             ]; 
       ];
-   feat:.ml.onehot[0!feat;symEncode`ohe];
-   // Extract symbol columns from dictionary
-   symbolCols:distinct raze symEncode;
-   feat:flip symbolCols _ flip feat
-   ];
-   feat
+    feat:.ml.onehot[0!feat;symEncode`ohe];
+    // Extract symbol columns from dictionary
+    symbolCols:distinct raze symEncode;
+    :flip symbolCols _ flip feat
+    ];
+  feat
   }
 
 // @kind function
@@ -67,11 +67,11 @@ dataPreprocessing.nonTextPreprocess:{[feat]
 // @return {tab} the feature table with appropriate feature preprocessing applied
 dataPreprocessing.textPreprocess:{[feat]
   if[count[cols feat]>count charCol:.ml.i.fndcols[feat;"C"];
-    nonTextPreproc:dataPreprocessing.nonTextPreprocess (charCol)_feat;
+    nonTextPreproc:dataPreprocessing.nonTextPreprocess charCol _feat;
     :?[feat;();0b;charCol!charCol],'nonTextPreproc
     ];
-    feat
-   }
+  feat
+  }
 
 // @kind function
 // @category dataPreprocessingUtility

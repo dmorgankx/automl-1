@@ -10,7 +10,10 @@
 // @param tgt   {(num[];sym[])} Numerical or symbol vector containing the target dataset
 // @return      {sym[]}         List of significant features
 featureSignificance.significance:{[feats;tgt]
-  .ml.fresh.significantfeatures[feats;tgt;.ml.fresh.percentile .25]
+  sigFeats:.ml.fresh.significantfeatures[feats;tgt;.ml.fresh.benjhoch .05];
+  if[0=count sigFeats;
+    sigFeats:.ml.fresh.significantfeatures[feats;tgt;.ml.fresh.percentile .25]];
+  sigFeats
   }
 
 // @kind function

@@ -66,9 +66,10 @@ passingTest[sigFunction;(cfg;featData;targReg  );0b;expectedOutput]
 
 // Failing tests
 cfg[`sigFeats]:`.automl.newSignificanceFunction;
-failingTest[.automl.featureSignificance.node.function;(cfg;featData;targClass);0b;"Feature significance function .automl.newSignificanceFunction not defined"]
-failingTest[.automl.featureSignificance.node.function;(cfg;featData;targMulti);0b;"Feature significance function .automl.newSignificanceFunction not defined"]
-failingTest[.automl.featureSignificance.node.function;(cfg;featData;targReg  );0b;"Feature significance function .automl.newSignificanceFunction not defined"]
+expectedErr:"Feature significance function .automl.newSignificanceFunction not defined"
+failingTest[.automl.featureSignificance.node.function;(cfg;featData;targClass);0b;expectedErr]
+failingTest[.automl.featureSignificance.node.function;(cfg;featData;targMulti);0b;expectedErr]
+failingTest[.automl.featureSignificance.node.function;(cfg;featData;targReg  );0b;expectedErr]
 
 // funcs.q functions
 

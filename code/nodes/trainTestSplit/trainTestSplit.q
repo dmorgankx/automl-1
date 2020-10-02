@@ -12,7 +12,8 @@
 // @return         {dict}          Data separated into training and testing sets
 trainTestSplit.node.function:{[cfg;feats;tgt;sigFeats]
   data:sigFeats#feats;
-  tts:get[cfg[`tts]][data;tgt;cfg`sz];
+  ttsFunc:@[get;cfg`tts;{'"Train Test Split function ",x," not defined"}];
+  tts:ttsFunc[data;tgt;cfg`sz];
   @[tts;`xtrain`xtest;flip value flip::]
   }
 

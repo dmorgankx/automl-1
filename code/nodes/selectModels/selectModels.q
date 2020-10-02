@@ -3,6 +3,6 @@
 // class are not present across the folds of the dataset
 \d .automl
 
-selectModels.node.inputs  :`config`ttsObject`models!"! +"
-selectModels.node.outputs :`models`ttsObject!"+ "
+selectModels.node.inputs  :`config`ttsObject`models!"!!+"
+selectModels.node.outputs :`models`ttsObject!"+!"
 selectModels.node.function:{[cfg;tts;mdls]`ttsObject`models!(tts;mdls)}

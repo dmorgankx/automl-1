@@ -146,4 +146,3 @@ dataCheck.i.pathConstruct:{[cfg]
 dataCheck.i.ssrWindows:{[path]
   $[.z.o like "w*";ssr[path;"/";"\\"];path]
   }
-

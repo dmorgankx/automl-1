@@ -15,6 +15,7 @@ featureSignificance.node.function:{[cfg;feats;tgt]
   sigFunc:@[get;cfg`sigFeats;{'"Feature significance function ",x," not defined"}];
   sigFeats:sigFunc[feats;tgt];
   sigFeats:featureSignificance.countCols[feats;sigFeats];
+  sigFeats:featureSignificance.correlationCols[sigFeats#feats];
   `sigFeats`features!(sigFeats;feats)
   }
 

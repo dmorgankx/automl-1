@@ -25,6 +25,36 @@ featureSignificance.significance:{[feats;tgt]
 featureSignificance.countCols:{[feats;sigFeats]
   $[0<>count sigFeats;
     sigFeats;
-    [-1 i.runout`nosig;
-     cols t]]
+    [-1"Feature significance extraction deemed none of the features to be important. Continuing with all features.";
+     cols feats]]
   }
+
+// @kind function
+// @category featureSignificance
+// @fileoverview Find any correlated columns and remove them
+// @param sigFeats {sym[]} List of columns
+// @return         {sym[]} List of columns
+featureSignificance.correlationCols:{[sigFeats]
+  thres:0.95;
+  boolMat:t>\:t:til count first sigFeats;
+  corrMat:abs .ml.corrmat sigFeats;
+  cols2drop:where{any x<value[y]where z}[thres]'[corrMat;boolMat];
+  if[0<count cols2drop;
+    -1 sv[", ";string cols2drop]," removed during correlation checks."
+    ];
+  cols[sigFeats]except cols2drop
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

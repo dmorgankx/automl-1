@@ -174,7 +174,7 @@ featureCreation.nlp.word2vec:{[tokens;cfg;savedModel;filePath]
          gensimModel[`:Word2Vec][tokens;pykwargs args]
          ];
   w2vIndex:where each tokens in model[`:wv.index2word]`;
-  sentenceVector:{x[y;z]}[tokens]'[til count w2vIndex;w2vIndex]; 
+  sentenceVector:featureCreation.nlp.i.w2vTokens[tokens]'[til count w2vIndex;w2vIndex]; 
   avgVector:avg each featureCreation.nlp.i.w2vItem[model]each sentenceVector;
   w2vTable:flip(`$"col",/:string til size)!flip avgVector;
   (w2vTable;model)

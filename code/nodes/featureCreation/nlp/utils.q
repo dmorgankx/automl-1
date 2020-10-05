@@ -14,6 +14,17 @@ featureCreation.nlp.i.w2vItem:{[model;sentence]
 
 // @kind function
 // @category featureCreationUtility
+// @fileoverview Transform tokens into correct word2vec format
+// @param tokens {char[]} tokens within input text
+// @param index1 {int} 1st index of tokens
+// @param index2 {int} 2nd index of tokens
+// @return {str[]} tokens present in w2v 
+featureCreation.nlp.i.w2vTokens:{[tokens;index1;index2]
+  tokens[index1;index2]
+  }
+
+// @kind function
+// @category featureCreationUtility
 // @fileoverview Count each expression within a single text
 // @param text {str} textual data
 // @return {dict} count of each expression found

@@ -10,13 +10,13 @@
 // @param func {(lambda;str)} function to be applied to the table
 // return {table} with the desired transforms applied recursively
 featureCreation.normal.applyFunc:{[feat;func]
-       typ:type func;
-       @[;feat]$[-11h=typ;
-             get[func];
-             100h=typ;
-             func;
-             .automl.featureCreation.normal.default
-             ]
+  typ:type func;
+  @[;feat]$[-11h=typ;
+            get[func];
+            100h=typ;
+            func;
+            .automl.featureCreation.normal.default
+            ]
   }
 
 // @kind function
@@ -66,5 +66,3 @@ featureCreation.normal.truncSingleDecomp:{[feat]
   colsDecomposition:`$("_" sv'string each truncCols),\:"_trsvd";
   flip flip[feat],colsDecomposition!fitDecomposition
   }
-
-

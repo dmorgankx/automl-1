@@ -2,7 +2,6 @@
 
 // The functionality below pertains to the application of NLP methods to kdb+
 
-
 // @kind function
 // @category featureCreation
 // @fileoverview Utility function used both in the application of NLP on the initial run and on new data
@@ -18,9 +17,9 @@ featureCreation.nlp.proc:{[feat;cfg;savedModel;filePath]
   spacyLoad:.p.import[`spacy;`:load]"en_core_web_sm";
   args:(spacyLoad;feat stringCols);
   sentences:$[1<count stringCols;
-             {x@''flip y};
-             {x each y 0}
-             ]. args;
+              {x@''flip y};
+              {x each y 0}
+              ]. args;
   regexTab:featureCreation.nlp.regexTab[feat;stringCols;featureCreation.nlp.i.regexList];
   namedEntityTab:featureCreation.nlp.getNamedEntity[sentences;stringCols];
   sentimentTab:featureCreation.nlp.sentimentCreate[feat;stringCols;`compound`pos`neg`neu];
@@ -63,9 +62,9 @@ featureCreation.nlp.corpus:{[feat;stringCols;fields]
   newParser:.nlp.newParser[`en;fields];
   // apply new parser to table data
   $[1<count stringCols;
-   featureCreation.nlp.i.nameRaze[parseCols]newParser@'feat[stringCols];
-   newParser@feat[stringCols]0
-   ]
+    featureCreation.nlp.i.nameRaze[parseCols]newParser@'feat[stringCols];
+    newParser@feat[stringCols]0
+    ]
   }
 
 // @kind function
@@ -84,12 +83,12 @@ featureCreation.nlp.uniposTagging:{[feat;stringCols;fields]
   // encode the percentage of each sentance which is of a specific part of speech
   percentageFunc:featureCreation.nlp.i.percentDict[;uniposTypes];
   $[1<count stringCols;
-   [colNames:featureCreation.nlp.i.colNaming[uniposTypes;fields];
-   percentageTable:percentageFunc@''group@''table;
-   featureCreation.nlp.i.nameRaze[colNames;percentageTable]
-   ];
-   percentageFunc each group each table 0
-   ]
+    [colNames:featureCreation.nlp.i.colNaming[uniposTypes;fields];
+    percentageTable:percentageFunc@''group@''table;
+    featureCreation.nlp.i.nameRaze[colNames;percentageTable]
+    ];
+    percentageFunc each group each table 0
+    ]
   }
 
 
@@ -103,14 +102,14 @@ featureCreation.nlp.uniposTagging:{[feat;stringCols;fields]
 featureCreation.nlp.getNamedEntity:{[sentences;stringCols]
   // Named entities being searched over
   namedEntity:`PERSON`NORP`FAC`ORG`GPE`LOC`PRODUCT`EVENT`WORK_OF_ART`LAW,
-             `LANGUAGE`DATE`TIME`PERCENT`MONEY`QUANTITY`ORDINAL`CARDINAL;
+              `LANGUAGE`DATE`TIME`PERCENT`MONEY`QUANTITY`ORDINAL`CARDINAL;
   percentageFunc:featureCreation.nlp.i.percentDict[;namedEntity];
   data:$[countCols:1<count stringCols;flip;::]sentences;
   labelFunc:{`${(.p.wrap x)[`:label_]`}each x[`:ents]`};
   nerData:$[countCols;
-           {x@''count@'''group@''z@''y}[;;labelFunc];
-           {x@'count@''group@'z@'y}[;;labelFunc]
-           ].(percentageFunc;data);
+            {x@''count@'''group@''z@''y}[;;labelFunc];
+            {x@'count@''group@'z@'y}[;;labelFunc]
+            ].(percentageFunc;data);
   $[countCols;
     [colNames:featureCreation.nlp.i.colNaming[namedEntity;stringCols];
     featureCreation.nlp.i.nameRaze[colNames]
@@ -129,9 +128,9 @@ featureCreation.nlp.sentimentCreate:{[feat;stringCols;fields]
   sentimentCols:featureCreation.nlp.i.colNaming[fields;stringCols];
   // get sentiment values
   $[1<count stringCols;
-   featureCreation.nlp.i.nameRaze[sentimentCols].nlp.sentiment@''feat[stringCols];
-   .nlp.sentiment each feat[stringCols][0]
-   ]
+    featureCreation.nlp.i.nameRaze[sentimentCols].nlp.sentiment@''feat[stringCols];
+    .nlp.sentiment each feat[stringCols][0]
+    ]
   }
 
 
@@ -146,11 +145,11 @@ featureCreation.nlp.regexTab:{[feat;stringCols;fields]
   regexCols:featureCreation.nlp.i.colNaming[fields;stringCols];
   // get regex values
   $[1<count stringCols;
-   [regexCount:featureCreation.nlp.i.regexCheck@''feat[stringCols];
-   featureCreation.nlp.i.nameRaze[regexCols;regexCount]
-   ];
-   featureCreation.nlp.i.regexCheck each feat[stringCols] 0
-   ]
+    [regexCount:featureCreation.nlp.i.regexCheck@''feat[stringCols];
+    featureCreation.nlp.i.nameRaze[regexCols;regexCount]
+    ];
+    featureCreation.nlp.i.regexCheck each feat[stringCols] 0
+    ]
   }
 
 // @kind function
@@ -170,9 +169,9 @@ featureCreation.nlp.word2vec:{[tokens;cfg;savedModel;filePath]
   gensimModel:.p.import`gensim.models;
   args:`size`window`sg`seed`workers!(size;window;cfg`w2v;cfg`seed;1);
   model:$[savedModel;
-         gensimModel[`:load]i.ssrwin filePath,"/w2v.model";
-         gensimModel[`:Word2Vec][tokens;pykwargs args]
-         ];
+          gensimModel[`:load]i.ssrwin filePath,"/w2v.model";
+          gensimModel[`:Word2Vec][tokens;pykwargs args]
+          ];
   w2vIndex:where each tokens in model[`:wv.index2word]`;
   sentenceVector:featureCreation.nlp.i.w2vTokens[tokens]'[til count w2vIndex;w2vIndex]; 
   avgVector:avg each featureCreation.nlp.i.w2vItem[model]each sentenceVector;

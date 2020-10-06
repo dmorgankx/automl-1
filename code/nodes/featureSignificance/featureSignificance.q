@@ -12,8 +12,7 @@
 // @param tgt   {(num[];sym[])} Numerical or symbol vector containing the target dataset
 // @return      {dict}          List of significant features and the feature data post feature extraction
 featureSignificance.node.function:{[cfg;feats;tgt]
-  sigFunc:@[get;cfg`sigFeats;{'"Feature significance function ",x," not defined"}];
-  sigFeats:sigFunc[feats;tgt];
+  sigFeats:featureSignificance.applySigFunc[cfg;feats;tgt];
   sigFeats:featureSignificance.countCols[feats;sigFeats];
   sigFeats:featureSignificance.correlationCols[sigFeats#feats];
   `sigFeats`features!(sigFeats;feats)

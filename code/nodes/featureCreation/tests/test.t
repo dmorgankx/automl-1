@@ -43,12 +43,12 @@ passingTest:{[function;data;applyType;expectedReturn]
   expectedReturn~functionReturn
   }
   
-  
+
 // Feature creation function tabular return
-featureCreationTable:{[cfg;feat].automl.featureCreation.node.function[cfg;feat]`prepTab}
+featureCreationTable:{[cfg;feat].automl.featureCreation.node.function[cfg;feat]`features}
 
 
-// Testing functionality for normal feature creation
+-1"\nTesting appropriate inputs for normal feature creation";
 
 // Load in appropriate data for ech feature extraction type
 normalFileList:`normalTable`normalBulkTable`normalTruncTable
@@ -65,7 +65,8 @@ passingTest[featureCreationTable;(normalConfig     ;normalTable);0b;"f"$normalTa
 passingTest[featureCreationTable;(normalConfigBulk ;normalTable);0b;normalBulkTable]
 passingTest[featureCreationTable;(normalConfigTrunc;normalTable);0b;normalTruncTable]
 
-// Testing functionality for fresh feature creation
+
+-1"\nTesting appropriate inputs for FRESH feature creation";
 
 // Load in appropriate data for fresh feature extraction type
 freshFileList:`freshTable`freshReturnTable
@@ -78,7 +79,7 @@ freshConfig :`featExtractType`aggcols`funcs!`fresh`idx`.ml.fresh.params
 passingTest[featureCreationTable;(freshConfig     ;freshTable);0b;freshReturnTable]
 
 
-// Testing functionality for nlp feature creation
+-1"\nTesting appropriate inputs for NLP feature creation";
 
 // Load in appropriate data for nlp feature extraction type
 nlpFileList:`nlpTable`nlpMultiTable`nlpReturnTable`nlpMultiReturnTable

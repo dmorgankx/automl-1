@@ -6,7 +6,7 @@
 // @category featureCreation
 // @fileoverview Create features for 'normal problems' -> one target for each row, no time dependency
 //  or fresh like structure
-// @param feat  {tab} The feature data as a table
+// @param feat {tab} The feature data as a table
 // @param cfg  {dict} Configuration information assigned by the user and related to the current run
 // @return {tab} features created in accordance with the normal feature creation procedure
 featureCreation.normal.create:{[feat;cfg]
@@ -23,5 +23,5 @@ featureCreation.normal.create:{[feat;cfg]
   // Apply the transform of time specific columns as appropriate
   if[0<count timeCols;featTable^:.ml.timesplit[timeCols#feat;::]];
   featureExtractEnd:.z.T-featureExtractStart;
-  `prepTab`prepTime!(featTable;featureExtractEnd)
+  `creationTime`features`featModel!(featureExtractEnd;featTable;())
   }

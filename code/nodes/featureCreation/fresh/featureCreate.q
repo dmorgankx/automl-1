@@ -3,8 +3,8 @@
 // @kind function
 // @category featureCreate 
 // @fileoverview Create features using the FRESH algorithm
-// @param cfg  {dict} Configuration information assigned by the user and related to the current run
 // @param feat {tab} The feature data as a table 
+// @param cfg  {dict} Configuration information assigned by the user and related to the current run
 // @return {tab} features created in accordance with the FRESH feature creation procedure.
 featureCreation.fresh.create:{[feat;cfg]
   aggCols:cfg`aggcols;
@@ -18,5 +18,5 @@ featureCreation.fresh.create:{[feat;cfg]
   feat:dataPreprocessing.infreplace feat;
   feat:0^.ml.dropconstant feat;
   featExtractEnd:.z.T-featExtractStart;
-  `prepTab`prepTime!(feat;featExtractEnd)
+  `creationTime`features`featModel!(featExtractEnd;feat;())
   }

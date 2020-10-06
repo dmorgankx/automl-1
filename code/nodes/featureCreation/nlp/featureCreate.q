@@ -17,9 +17,10 @@ featureCreation.nlp.create:{[feat;cfg]
   featNLP:charPrep`feat;
   // run normal feature creation on numeric datasets and add to nlp features if relevant
   if[0<count cols[feat]except charPrep`stringCols;
-    featNLP:featNLP,'first featureCreation.normal.create[(charPrep`stringCols)_feat;cfg]
+    nonTextFeat:(charPrep`stringCols)_feat;
+    featNLP:featNLP,'featureCreation.normal.create[nonTextFeat;cfg][`features]
     ];
   featureExtractEnd:.z.T-featExtractStart;
   featNLP:.ml.dropconstant featNLP;
-  `prepTab`prepTime`NLPmodel!(featNLP;featureExtractEnd;charPrep`model)
+  `creationTime`features`featModel!(featureExtractEnd;featNLP;charPrep`model)
   }

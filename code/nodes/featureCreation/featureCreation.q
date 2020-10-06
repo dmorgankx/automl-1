@@ -9,7 +9,7 @@
 //  functionality are use case dependant and contained within [fresh/normal/nlp]/featureCreate.q
 // @param feat {tab} The feature data as a table 
 // @param cfg  {dict} Configuration information assigned by the user and related to the current run
-// @return {dict} table with appropriate feature creation along with time taken 
+// @return {dict} table with appropriate feature creation along with time taken and any saved models 
 featureCreation.node.function:{[cfg;feat]
   typ:cfg`featExtractType;
   $[typ=`fresh;featureCreation.fresh.create[feat;cfg];
@@ -24,5 +24,5 @@ featureCreation.node.function:{[cfg;feat]
 featureCreation.node.inputs  :`config`features!"!+"
 
 // Output information
-featureCreation.node.outputs :`creationTime`features!"t+"
+featureCreation.node.outputs :`creationTime`features`featModel!"t+<"
 

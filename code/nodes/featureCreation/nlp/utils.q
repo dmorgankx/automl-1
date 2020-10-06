@@ -6,7 +6,7 @@
 // @category featureCreationUtility
 // @fileoverview Retrieves the word2vec items for sentences based on the model
 // @param model    {<} model to be applied
-// @param sentence {char} sentence to retrieve information from 
+// @param sentence {sym} sentence to retrieve information from 
 // @return {float[]} word2vec transformation for sentence
 featureCreation.nlp.i.w2vItem:{[model;sentence]
   $[()~sentence;0;model[`:wv.__getitem__][sentence]`]
@@ -15,7 +15,7 @@ featureCreation.nlp.i.w2vItem:{[model;sentence]
 // @kind function
 // @category featureCreationUtility
 // @fileoverview Transform tokens into correct word2vec format
-// @param tokens {char[]} tokens within input text
+// @param tokens {sym[]} tokens within input text
 // @param index1 {int} 1st index of tokens
 // @param index2 {int} 2nd index of tokens
 // @return {str[]} tokens present in w2v 
@@ -34,8 +34,8 @@ featureCreation.nlp.i.regexCheck:{[text]
 // @kind function
 // @category featureCreationUtility
 // @fileoverview Retrieves the word2vec items for sentences based on the model
-// @param  attrCheck {char[]} attributes to check 
-// @param  attrAll   {char[]} all possible attributes 
+// @param  attrCheck {sym[]} attributes to check 
+// @param  attrAll   {sym[]} all possible attributes 
 // @return {dict} percentage of each attribute present in NLP
 featureCreation.nlp.i.percentDict:{[attrCheck;attrAll]
   countAttr:count each attrCheck;
@@ -47,9 +47,9 @@ featureCreation.nlp.i.percentDict:{[attrCheck;attrAll]
 // @kind function
 // @category featureCreationUtility
 // @fileoverview Generates column names based on a fixed list and multiple options
-// @param  attr1 {char[]} 1st attribute of new column name
-// @param  attr2 {char[]} 2nd attribute of new column name
-// @return {char[]} new column names
+// @param  attr1 {sym[]} 1st attribute of new column name
+// @param  attr2 {sym[]} 2nd attribute of new column name
+// @return {sym[]} new column names
 featureCreation.nlp.i.colNaming:{[attr1;attr2]
   `${string[x],\:"_",string y}[attr1]each attr2
   }
@@ -57,9 +57,9 @@ featureCreation.nlp.i.colNaming:{[attr1;attr2]
 // @kind function
 // @category featureCreationUtility
 // @fileoverview Rename columns with individual columns razed together
-// @param  colNames {char[]} column name
+// @param  colNames {sym[]} column name
 // @param  feat     {tab[]} nlp features as a table 
-// @return {char[]} renamed columns, with individual columns razed together
+// @return {sym[]} renamed columns, with individual columns razed together
 featureCreation.nlp.i.nameRaze:{[colNames;feat]
   (,'/){xcol[x;y]}'[colNames;feat]
   }
@@ -67,9 +67,9 @@ featureCreation.nlp.i.nameRaze:{[colNames;feat]
 // @kind function
 // @category featureCreationUtility
 // @fileoverview Finds all names according to a regex search
-// @param  col       {char[]} column names
-// @param  attrCheck {char[]} attributes to check 
-// @return {char[]} all names according to a regex search
+// @param  col       {sym[]} column names
+// @param  attrCheck {sym[]} attributes to check 
+// @return {sym[]} all names according to a regex search
 featureCreation.nlp.i.colCheck:{[col;attrCheck]col where col like attrCheck}
 
 // @kind list

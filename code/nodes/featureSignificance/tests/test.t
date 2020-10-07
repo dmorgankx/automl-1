@@ -43,37 +43,46 @@ passingTest:{[function;data;applyType;expectedReturn]
 
 \S 10
 
-// Start date and time  
-startDateTime:`startDate`startTime!(.z.D;.z.T);
-
 // Features and targets
-featData   :([]100?1f;100?1f;asc 100?1f);
-targClass  :100?0b;
-targReg    :100?1f;
+featData :([]100?1f;100?1f;asc 100?1f)
+targClass:100?0b
+targMulti:100?`a`b`c
+targReg  :100?1f
 
-// Normal Configuration
-configNormalClass:startDateTime,`featExtractType`problemType!`normal`class;
-configNormalReg  :startDateTime,`featExtractType`problemType!`normal`reg;
-configNormalClass:.automl.dataCheck.updateConfig[featData;configNormalClass];
-configNormalReg  :.automl.dataCheck.updateConfig[featData;configNormalReg];
+// Configuration
+cfg:enlist[`sigFeats]!enlist`.automl.featureSignificance.significance
 
-// FRESH Feature Data, Target and Configuration
-configFRESHClass :startDateTime,`featExtractType`problemType!`fresh`class;
-configFRESHReg   :startDateTime,`featExtractType`problemType!`fresh`reg;
-configFRESHClass:.automl.dataCheck.updateConfig[featData;configFRESHClass];
-configFRESHReg  :.automl.dataCheck.updateConfig[featData;configFRESHReg];
+// Main function
 
 // Passing tests
 sigFunction:{[cfg;feats;tgt] 
   sigFeats:.automl.featureSignificance.node.function[cfg;feats;tgt];
-  (type sigFeats;sigFeats`sigFeats)
-  };
-passingTest[sigFunction;(configNormalClass;featData;targClass);0b;(99h;enlist`x1)];
-passingTest[sigFunction;(configNormalReg  ;featData;targReg  );0b;(99h;enlist`x )];
-passingTest[sigFunction;(configFRESHClass ;featData;targClass);0b;(99h;enlist`x1)];
-passingTest[sigFunction;(configFRESHReg   ;featData;targReg  );0b;(99h;enlist`x )];
+  (type sigFeats;key sigFeats)
+  }
+expectedOutput:(99h;`sigFeats`features)
+passingTest[sigFunction;(cfg;featData;targClass);0b;expectedOutput]
+passingTest[sigFunction;(cfg;featData;targMulti);0b;expectedOutput]
+passingTest[sigFunction;(cfg;featData;targReg  );0b;expectedOutput]
 
 // Failing tests
-configNormalClass[`sigFeats]:`.automl.newSignificanceFunction;
-errMsg:"Feature significance function not defined";
-failingTest[.automl.featureSignificance.node.function;(configNormalClass;featData;targClass);0b;errMsg];
+cfg[`sigFeats]:`.automl.newSignificanceFunction;
+expectedErr:"Feature significance function .automl.newSignificanceFunction not defined"
+failingTest[.automl.featureSignificance.node.function;(cfg;featData;targClass);0b;expectedErr]
+failingTest[.automl.featureSignificance.node.function;(cfg;featData;targMulti);0b;expectedErr]
+failingTest[.automl.featureSignificance.node.function;(cfg;featData;targReg  );0b;expectedErr]
+
+// funcs.q functions
+
+sigFeats1:()
+sigFeats2:`x
+
+passingTest[.automl.featureSignificance.countCols;(featData;sigFeats1);0b;`x`x1`x2]
+passingTest[.automl.featureSignificance.countCols;(featData;sigFeats2);0b;`x      ]
+
+passingTest[.automl.featureSignificance.significance;(featData;targClass);0b;enlist`x1]
+passingTest[.automl.featureSignificance.significance;(featData;targMulti);0b;enlist`x2]
+passingTest[.automl.featureSignificance.significance;(featData;targReg  );0b;enlist`x ]
+
+badFeat:([]100?1000)
+badTarg:100?`8
+passingTest[.automl.featureSignificance.significance;(badFeat;badTarg);0b;`$()]

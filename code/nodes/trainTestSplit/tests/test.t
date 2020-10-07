@@ -49,10 +49,10 @@ targData:100?0b;
 sigFeats:enlist`x2
 
 // Config
-cfg13:`tts`sz!(`.ml.traintestsplit;.13 )
-cfg20:`tts`sz!(`.ml.traintestsplit;.2  )
-cfg40:`tts`sz!(`.ml.traintestsplit;.4  )
-cfgNeg1:`tts`sz!(`.ml.traintestsplit;-1)
+cfg13     :`tts`sz!(`.ml.traintestsplit;.13 )
+cfg20     :`tts`sz!(`.ml.traintestsplit;.2  )
+cfg40     :`tts`sz!(`.ml.traintestsplit;.4  )
+cfgNeg1   :`tts`sz!(`.ml.traintestsplit;-1)
 cfgBadFunc:`tts`sz!(`.ml.trainsplit;.2 )
 
 // Expected output
@@ -64,6 +64,7 @@ ttsOut40:`xtrain`ytrain`xtest`ytest!60 60 40 40
 getKey:{[cfg;featData;targData;sigFeats]
   key .automl.trainTestSplit.node.function[cfg;featData;targData;sigFeats]
   }
+
 countFeat:{[cfg;featData;targData;sigFeats]
   count each .automl.trainTestSplit.node.function[cfg;featData;targData;sigFeats]
   }
@@ -76,5 +77,5 @@ passingTest[countFeat;(cfg40;featData;targData;sigFeats);0b;ttsOut40    ]
 
 // Failing tests
 
-failingTest[.automl.trainTestSplit.node.function;(cfgNeg1;featData;targData;sigFeats);0b;"domain"]
+failingTest[.automl.trainTestSplit.node.function;(cfgNeg1;featData;targData;sigFeats)   ;0b;"domain"]
 failingTest[.automl.trainTestSplit.node.function;(cfgBadFunc;featData;targData;sigFeats);0b;"Train Test Split function .ml.trainsplit not defined"]

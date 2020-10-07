@@ -57,7 +57,7 @@ dataPreprocessing.featPreprocess:{[feat;cfg]
 dataPreprocessing.nonTextPreprocess:{[feat]
   feat:.ml.dropconstant feat;
   feat:dataPreprocessing.nullEncode[feat;med];
-  .ml.infreplace feat
+  dataPreprocessing.infreplace feat
   }
 
 // @kind function
@@ -91,3 +91,7 @@ dataPreprocessing.nullEncode:{[feat;func]
    flip 0^(func each flip feat)^flip[feat],names!nullValues
    ]
   }
+
+
+// Temporary infreplace function until toolkit is update
+dataPreprocessing.infreplace:{.ml.infreplace["f"$x]}

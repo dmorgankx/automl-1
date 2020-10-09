@@ -44,12 +44,12 @@ dataCheck.updateConfig:{[feat;cfg]
 // @return    {(Null;err)} error indicating invalid fuctions otherwise generic null on success
 dataCheck.functions:{[cfg]
   // List of possible objects where user may input a custom function
-  function:raze cfg[`funcs`prf`tts`sigfeats],value[cfg`scf],first each cfg`xv`gs;
+  function:raze cfg[`funcs`prf`tts`sigFeats],value[cfg`scf],first each cfg`xv`gs;
   // Ensure the custom inputs are suitably typed
   locs:@[{$[not type[get x]in(99h;100h;104h);'err;0b]};;{[err]err;1b}]each function;
   if[0<cnt:sum locs;
      functionList:{$[2>x;" ",y," is";"s ",sv[", ";y]," are"]}[cnt]string function where locs;
-    '`$"The function",/functionList," not defined in your process\n"
+    '`$"The function",functionList," not defined in your process\n"
   ]
   }
 

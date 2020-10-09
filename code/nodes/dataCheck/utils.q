@@ -80,30 +80,30 @@ dataCheck.i.getCustomConfig:{[feat;cfg;ptyp]
 // @category dataCheckUtility
 // @fileoverview default parameters used in the application of 'FRESH' AutoML
 // @return {dict} default dictionary which will be used if no user updates are supplied
-dataCheck.i.freshDefault:{`aggcols`funcs`xv`gs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
+dataCheck.i.freshDefault:{`aggcols`funcs`xv`gs`prf`scf`seed`saveopt`hld`tts`sz`sigFeats!
   ({first cols x};`.ml.fresh.params;(`.ml.xv.kfshuff;5);(`.ml.gs.kfshuff;5);
-   `.automl.xv.fitpredict;`class`reg!(`.ml.accuracy;`.ml.mse);`rand_val;2;
-   0.2;`.ml.ttsnonshuff;0.2;`.automl.prep.freshsignificance)
+   `.automl.runModels.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);`rand_val;2;
+   0.2;`.ml.ttsnonshuff;0.2;`.automl.featureSignificance.significance)
   }
 
 // @kind function
 // @category dataCheckUtility
 // @fileoverview default parameters used in the application of 'normal' AutoML 
 // @return {dict} default dictionary which will be used if no user updates are supplied
-dataCheck.i.normalDefault:{`xv`gs`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
+dataCheck.i.normalDefault:{`xv`gs`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigFeats!
   ((`.ml.xv.kfshuff;5);(`.ml.gs.kfshuff;5);`.automl.prep.i.default;
-   `.automl.xv.fitpredict; `class`reg!(`.ml.accuracy;`.ml.mse);
-   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance)
+   `.automl.runModels.fitPredict; `class`reg!(`.ml.accuracy;`.ml.mse);
+   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.featureSignificance.significance)
   }
 
 // @kind function
 // @category dataCheckUtility
 // @fileoverview default parameters used in the application of 'NLP' AutoML
 // @return {dict} default dictionary which will be used if no user updates are supplied
-dataCheck.i.nlpDefault:{`xv`gs`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
+dataCheck.i.nlpDefault:{`xv`gs`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigFeats!
   ((`.ml.xv.kfshuff;5);(`.ml.gs.kfshuff;5);`.automl.prep.i.default;
-   `.automl.xv.fitpredict;`class`reg!(`.ml.accuracy;`.ml.mse);
-   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance)
+   `.automl.runModels.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);
+   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.featureSignificance.significance)
   }
 
 // @kind function
@@ -146,4 +146,3 @@ dataCheck.i.pathConstruct:{[cfg]
 dataCheck.i.ssrWindows:{[path]
   $[.z.o like "w*";ssr[path;"/";"\\"];path]
   }
-

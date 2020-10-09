@@ -41,41 +41,53 @@ passingTest:{[function;data;applyType;expectedReturn]
   expectedReturn~functionReturn
   }
 
+// Load Python version of .ml.traintestsplit
+\l code/nodes/trainTestSplit/tests/pythonTTS.p
+
 \S 10
 
 // Features and targets
 featData:([]100?1f;100?1f;asc 100?1f);
 targData:100?0b;
-sigFeats:enlist`x2
+sigFeats:`x`x2
+
+// Utilities
+matrixTTS:{[x;y;sz]
+  value .ml.traintestsplit[x;y;sz]
+  }
 
 // Config
-cfg13     :`tts`sz!(`.ml.traintestsplit;.13 )
-cfg20     :`tts`sz!(`.ml.traintestsplit;.2  )
-cfg40     :`tts`sz!(`.ml.traintestsplit;.4  )
+cfg13     :`tts`sz!(`.ml.traintestsplit;.13)
+cfg20     :`tts`sz!(`.ml.traintestsplit;.2)
+cfg40     :`tts`sz!(`.ml.traintestsplit;.4)
+cfgPy     :`tts`sz!(`python_train_test_split;.2)
 cfgNeg1   :`tts`sz!(`.ml.traintestsplit;-1)
-cfgBadFunc:`tts`sz!(`.ml.trainsplit;.2 )
+cfgBadFunc:`tts`sz!(`.ml.trainsplit;.2)
+cfgMatrix :`tts`sz!(`matrixTTS;.2)
 
 // Expected output
-ttsOut13:`xtrain`ytrain`xtest`ytest!87 87 13 13 
-ttsOut20:`xtrain`ytrain`xtest`ytest!80 80 20 20 
-ttsOut40:`xtrain`ytrain`xtest`ytest!60 60 40 40 
+keyTTSOut:`xtest`xtrain`ytest`ytrain
+ttsOut13 :`xtrain`ytrain`xtest`ytest!87 87 13 13 
+ttsOut20 :`xtrain`ytrain`xtest`ytest!80 80 20 20 
+ttsOut40 :`xtrain`ytrain`xtest`ytest!60 60 40 40 
 
 // Testing function
-getKey:{[cfg;featData;targData;sigFeats]
-  key .automl.trainTestSplit.node.function[cfg;featData;targData;sigFeats]
-  }
+getKey:{[cfg;featData;targData;sigFeats]  asc key .automl.trainTestSplit.node.function[cfg;featData;targData;sigFeats]  }
 
-countFeat:{[cfg;featData;targData;sigFeats]
-  count each .automl.trainTestSplit.node.function[cfg;featData;targData;sigFeats]
-  }
+countFeat:{[cfg;featData;targData;sigFeats]  count each .automl.trainTestSplit.node.function[cfg;featData;targData;sigFeats]  }
   
-// Passing tests
-passingTest[getKey   ;(cfg13;featData;targData;sigFeats);0b;key ttsOut13]
-passingTest[countFeat;(cfg13;featData;targData;sigFeats);0b;ttsOut13    ]
-passingTest[countFeat;(cfg20;featData;targData;sigFeats);0b;ttsOut20    ]
-passingTest[countFeat;(cfg40;featData;targData;sigFeats);0b;ttsOut40    ]
+// q tests
+passingTest[getKey   ;(cfg13;featData;targData;sigFeats);0b;keyTTSOut]
+passingTest[countFeat;(cfg13;featData;targData;sigFeats);0b;ttsOut13 ]
+passingTest[countFeat;(cfg20;featData;targData;sigFeats);0b;ttsOut20 ]
+passingTest[countFeat;(cfg40;featData;targData;sigFeats);0b;ttsOut40 ]
+
+// Python tests
+passingTest[getKey   ;(cfgPy;featData;targData;sigFeats);0b;keyTTSOut]
+passingTest[countFeat;(cfg20;featData;targData;sigFeats);0b;ttsOut20 ]
 
 // Failing tests
 
 failingTest[.automl.trainTestSplit.node.function;(cfgNeg1;featData;targData;sigFeats)   ;0b;"domain"]
-failingTest[.automl.trainTestSplit.node.function;(cfgBadFunc;featData;targData;sigFeats);0b;"Train Test Split function .ml.trainsplit not defined"]
+failingTest[.automl.trainTestSplit.node.function;(cfgBadFunc;featData;targData;sigFeats);0b;"Function .ml.trainsplit not defined in q or Python"]
+failingTest[.automl.trainTestSplit.node.function;(cfgMatrix;featData;targData;sigFeats);0b;"Train test split function must return a dictionary with `xtrain`xtest`ytrain`ytest"]

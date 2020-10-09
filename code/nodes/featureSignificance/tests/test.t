@@ -73,12 +73,6 @@ failingTest[.automl.featureSignificance.node.function;(cfg;featData;targReg  );0
 
 // funcs.q functions
 
-sigFeats1:()
-sigFeats2:`x
-
-passingTest[.automl.featureSignificance.countCols;(featData;sigFeats1);0b;`x`x1`x2]
-passingTest[.automl.featureSignificance.countCols;(featData;sigFeats2);0b;`x      ]
-
 passingTest[.automl.featureSignificance.significance;(featData;targClass);0b;enlist`x1]
 passingTest[.automl.featureSignificance.significance;(featData;targMulti);0b;enlist`x2]
 passingTest[.automl.featureSignificance.significance;(featData;targReg  );0b;enlist`x ]
@@ -86,3 +80,10 @@ passingTest[.automl.featureSignificance.significance;(featData;targReg  );0b;enl
 badFeat:([]100?1000)
 badTarg:100?`8
 passingTest[.automl.featureSignificance.significance;(badFeat;badTarg);0b;`$()]
+
+corrTable1:([]asc 100?100;asc 100?100;asc 100?100;100?1f)
+corrTable2:([]asc 100?100;asc 100?100;100?1f)
+corrTable3:([]100?1f;100?3;100?0b)
+passingTest[.automl.featureSignificance.correlationCols;corrTable1;1b;`x`x3   ]
+passingTest[.automl.featureSignificance.correlationCols;corrTable2;1b;`x`x2   ]
+passingTest[.automl.featureSignificance.correlationCols;corrTable3;1b;`x`x1`x2]

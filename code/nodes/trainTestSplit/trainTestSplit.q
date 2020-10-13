@@ -11,13 +11,8 @@
 // @param sigFeats {sym[]}         Significant features
 // @return         {dict}          Data separated into training and testing sets
 trainTestSplit.node.function:{[cfg;feats;tgt;sigFeats]
-  data:flip feats sigFeats;
-  ttsFunc:util.qpyFuncSearch cfg`tts;
-  tts:ttsFunc[data;tgt;cfg`sz];
-  $[99h<>type tts;
-    '"Train test split function must return a dictionary with `xtrain`xtest`ytrain`ytest";
-    tts
-    ]
+  tts:trainTestSplit.applyTTS[cfg;feats;tgt;sigFeats];
+  trainTestSplit.ttsReturnType tts
   }
 
 // Input information

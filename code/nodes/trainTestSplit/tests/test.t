@@ -87,5 +87,5 @@ passingTest[countFeat;(cfg40;featData;targData;sigFeats);0b;ttsOut40 ]
 -1"\nTesting inappropriate input data for TrainTestSplit";
 
 // Failing tests for TrainTestSplit
-failingTest[.automl.trainTestSplit.node.function;(cfgNeg1;featData;targData;sigFeats)   ;0b;"domain"]
+failingTest[.automl.trainTestSplit.node.function;(cfgNeg1;featData;targData;sigFeats)   ;0b;"Testing size must be in range 0-1"]
 failingTest[.automl.trainTestSplit.node.function;(cfgMatrix;featData;targData;sigFeats);0b;"Train test split function must return a dictionary with `xtrain`xtest`ytrain`ytest"]

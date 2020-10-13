@@ -10,7 +10,7 @@
 // @param tgt   {(num[];sym[])} Numerical or symbol vector containing the target dataset
 // @return {sym[]} Significant features or error if function does not exist
 featureSignificance.applySigFunc:{[cfg;feats;tgt]
-  sigFunc:@[get;cfg`sigFeats;{'"Feature significance function ",x," not defined"}];
+  sigFunc:util.qpyFuncSearch cfg`sigFeats;
   sigFunc[feats;tgt]
   }
 

@@ -3,14 +3,10 @@
 
 // @kind function
 // @category util
-// @fileoverview Load function from q. If function not found, try python and error out if 
-//   function still unavailable.
+// @fileoverview Load function from q. If function not found, try python 
 // @param funcName {sym} Name of function to retrieve
 // @return {function} Loaded function
 util.qpyFuncSearch:{[funcName]
   func:@[get;funcName;()];
-  $[()~func;
-    @[.p.get[;<];funcName;{'"Function ",x," not defined in q or Python"}];
-    func
-    ]
+  $[()~func;.p.get[funcName;<];func]
   }

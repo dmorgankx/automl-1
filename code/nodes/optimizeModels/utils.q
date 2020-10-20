@@ -12,10 +12,10 @@ optimizeModels.i.extractdict:{[bestModel;cfg]
   hyperParam:cfg`hp;
   // get grid/random hyperparameter file name
   hyperTyp:$[`grid=hyperParam;
-      `gs;
-      hyperParam in`random`sobol;
-       `rs;
-       '"unsupported hyperparameter generation method"];
+    `gs;
+    hyperParam in`random`sobol;
+      `rs;
+      '"unsupported hyperparameter generation method"];
   // load in table of hyperparameters to dictionary with (hyperparameter!values)
   hyperParamsDir:path,"/code/customization/hyperParameters/";
   system"l ",hyperParamsDir,string[hyperTyp],"Hyperparameters.q";
@@ -74,3 +74,19 @@ optimizeModels.i.updDict:{[modelName;hyperTyp;splitCnt;hyperDict;cfg]
   hyperDict
   }
 
+
+// Updated cross validation functions necessary for the application of hyperparameter search ordering correctly.
+// Only change is expected input to the t variable of the function, previously this was a simple
+// floating point values -1<x<1 which denotes how the data is to be split for the train-test split.
+// Expected input is now at minimum t:enlist[`val]!enlist num, while for testing on the holdout sets this
+// should be include the scoring function and ordering the model requires to find the best model
+// `val`scf`ord!(0.2;`.ml.mse;asc) for example
+// Location might be moved in future?
+xv.i.search:{[sf;k;n;x;y;f;p;t]
+ if[0=t`val;:sf[k;n;x;y;f;p]];i:(0,floor count[y]*1-abs t`val)_$[0>t`val;.ml.xv.i.shuffle;til count@]y;
+ (r;pr;[$[type[fn:get t`scf]in(100h;104h);
+          [pykwargs pr:first key t[`ord]avg each fn[;].''];
+          [pykwargs pr:first key desc avg each]]r:sf[k;n;x i 0;y i 0;f;p]](x;y)@\:/:i)}
+xv.i.xvpf:{[pf;xv;k;n;x;y;f;p]p!(xv[k;n;x;y]f pykwargs@)@'p:pf p}
+gs:1_xv.i.search@'xv.i.xvpf[{[p]key[p]!/:1_'(::)cross/value p}]@'.ml.xv.j
+rs:1_xv.i.search@'xv.i.xvpf[{[p].ml.hp.hpgen p}]@'.ml.xv.j

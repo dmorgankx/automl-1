@@ -13,7 +13,6 @@ nodelist:`configuration`featureData`targetData`dataCheck`modelGeneration`feature
 loadfile`:code/customization/init.q
 loadfile`:code/graph.q
 loadfile`:code/aml.q
-loadfile`:code/updml.q
 loadfile`:code/utils.q
 
 

@@ -47,9 +47,9 @@ passingTest:{[function;data;applyType;expectedReturn]
 
 // Generate Congifs for grid and random search
 configDefault:`scf`prf`seed`trials`hld!((`class`reg!`.ml.accuracy`.ml.mse);`.automl.utils.fitPredict;1234;8;0.2)
-configGrid   :configDefault,`gs`hp!((`.ml.gs.kfshuff;2;1);`grid)
-configRandom :configDefault,`rs`hp!((`.ml.rs.kfshuff;2;1);`random)
-configSobol  :configDefault,`rs`hp!((`.ml.rs.kfshuff;5;1);`sobol)
+configGrid  :configDefault,`gs`hp!((`.automl.gs.kfshuff;2);`grid)
+configRandom:configDefault,`rs`hp!((`.automl.rs.kfshuff;2);`random)
+configSobol :configDefault,`rs`hp!((`.automl.rs.kfshuff;5);`sobol)
 
 
 // Suitable configuration for testing of configuration update

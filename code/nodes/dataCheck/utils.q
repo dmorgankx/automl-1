@@ -81,8 +81,8 @@ dataCheck.i.getCustomConfig:{[feat;cfg;ptyp]
 // @fileoverview default parameters used in the application of 'FRESH' AutoML
 // @return {dict} default dictionary which will be used if no user updates are supplied
 dataCheck.i.freshDefault:{`aggcols`funcs`xv`gs`rs`hp`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
-  ({first cols x};`.ml.fresh.params;(`.ml.xv.kfshuff;5);(`.ml.gs.kfshuff;5;1);
-  (`.ml.rs.kfshuff;5;1);`grid;`.automl.utils.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);`rand_val;2;
+  ({first cols x};`.ml.fresh.params;(`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5;1);
+  (`.automl.rs.kfshuff;5;1);`grid;`.automl.utils.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);`rand_val;2;
    0.2;`.ml.ttsnonshuff;0.2;`.automl.prep.freshsignificance)
   }
 
@@ -91,7 +91,7 @@ dataCheck.i.freshDefault:{`aggcols`funcs`xv`gs`rs`hp`prf`scf`seed`saveopt`hld`tt
 // @fileoverview default parameters used in the application of 'normal' AutoML 
 // @return {dict} default dictionary which will be used if no user updates are supplied
 dataCheck.i.normalDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
-  ((`.ml.xv.kfshuff;5);(`.ml.gs.kfshuff;5;1);(`.ml.rs.kfshuff;5;1);`grid;`.automl.prep.i.default;
+  ((`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5;1);(`.automl.rs.kfshuff;5;1);`grid;`.automl.prep.i.default;
    `.automl.utils.fitPredict; `class`reg!(`.ml.accuracy;`.ml.mse);
    `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance)
   }
@@ -101,7 +101,7 @@ dataCheck.i.normalDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`si
 // @fileoverview default parameters used in the application of 'NLP' AutoML
 // @return {dict} default dictionary which will be used if no user updates are supplied
 dataCheck.i.nlpDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
-  ((`.ml.xv.kfshuff;5);(`.ml.gs.kfshuff;5;1);(`.ml.rs.kfshuff;5;1);`grid;`.automl.prep.i.default;
+  ((`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5;1);(`.automl.rs.kfshuff;5;1);`grid;`.automl.prep.i.default;
    `.automl.utils.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);
    `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance)
   }

@@ -1,12 +1,12 @@
 \d .automl
 
-// Definitions of the main callable functions used in the application of .automl.optimize
+// Definitions of the main callable functions used in the application of .automl.optimizeModels
 
 // @kind function
 // @category optimizeModels
 // @fileoverview Optimize models using hyperparmeter search procedures if appropriate, 
 //  otherwise predict on test data
-// @param mdls  {tab} Information about models applied to the data
+// @param mdls      {tab} Information about models applied to the data
 // @param bestModel {<} Fitted best model
 // @param modelName {sym} Name of best model
 // @param tts       {dict} Feature and target data split into training and testing set 
@@ -33,7 +33,7 @@ optimizeModels.hyperSearch:{[mdls;bestModel;modelName;tts;scoreFunc;cfg]
 // @param modelName  {sym} Name of best model
 // @param tts        {dict} Feature and target data split into training and testing set
 // @param customBool {bool} Whether it is a custom model or not
-// @return {(float[];bool[];int[])} Predicted scores  
+// @return {(float[];bool[];int[])} Predicted values  
 optimizeModels.scorePred:{[mdls;bestModel;modelName;tts;customBool]
   preds:$[customBool;
     optimize.scoreCustom[mdls;bestModels;modelName;tts];
@@ -41,7 +41,7 @@ optimizeModels.scorePred:{[mdls;bestModel;modelName;tts;customBool]
     ];
   returnKeys:`bestModel`hyperParams`predictions;
   returnKeys!(bestModel;()!();preds)
-   }
+  }
 
 
 // @kind function
@@ -51,7 +51,7 @@ optimizeModels.scorePred:{[mdls;bestModel;modelName;tts;customBool]
 // @param bestModel  {<} Fitted best model
 // @param modelName  {sym} Name of best model
 // @param tts        {dict} Feature and target data split into training and testing set
-// @return {(float[];bool[];int[])} Predicted scores  
+// @return {(float[];bool[];int[])} Predicted values  
 optimizeModels.scoreCustom:{[mdls;bestModel;modelName;tts]
    modelLib:first exec lib from mdls where model=modelName;
    get[".automl.models",modelLib,".predict"][tts;bestModel]
@@ -76,7 +76,7 @@ optimizeModels.scoreSklearn:{[bestModel;tts]
 // @param modelName  {sym} Name of best model
 // @param tts        {dict} Feature and target data split into training and testing set
 // @param scoreFunc  {} Scoring function
-// @return {(float[];bool[];int[])} Predicted scores  
+// @return {(float[];bool[];int[])} Predicted values 
 optimizeModels.paramSearch:{[mdls;modelName;tts;scoreFunc;cfg]
   hyperParams:optimizeModels.i.extractdict[modelName;cfg];
   hyperTyp:hyperParams`hyperTyp;
@@ -89,7 +89,7 @@ optimizeModels.paramSearch:{[mdls;modelName;tts;scoreFunc;cfg]
   splitCnt:optimizeModels.i.splitCount[hyperFunc;hyperTyp;numFolds;tts;cfg];
   hyperDict:optimizeModels.i.updDict[modelName;hyperTyp;splitCnt;hyperDict;cfg];
   mdlFunc:first exec minit from mdls where model=modelName;
-  numReps:cfg[hyperTyp;2];
+  numReps:1;
   xTrain:tts`xtrain;
   yTrain:tts`ytrain;
   scoreCalc:cfg[`prf]mdlFunc;
@@ -104,4 +104,4 @@ optimizeModels.paramSearch:{[mdls;modelName;tts;scoreFunc;cfg]
   preds:bestMdl[`:predict][tts`xtest]`;
   returnKeys:`bestModel`hyperParams`predictions;
   returnKeys!(bestMdl;bestParams;preds)
-  } 
+  }

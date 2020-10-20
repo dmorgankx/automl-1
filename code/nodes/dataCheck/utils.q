@@ -100,10 +100,10 @@ dataCheck.i.normalDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`si
 // @category dataCheckUtility
 // @fileoverview default parameters used in the application of 'NLP' AutoML
 // @return {dict} default dictionary which will be used if no user updates are supplied
-dataCheck.i.nlpDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
+dataCheck.i.nlpDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats`w2v!
   ((`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5;1);(`.automl.rs.kfshuff;5;1);`grid;`.automl.prep.i.default;
    `.automl.utils.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);
-   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance)
+   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance;0)
   }
 
 // @kind function

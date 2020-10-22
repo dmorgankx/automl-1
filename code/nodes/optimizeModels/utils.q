@@ -75,6 +75,75 @@ optimizeModels.i.updDict:{[modelName;hyperTyp;splitCnt;hyperDict;cfg]
   }
 
 
+// @kind function
+// @category optimizeModelsUtilitity
+// @fileoverview Show true and predicted values from confusion matrix
+// @param preds {(int[];bool[])} Predicted values
+// @param true {(int[];bool[])} True values
+// @return {dict} Confusion matrix with true and predicted values
+optimizeModels.i.confTab:{[preds;true]
+  confMatrix:.ml.confmat[preds;true];
+  keyMatrix:string key confMatrix;
+  predVals:`$"pred_",/:keyMatrix;
+  trueVals:`$"true_",/:keyMatrix;
+  predVals!flip trueVals!flip value confMatrix
+  }
+
+// @kind function
+// @category optimizeModelsUtilitity
+// @fileoverview Save down confusionMatrix
+// @param bestModel {<} Fitted best model
+// @param modelName {str} Name of best model
+// @param tts       {dict} Feature and target data split into training and testing set
+// @param scoreFunc {<} Scoring metric applied to evaluate the model
+// @param seed      {int} Random seed to use
+// @param modelTab  {tab} Information about each model ran on the test data
+// @param i         {int} Index of column that is being shuffled
+// return {float} Score returned from predicted values using shuffled data 
+optimizeModels.i.predShuffle:{[bestModel;modelName;tts;scoreFunc;seed;mdls;i]
+  tts[`xtest]:optimizeModels.i.shuffle[tts`xtest;i];
+  modelLib:first exec lib from mdls where model=modelName;
+  preds:$[modelLib in key models;
+  [predFunc:get["automl.",modelLib,".",modelName,"predict"];
+  predFunc[tts;bestModel]
+  ];
+  bestModel[`:predict][tts`xtest]`
+  ];
+  scoreFunc[preds;tts`ytest]
+  } 
+
+
+// @kind function
+// @category optimizeModelsUtility
+// @fileoverview Shuffle column within the data
+// @param data {float[]} Data to shuffle
+// @param i    {int} Column in data to shuffle
+// @return {float[]} The original data shuffled 
+optimizeModels.i.shuffle:{[data;i]
+  countData:count data;
+  idx:neg[countData]?countData;
+  $[98h~type data;
+    data:@[data;i;@;idx];
+    data[;i]:data[;i]idx
+    ];
+  data
+  }
+
+
+// @kind function
+// @category optimizeModelsUtility
+// @fileoverview Create dictionary of impact of each column in ascending order
+// @param scores    {float[]} Impact score of each column
+// @param countCols {int} Number of columns in the feature data
+// @param ordFunc   {func} Ordeing of scores 
+// @return {dict} Impact score of each column in ascending order 
+optimizeModels.i.impact:{[scores;countCols;ordFunc]
+  scores:$[any 0>scores;.ml.minmaxscaler;]scores;
+  scores:$[ordFunc~desc;1-;]scores;
+  keyDict:til countCols;
+  asc keyDict!scores%max scores
+  }
+
 // Updated cross validation functions necessary for the application of hyperparameter search ordering correctly.
 // Only change is expected input to the t variable of the function, previously this was a simple
 // floating point values -1<x<1 which denotes how the data is to be split for the train-test split.

@@ -105,3 +105,56 @@ optimizeModels.paramSearch:{[mdls;modelName;tts;scoreFunc;cfg]
   returnKeys:`bestModel`hyperParams`predictions;
   returnKeys!(bestMdl;bestParams;preds)
   }
+
+// @kind function
+// @category optimizeModels
+// @fileoverview Create confusion matrix
+// @param preds     {dict} All data generated during the process
+// @param tts       {dict} Feature and target data split into training and testing set
+// @param modelName {str} Name of best model
+// @param cfg       {dict} Configuration information relating to the current run of AutoML
+// return {dict} Confusion matrix created from predictions and true values
+optimizeModels.confMatrix:{[preds;tts;modelName;cfg]
+  if[`reg~cfg`problemType;:()!()];
+  yTest:tts`ytest;
+  if[not type[preds]~type[yTest];
+    preds:`long$preds;
+    yTest:`long$yTest
+    ];
+  -1"Confusion matrix for testing set:\n";
+  show confMatrix:optimizeModels.i.confTab[preds;yTest];
+  confMatrix
+  }
+
+// @kind function
+// @category optimizeModels
+// @fileoverview Create impact dictionary
+// @param hyperSearch {dict} Values returned from hyperParameter search
+// @param modelName   {str} Name of best model
+// @param tts         {dict} Feature and target data split into training and testing set
+// @param cfg         {dict} Configuration information relating to the current run of AutoML
+// @param scoreFunc   {func} Scoring function
+// @param mdls        {tab} Information about models applied to the data
+// return {dict} Impact of each column in the data set 
+optimizeModels.impactDict:{[hyperSearch;modelName;tts;cfg;scoreFunc;mdls]
+  bestModel:hyperSearch`bestModel;
+  countCols:count first tts`xtest;
+  scores:optimizeModels.i.predShuffle[bestModel;modelName;tts;scoreFunc;cfg`seed;mdls]each til countCols;
+  ordFunc:get string first utils.txtParse[`score;"/code/customization/"]scoreFunc;
+  optimizeModels.i.impact[scores;countCols;ordFunc];
+  }
+
+
+// @kind function
+// @category optimizeModels
+// @fileoverview Consolidate all parameters created from node
+// @param hyperSearch {dict} Values returned from hyperParameter search
+// @param confMatrix  {dict} Confusion matrix created from model
+// @param impactDict  {dict} Impact of each column in data
+// @return {dict} All parameters created during node
+optimizeModels.consolidateParams:{[hyperSearch;confMatrix;impactDict]
+  analyzeKeys:`confMatrix`impact;
+  analyzeVals:(confMatrix;impactDict);
+  analyzeDict:analyzeKeys!analyzeVals;
+  hyperSearch,enlist[`analyzeModel]!enlist analyzeDict
+  }

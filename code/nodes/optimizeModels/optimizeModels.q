@@ -13,12 +13,16 @@
 // @param tts       {dict} Feature and target data split into training and testing set 
 // @return {dict} Score, prediction and best model
 optimizeModels.node.function:{[cfg;mdls;bestModel;modelName;tts]
-   scoreFunc:cfg[`scf][cfg`problemType];
-   optimizeModels.hyperSearch[mdls;bestModel;modelName;tts;scoreFunc;cfg]
+  // update when tts gets merged in 
+  scoreFunc:cfg[`scf][cfg`problemType];
+  hyperSearch:optimizeModels.hyperSearch[mdls;bestModel;modelName;tts;scoreFunc;cfg];
+  confMatrix:optimizeModels.confMatrix[hyperSearch`predictions;tts;modelName;cfg];
+  impactReport:optimizeModels.impactDict[hyperSearch;modelName;tts;cfg;scoreFunc;mdls];
+  optimizeModels.consolidateParams[hyperSearch;confMatrix;impactReport] 
   }
 
 // Input information
 optimizeModels.node.inputs  :`config`models`bestModel`bestScoringName`ttsObject!"!+<s "
 
 // Output information
-optimizeModels.node.outputs :`bestModel`hyperParams`predictions`testScore!"<!Ff"
+optimizeModels.node.outputs :`bestModel`hyperParams`predictions`testScore`analyzeModel!"<!Ff!"

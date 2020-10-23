@@ -147,14 +147,32 @@ optimizeModels.impactDict:{[hyperSearch;modelName;tts;cfg;scoreFunc;mdls]
 
 // @kind function
 // @category optimizeModels
+// @fileoverview Get residuals for regression models
+// @param hyperSearch {dict} Values returned from hyperParameter search
+// @param tts         {dict} Feature and target data split into training and testing set
+// @param cfg         {dict} Configuration information relating to the current run of AutoML
+// return {dict} Residual errors and true values
+optimizeModels.residuals:{[hyperSearch;tts;cfg]
+  problemTyp:cfg`problemType;
+  if[problemTyp~`class;()!()];
+  true:tts`ytest;
+  preds:hyperSearch`predictions;
+  resids:true-preds;
+  `resids`true!(resids;true)
+  }
+  
+
+// @kind function
+// @category optimizeModels
 // @fileoverview Consolidate all parameters created from node
 // @param hyperSearch {dict} Values returned from hyperParameter search
 // @param confMatrix  {dict} Confusion matrix created from model
 // @param impactDict  {dict} Impact of each column in data
+// @param residuals   {dict} Residual errors for regression problems
 // @return {dict} All parameters created during node
-optimizeModels.consolidateParams:{[hyperSearch;confMatrix;impactDict]
-  analyzeKeys:`confMatrix`impact;
-  analyzeVals:(confMatrix;impactDict);
+optimizeModels.consolidateParams:{[hyperSearch;confMatrix;impactDict;residuals]
+  analyzeKeys:`confMatrix`impact`residuals;
+  analyzeVals:(confMatrix;impactDict;residuals);
   analyzeDict:analyzeKeys!analyzeVals;
   hyperSearch,enlist[`analyzeModel]!enlist analyzeDict
   }

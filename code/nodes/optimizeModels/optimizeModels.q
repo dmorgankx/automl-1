@@ -18,7 +18,8 @@ optimizeModels.node.function:{[cfg;mdls;bestModel;modelName;tts]
   hyperSearch:optimizeModels.hyperSearch[mdls;bestModel;modelName;tts;scoreFunc;cfg];
   confMatrix:optimizeModels.confMatrix[hyperSearch`predictions;tts;modelName;cfg];
   impactReport:optimizeModels.impactDict[hyperSearch;modelName;tts;cfg;scoreFunc;mdls];
-  optimizeModels.consolidateParams[hyperSearch;confMatrix;impactReport] 
+  residuals:optimizeModels.residuals[hyperSearch;tts;cfg];
+  optimizeModels.consolidateParams[hyperSearch;confMatrix;impactReport;residuals] 
   }
 
 // Input information

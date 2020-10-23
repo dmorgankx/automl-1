@@ -174,5 +174,5 @@ optimizeModels.consolidateParams:{[hyperSearch;confMatrix;impactDict;residuals]
   analyzeKeys:`confMatrix`impact`residuals;
   analyzeVals:(confMatrix;impactDict;residuals);
   analyzeDict:analyzeKeys!analyzeVals;
-  hyperSearch,enlist[`analyzeModel]!enlist analyzeDict
+  (`predictions _hyperSearch),enlist[`analyzeModel]!enlist analyzeDict
   }

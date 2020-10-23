@@ -57,7 +57,7 @@ configReg     :enlist[`problemType]!enlist`reg
 configClass   :enlist[`problemType]!enlist`class
 
 // Generate model dictionaries 
-modelDict     :.automl.modelGeneration.txtParse[;"/code/customization/models/modelConfig/"]
+modelDict     :.automl.modelGeneration.txtParse[;"/code/customization/"]
 regModelDict  :modelDict configReg
 classModelDict:modelDict configClass
 
@@ -97,8 +97,8 @@ optimizeFunc:{[cfg;mdls;bmdl;bname;tts]
  type each .automl.optimizeModels.node.function[cfg;mdls;bmdl;bname;tts]
   }
 
-classReturn:`bestModel`hyperParams`predictions`testScore`analyzeModel!105 99 1 -9 99h
-regReturn  :`bestModel`hyperParams`predictions`testScore`analyzeModel!105 99 9 -9 99h
+classReturn:`bestModel`hyperParams`testScore`analyzeModel!105 99 -9 99h
+regReturn  :`bestModel`hyperParams`testScore`analyzeModel!105 99 -9 99h
 
 -1"\nTesting appropriate optimization inputs for Random forest models";
 

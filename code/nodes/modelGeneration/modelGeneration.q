@@ -12,9 +12,8 @@
 // @return     {dict} Table with all information needed for appropriate models to be applied to data
 modelGeneration.node.function:{[cfg;tgt]
   modelGeneration.filesCheck[cfg];
-  mdlDict:modelGeneration.txtParse[cfg;"/code/customization/models/modelConfig/"];
-  mdlTab :modelGeneration.modelPrep[cfg;mdlDict;tgt];
-  modelGeneration.updModels[mdlTab;tgt]
+  mdlDict:modelGeneration.txtParse[cfg;"/code/customization/"];
+  modelGeneration.modelPrep[cfg;mdlDict;tgt]
   }
 
 // Input information

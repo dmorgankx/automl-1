@@ -26,4 +26,4 @@ optimizeModels.node.function:{[cfg;mdls;bestModel;modelName;tts]
 optimizeModels.node.inputs  :`config`models`bestModel`bestScoringName`ttsObject!"!+<s "
 
 // Output information
-optimizeModels.node.outputs :`bestModel`hyperParams`predictions`testScore`analyzeModel!"<!Ff!"
+optimizeModels.node.outputs :`bestModel`hyperParams`testScore`analyzeModel!"<!f!"

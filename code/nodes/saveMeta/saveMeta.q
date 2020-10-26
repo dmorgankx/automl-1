@@ -9,6 +9,8 @@
 //  prediction stages
 // @return {null} All metadata needed is saved to appropriate location
 saveMeta.node.function:{[params]
+  saveOpt:params[`config;`saveopt];
+  if[0~saveOpt;:(::)];
   mdlMeta:saveMeta.extractMdlMeta[params`modelMetaData];
   saveMeta.saveMeta[mdlMeta;params]
   }

@@ -36,13 +36,19 @@ pathDict:enlist[`config]!enlist filePath
 mdlMetaData:`pythonLib`mdlType!(`sklearn;`class)
 
 // Generate config data
-configDict:`featExtractType`problemType!`normal`reg
+configDict0:`saveopt`featExtractType`problemType!(0;`normal;`reg)
+configDict1:`saveopt`featExtractType`problemType!(1;`fresh ;`class)
+configDict2:`saveopt`featExtractType`problemType!(2;`nlp   ;`reg)
 
-paramDict:`modelMetaData`config`pathDict!(mdlMetaData;configDict;pathDict)
+paramDict0:`modelMetaData`config`pathDict!(mdlMetaData;configDict0;pathDict)
+paramDict1:`modelMetaData`config`pathDict!(mdlMetaData;configDict1;pathDict)
+paramDict2:`modelMetaData`config`pathDict!(mdlMetaData;configDict2;pathDict)
 
 -1"\nTesting appropriate inputs to saveMeta";
 
-passingTest[.automl.saveMeta.node.function;paramDict;1b;(::)]
+passingTest[.automl.saveMeta.node.function;paramDict0;1b;(::)]
+passingTest[.automl.saveMeta.node.function;paramDict1;1b;(::)]
+passingTest[.automl.saveMeta.node.function;paramDict2;1b;(::)]
 
 
 // Remove any directories made

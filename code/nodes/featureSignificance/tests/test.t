@@ -45,9 +45,9 @@ passingTest:{[function;data;applyType;expectedReturn]
 
 // Features and targets
 featData :([]100?1f;100?1f;asc 100?1f)
-targClass:100?0b
-targMulti:100?`a`b`c
-targReg  :100?1f
+targClass:asc 100?0b
+targMulti:asc 100?`a`b`c
+targReg  :asc 100?1f
 
 // Configuration
 cfg:enlist[`sigFeats]!enlist`.automl.featureSignificance.significance
@@ -74,9 +74,9 @@ passingTest[sigFunction;(cfg;featData;targReg  );0b;expectedOutput]
 
 -1"\nTesting all appropriate inputs for feature significance function"; 
 
-passingTest[.automl.featureSignificance.significance;(featData;targClass);0b;enlist`x1]
+passingTest[.automl.featureSignificance.significance;(featData;targClass);0b;enlist`x2]
 passingTest[.automl.featureSignificance.significance;(featData;targMulti);0b;enlist`x2]
-passingTest[.automl.featureSignificance.significance;(featData;targReg  );0b;enlist`x ]
+passingTest[.automl.featureSignificance.significance;(featData;targReg  );0b;enlist`x2]
 
 -1"\nTesting all appropriate inputs for correlation function";
 

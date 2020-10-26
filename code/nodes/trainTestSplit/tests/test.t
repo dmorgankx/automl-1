@@ -41,6 +41,9 @@ passingTest:{[function;data;applyType;expectedReturn]
   expectedReturn~functionReturn
   }
 
+// Load Python version of .ml.traintestsplit
+\l code/nodes/dataCheck/tests/pythonTTS.p
+
 \S 10
 
 // Features and targets
@@ -52,13 +55,18 @@ sigFeats:`x`x2
 matrixTTS:{[x;y;sz]
   value .ml.traintestsplit[x;y;sz]
   }
+wrongKeyTTS:{[x;y;sz]
+  `a`b`c`d!til 4
+  }
 
 // Config
-cfg13     :`tts`sz!(`.ml.traintestsplit;.13)
-cfg20     :`tts`sz!(`.ml.traintestsplit;.2)
-cfg40     :`tts`sz!(`.ml.traintestsplit;.4)
-cfgNeg1   :`tts`sz!(`.ml.traintestsplit;-1)
-cfgMatrix :`tts`sz!(`matrixTTS;.2)
+cfg13      :`tts`sz!(`.ml.traintestsplit;.13)
+cfg20      :`tts`sz!(`.ml.traintestsplit;.2)
+cfg40      :`tts`sz!(`.ml.traintestsplit;.4)
+cfgNeg1    :`tts`sz!(`.ml.traintestsplit;-1)
+cfgMatrix  :`tts`sz!(`matrixTTS  ;.2)
+cfgWrongKey:`tts`sz!(`wrongKeyTTS;.2)
+cfgPy      :`tts`sz!(`python_train_test_split;.2)
 
 // Expected output
 keyTTSOut:`xtest`xtrain`ytest`ytrain
@@ -83,9 +91,12 @@ passingTest[countFeat;(cfg13;featData;targData;sigFeats);0b;ttsOut13 ]
 passingTest[countFeat;(cfg20;featData;targData;sigFeats);0b;ttsOut20 ]
 passingTest[countFeat;(cfg40;featData;targData;sigFeats);0b;ttsOut40 ]
 
+// Python tests
+passingTest[getKey   ;(cfgPy;featData;targData;sigFeats);0b;keyTTSOut]
+passingTest[countFeat;(cfg20;featData;targData;sigFeats);0b;ttsOut20 ]
 
 -1"\nTesting inappropriate input data for TrainTestSplit";
 
 // Failing tests for TrainTestSplit
-failingTest[.automl.trainTestSplit.node.function;(cfgNeg1;featData;targData;sigFeats)   ;0b;"Testing size must be in range 0-1"]
 failingTest[.automl.trainTestSplit.node.function;(cfgMatrix;featData;targData;sigFeats);0b;"Train test split function must return a dictionary with `xtrain`xtest`ytrain`ytest"]
+failingTest[.automl.trainTestSplit.node.function;(cfgWrongKey;featData;targData;sigFeats);0b;"Train test split function must return a dictionary with `xtrain`xtest`ytrain`ytest"]

@@ -5,12 +5,12 @@
 // @kind function
 // @category featureSignificance
 // @fileoverview Extract feature significant tests and apply to feature data
-// @param cfg   {dict} Configuration information assigned by the user and related to the current run
-// @param feats {tab}  The feature data as a table 
-// @param tgt   {(num[];sym[])} Numerical or symbol vector containing the target dataset
+// @param cfg   {dict}  Configuration information assigned by the user and related to the current run
+// @param feats {tab}   The feature data as a table 
+// @param tgt   {num[]} Numerical vector containing target data
 // @return {sym[]} Significant features or error if function does not exist
 featureSignificance.applySigFunc:{[cfg;feats;tgt]
-  sigFunc:util.qpyFuncSearch cfg`sigFeats;
+  sigFunc:utils.qpyFuncSearch cfg`sigFeats;
   sigFunc[feats;tgt]
   }
 
@@ -19,7 +19,7 @@ featureSignificance.applySigFunc:{[cfg;feats;tgt]
 // @fileoverview Apply feature significance function to data post feature extraction
 // @param cfg   {dict}          Configuration information assigned by the user and related to the current run
 // @param feats {tab}           The feature data as a table 
-// @param tgt   {(num[];sym[])} Numerical or symbol vector containing the target dataset
+// @param tgt   {num[]} Numerical vector containing target data
 // @return      {sym[]}         Significant features
 featureSignificance.significance:{[feats;tgt]
   sigFeats:.ml.fresh.significantfeatures[feats;tgt;.ml.fresh.benjhoch .05];
@@ -51,9 +51,5 @@ featureSignificance.correlationCols:{[sigFeats]
 // @param bool    {float[]} Lower traingle booleans
 // @return {sym[]} Columns within threshold
 featureSignificance.threshVal:{[thres;sigCols;corr;bool]
-  idx:where bool;
-  $[any thres<value[corr]idx;
-    sigCols idx;
-    ()
-    ]
+  $[any thres<value[corr]idx:where bool;sigCols idx;()]
   }

@@ -9,7 +9,7 @@
 // return {dict} Appropriate model meta data extracted
 saveMeta.extractMdlMeta:{[params]
   mdlMeta:params`modelMetaData;
-  pyLib  :mdlMeta`pythonLib;
+  pyLib  :mdlMeta`modelLib;
   mdlType:mdlMeta`mdlType;
   `pythonLib`mdlType!(pyLib;mdlType)
    }

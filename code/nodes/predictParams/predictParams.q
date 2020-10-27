@@ -11,8 +11,8 @@
 // @param hyperParmams  {dict} Hyperparameters used for model (if any)
 // @param testScore     {float} Score of model on testing data
 // @param modelMetaData {dict} Meta data from finding best model
-// @return {dict} Consolodated parameters to be passed to generate reports/graphs 
-predictParams.node.function:{[bestModel;hyperParams;testScore;analyzeModels;modelMetaData]
+// @return {dict} Consolidated parameters to be passed to generate reports/graphs 
+predictParams.node.function:{[bestModel;hyperParams;testScore;predictions;modelMetaData]
   predictParams.printScore[testScore];
   returnKeys:`bestModel`hyperParams`testScore`analyzeModels`modelMetaData;
   returnKeys!(bestModel;hyperParams;testScore;analyzeModels;modelMetaData)

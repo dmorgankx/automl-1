@@ -31,9 +31,10 @@ passingTest:{[function;data;applyType;expectedReturn]
 modelName:`randomForestRegressor
 
 // Generate a path to save images to
-savePath:.automl.utils.ssrwin .automl.path,"/outputs/testing/images/"
+filePath:"/outputs/testing/images"
+savePath:.automl.utils.ssrwin .automl.path,filePath
 system"mkdir",$[.z.o like "w*";" ";" -p "],savePath;
-pathDict:enlist[`images]!enlist savePath
+pathDict:enlist[`images]!enlist filePath
 
 // Generate confusion matrix
 preds:10?0b

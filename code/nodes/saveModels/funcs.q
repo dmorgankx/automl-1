@@ -9,20 +9,19 @@
 // @param savePath {str} Path where images are to be saved
 // return {null} Save best model to appropriate location
 saveModels.saveModel:{[params;savePath]
-  lib:params[`modelMetaData;`pythonLib];
+  modelLib :params[`modelMetaData]`pythonLib;
   bestModel:params`bestModel;
-  modelName:string params`modelName
+  modelName:string params`modelName;
   filePath:savePath,"/",modelName;
   joblib:.p.import`joblib;
-  $[`sklearn~lib;
-    joblib[`:dump][bestModel;filePath]
-    `keras~lib;
-    bestModel[`:save][filePath,".h5"];
-    `pytorch~lib;
-    torch[`:save][bestModel;filePath];
-    -1"Saving of non keras/sklearn models types is not currently supported"
-   ]; 
-  -1"Saving down ",modelName," model to ",savePath
+  $[`sklearn~modelLib;
+       joblib[`:dump][bestModel;filePath];
+    `keras~modelLib;
+       bestModel[`:save][filePath,".h5"];
+    `pytorch~modelLib;
+      torch[`:save][bestModel;filePath,".pt"];
+    -1"Saving of non keras/sklearn models types is not currently supported"]; 
+  -1"Saving down ",modelName," model to ",savePath;
   }
 
 
@@ -33,8 +32,8 @@ saveModels.saveModel:{[params;savePath]
 // @param savePath {str} Path where images are to be saved
 // return {null} Save nlp w2v to appropriate location
 saveModels.saveW2V:{[params;savePath]
-  featType:params[`config;`ExtractionType];
-  if[not featType~`nlp;:()];
-  w2vModel:params[`featModel];
+  extractType:params[`config]`ExtractionType;
+  if[not extractType~`nlp;:(::)];
+  w2vModel:params`featModel;
   w2vModel[`:save][savePath,"w2v.model"];
   } 

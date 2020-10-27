@@ -78,7 +78,7 @@ pathConstructFunc:{[preProcParams;predictionStore]
   }
 
 // Expected return dictionary
-paramReturn:key[preProcDict],`config,key[predictionStoreDict],`pathDict
+paramReturn:key[preProcDict],`config,key[predictionStoreDict]
 
 // Testing appropriate inputs for pathConstruct
 passingTest[pathConstructFunc;(preProcDict0;predictionStoreDict);0b;paramReturn]
@@ -86,23 +86,7 @@ passingTest[pathConstructFunc;(preProcDict1;predictionStoreDict);0b;paramReturn]
 passingTest[pathConstructFunc;(preProcDict2;predictionStoreDict);0b;paramReturn]
 
 
--1"\nTesting appropriate paths are constructed for each saveOpt";
-
-// Generate function to check what paths were created
-pathConstructChk:{[preProcParams;predictionStore]
-  returnDict:.automl.pathConstruct.node.function[preProcParams;predictionStore];
-  key returnDict[`pathDict]
-  }
-
-// Expected return values
-paramReturn0:()
-paramReturn1:`config`models
-paramReturn2:paramReturn1,`images`report
-
-// Test that appropriate paths are created for saveOpt
-passingTest[pathConstructChk;(preProcDict0;predictionStoreDict);0b;paramReturn0]
-passingTest[pathConstructChk;(preProcDict1;predictionStoreDict);0b;paramReturn1]
-passingTest[pathConstructChk;(preProcDict2;predictionStoreDict);0b;paramReturn2]
+-1"\nRemoving any directories created";
 
 // Remove any folders created
 rmPath:.automl.utils.ssrwin .automl.path,"/outputs/2000.01.02/";

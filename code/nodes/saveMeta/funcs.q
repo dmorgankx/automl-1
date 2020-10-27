@@ -23,7 +23,7 @@ saveMeta.extractMdlMeta:{[params]
 saveMeta.saveMeta:{[mdlMeta;params]
   mdlMeta:mdlMeta,params`config;
   `:metadata set mdlMeta;
-  savePath:path,params[`pathDict]`config;
+  savePath:params[`config]`configSavePath;
   // move the metadata information to the appropriate location based on OS
   system$[.z.o like "w*";"move";"mv"]," metadata ",savePath;
   -1"Saving down model parameters to ",utils.ssrsv savePath;

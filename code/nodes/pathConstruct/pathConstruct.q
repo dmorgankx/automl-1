@@ -14,8 +14,7 @@
 //  paths to where graphs/reports will be generated
 pathConstruct.node.function:{[preProcParams;predictionStore]
   paths:pathConstruct.constructPath[preProcParams];
-  pathDict:enlist[`pathDict]!enlist paths;
-  preProcParams,predictionStore,pathDict
+  preProcParams,predictionStore
   }
 
 // Input information

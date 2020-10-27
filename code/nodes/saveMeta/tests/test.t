@@ -26,29 +26,32 @@ passingTest:{[function;data;applyType;expectedReturn]
 
 // Generate input data to be passed to saveMeta
 
+-1"\nCreating output directory";
 // Generate a path to save images to
 filePath:"/outputs/testing/configs"
 savePath:.automl.utils.ssrwin .automl.path,filePath
 system"mkdir",$[.z.o like"w*";" ";" -p "],savePath;
-pathDict:enlist[`config]!enlist filePath
 
 // Generate model meta data
 mdlMetaData:`pythonLib`mdlType!`sklearn`class
 
 // Generate config data
-configDict0:`saveopt`featExtractType`problemType!(0;`normal;`reg)
-configDict1:`saveopt`featExtractType`problemType!(1;`fresh ;`class)
-configDict2:`saveopt`featExtractType`problemType!(2;`nlp   ;`reg)
+configSave :enlist[`configSavePath]!enlist savePath
+configDict0:configSave,`saveopt`featExtractType`problemType!(0;`normal;`reg)
+configDict1:configSave,`saveopt`featExtractType`problemType!(1;`fresh ;`class)
+configDict2:configSave,`saveopt`featExtractType`problemType!(2;`nlp   ;`reg)
 
-paramDict0:`modelMetaData`config`pathDict!(mdlMetaData;configDict0;pathDict)
-paramDict1:`modelMetaData`config`pathDict!(mdlMetaData;configDict1;pathDict)
-paramDict2:`modelMetaData`config`pathDict!(mdlMetaData;configDict2;pathDict)
+paramDict0:`modelMetaData`config!(mdlMetaData;configDict0)
+paramDict1:`modelMetaData`config!(mdlMetaData;configDict1)
+paramDict2:`modelMetaData`config!(mdlMetaData;configDict2)
 
 -1"\nTesting appropriate inputs to saveMeta";
 
 passingTest[.automl.saveMeta.node.function;paramDict0;1b;(::)]
 passingTest[.automl.saveMeta.node.function;paramDict1;1b;(::)]
 passingTest[.automl.saveMeta.node.function;paramDict2;1b;(::)]
+
+-1"\nRemoving any directories created";
 
 // Remove any directories made
 rmPath:.automl.utils.ssrwin .automl.path,"/outputs/testing/";

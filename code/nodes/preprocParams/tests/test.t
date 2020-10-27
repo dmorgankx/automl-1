@@ -68,5 +68,6 @@ outputTyp:{[inputs]
 passKey:`config`dataDescription`creationTime`sigFeats`symEncode`symMap`featModel`ttsObject
 passTyp:99 99 -19 11 99 99 0 99h
 
+-1"\nTesting all appropriate inputs to preprocParams";
 passingTest[outputKey;(config;descrip;creationTime;sigFeats;symEnc;symMap;featModel;ttsData);1b;passKey]
 passingTest[outputTyp;(config;descrip;creationTime;sigFeats;symEnc;symMap;featModel;ttsData);1b;passTyp]

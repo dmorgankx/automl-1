@@ -29,6 +29,7 @@ graph:.ml.addNode[graph;`pathConstruct      ;pathConstruct.node]
 graph:.ml.addNode[graph;`saveGraph          ;saveGraph.node]
 graph:.ml.addNode[graph;`saveMeta           ;saveMeta.node]
 graph:.ml.addNode[graph;`saveReport         ;saveReport.node]
+graph:.ml.addNode[graph;`saveModels         ;saveModels.node]
 
 
 // Connect all possible edges prior to the data/config ingestion
@@ -86,7 +87,6 @@ graph:.ml.connectEdge[graph;`selectModels  ;`output         ;`optimizeModels;`mo
 graph:.ml.connectEdge[graph;`trainTestSplit;`output         ;`optimizeModels;`ttsObject]
 graph:.ml.connectEdge[graph;`dataCheck     ;`config         ;`optimizeModels;`config]
 
-
 // Preproc_Params
 graph:.ml.connectEdge[graph;`dataCheck          ;`config         ;`preprocParams;`config]
 graph:.ml.connectEdge[graph;`featureDescription ;`dataDescription;`preprocParams;`dataDescription]
@@ -95,6 +95,7 @@ graph:.ml.connectEdge[graph;`featureCreation    ;`creationTime   ;`preprocParams
 graph:.ml.connectEdge[graph;`featureSignificance;`sigFeats       ;`preprocParams;`sigFeats]
 graph:.ml.connectEdge[graph;`labelEncode        ;`symMap         ;`preprocParams;`symMap]
 graph:.ml.connectEdge[graph;`featureCreation    ;`featModel      ;`preprocParams;`featModel]
+graph:.ml.connectEdge[graph;`trainTestSplit     ;`output          ;`preprocParams;`ttsObject]
 
 // Predict_Params
 graph:.ml.connectEdge[graph;`optimizeModels;`bestModel   ;`predictParams;`bestModel]
@@ -114,5 +115,7 @@ graph:.ml.connectEdge[graph;`pathConstruct;`output;`saveGraph;`input]
 graph:.ml.connectEdge[graph;`pathConstruct;`output;`saveMeta;`input]
 
 // Save_Report
-graph:.ml.connectEdge[graph;`pathConstruct;`output;`saveReport;`input]
+graph:.ml.connectEdge[graph;`saveGraph;`output;`saveReport;`input]
 
+// Save_Model
+graph:.ml.connectEdge[graph;`pathConstruct;`output;`saveModels;`input]

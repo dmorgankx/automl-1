@@ -14,9 +14,8 @@ dataCheck.i.errColumns:{[clist;slist;cfg]
   if[count[clist]<>count slist;
     -1 "\n Removed the following columns due to type restrictions for ",string cfg;
     0N!clist where not clist in slist
-  ]
+    ]
   }
-
 
 // Parameter retrieval functionality
 
@@ -80,30 +79,30 @@ dataCheck.i.getCustomConfig:{[feat;cfg;ptyp]
 // @category dataCheckUtility
 // @fileoverview default parameters used in the application of 'FRESH' AutoML
 // @return {dict} default dictionary which will be used if no user updates are supplied
-dataCheck.i.freshDefault:{`aggcols`funcs`xv`gs`rs`hp`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
-  ({first cols x};`.ml.fresh.params;(`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5;1);
-  (`.automl.rs.kfshuff;5;1);`grid;`.automl.utils.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);`rand_val;2;
-   0.2;`.ml.ttsnonshuff;0.2;`.automl.prep.freshsignificance)
+dataCheck.i.freshDefault:{`aggcols`funcs`xv`gs`rs`hp`prf`scf`seed`saveopt`hld`tts`sz`sigFeats!
+  ({first cols x};`.ml.fresh.params;(`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5);
+  (`.automl.rs.kfshuff;5);`grid;`.automl.utils.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);`rand_val;2;
+   0.2;`.ml.ttsnonshuff;0.2;`.automl.featureSignificance.significance)
   }
 
 // @kind function
 // @category dataCheckUtility
 // @fileoverview default parameters used in the application of 'normal' AutoML 
 // @return {dict} default dictionary which will be used if no user updates are supplied
-dataCheck.i.normalDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats!
-  ((`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5;1);(`.automl.rs.kfshuff;5;1);`grid;`.automl.prep.i.default;
+dataCheck.i.normalDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigFeats!
+  ((`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5);(`.automl.rs.kfshuff;5);`grid;`.automl.prep.i.default;
    `.automl.utils.fitPredict; `class`reg!(`.ml.accuracy;`.ml.mse);
-   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance)
+   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.featureSignificance.significance)
   }
 
 // @kind function
 // @category dataCheckUtility
 // @fileoverview default parameters used in the application of 'NLP' AutoML
 // @return {dict} default dictionary which will be used if no user updates are supplied
-dataCheck.i.nlpDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfeats`w2v!
-  ((`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5;1);(`.automl.rs.kfshuff;5;1);`grid;`.automl.prep.i.default;
+dataCheck.i.nlpDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigFeats`w2v!
+  ((`.ml.xv.kfshuff;5);(`.automl.gs.kfshuff;5);(`.automl.rs.kfshuff;5);`grid;`.automl.prep.i.default;
    `.automl.utils.fitPredict;`class`reg!(`.ml.accuracy;`.ml.mse);
-   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.prep.freshsignificance;0)
+   `rand_val;2;0.2;`.ml.traintestsplit;0.2;`.automl.featureSignificance.significance;0)
   }
 
 // @kind function
@@ -115,7 +114,6 @@ dataCheck.i.nlpDefault:{`xv`gs`rs`hp`funcs`prf`scf`seed`saveopt`hld`tts`sz`sigfe
 dataCheck.i.paramParse:{[fileName;filePath]
   key[k]!(value@){(!).("S=;")0:x}each k:(!).("S*";"|")0:hsym`$.automl.path,filePath,fileName
   }
-
 
 // Save path generation functionality
 
@@ -146,4 +144,3 @@ dataCheck.i.pathConstruct:{[cfg]
 dataCheck.i.ssrWindows:{[path]
   $[.z.o like "w*";ssr[path;"/";"\\"];path]
   }
-

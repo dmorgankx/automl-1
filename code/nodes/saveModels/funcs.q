@@ -20,7 +20,8 @@ saveModels.saveModel:{[params;savePath]
        bestModel[`:save][filePath,".h5"];
     `pytorch~modelLib;
       torch[`:save][bestModel;filePath,".pt"];
-    -1"Saving of non keras/sklearn models types is not currently supported"]; 
+    -1"Saving of non keras/sklearn models types is not currently supported"
+  ]; 
   -1"Saving down ",modelName," model to ",savePath;
   }
 

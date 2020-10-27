@@ -1,6 +1,7 @@
+\d .automl
+
 // Following the initial selection of the most promising model apply the user defined optimization
 // grid/random/sobol if feasible (ignore for keras/pytorch etc)
-\d .automl
 
 / @kind function
 // @category node

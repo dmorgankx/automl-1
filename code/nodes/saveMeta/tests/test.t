@@ -29,11 +29,11 @@ passingTest:{[function;data;applyType;expectedReturn]
 // Generate a path to save images to
 filePath:"/outputs/testing/configs"
 savePath:.automl.utils.ssrwin .automl.path,filePath
-system"mkdir",$[.z.o like "w*";" ";" -p "],savePath;
+system"mkdir",$[.z.o like"w*";" ";" -p "],savePath;
 pathDict:enlist[`config]!enlist filePath
 
 // Generate model meta data
-mdlMetaData:`pythonLib`mdlType!(`sklearn;`class)
+mdlMetaData:`pythonLib`mdlType!`sklearn`class
 
 // Generate config data
 configDict0:`saveopt`featExtractType`problemType!(0;`normal;`reg)
@@ -50,7 +50,6 @@ passingTest[.automl.saveMeta.node.function;paramDict0;1b;(::)]
 passingTest[.automl.saveMeta.node.function;paramDict1;1b;(::)]
 passingTest[.automl.saveMeta.node.function;paramDict2;1b;(::)]
 
-
 // Remove any directories made
 rmPath:.automl.utils.ssrwin .automl.path,"/outputs/testing/";
-system $[.z.o like "w*";"rmdir ",rmPath," /s";"rm -r ",rmPath];
+system"rm -r ",rmPath;

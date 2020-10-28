@@ -45,7 +45,6 @@ configNormal0:configSave,`saveopt`featExtractType!(0;`normal)
 configNormal1:configSave,`saveopt`featExtractType!(1;`normal)
 configNormal2:configSave,`saveopt`featExtractType!(2;`normal)
 
-
 // Generate Random Forest Regressor model
 
 // Input features
@@ -59,7 +58,7 @@ ttsReg:`xtrain`ytrain!(feats;tgtReg)
 
 // RandomForestRegressor model
 sklearnEnsemble   :{[mdl;train;test].p.import[`sklearn.ensemble][mdl][][`:fit][train;test]}
-randomForestRegMdl:sklearnEnsemble[`:RandomForestRegressor ;;] . ttsReg`xtrain`ytrain
+randomForestRegMdl:sklearnEnsemble[`:RandomForestRegressor;;]. ttsReg`xtrain`ytrain
 modelName         :`RandomForestRegressor
 
 // Input params

@@ -1,6 +1,23 @@
-// Save an encoded representation of the best model retrieved during the automl process
 \d .automl
 
+// Save an encoded representation of the best model retrieved during the automl process
+
+// @kind function
+// @category node
+// @fileoverview Save all models needed to predict on new data
+// @param params {dict} All data generated during the preprocessing and
+//  prediction stages
+// @return {null} All models saved to appropriate location
+saveModels.node.function:{[params]
+  saveOpt:params[`config]`saveopt;
+  if[0~saveOpt;:(::)];
+  savePath:params[`config]`modelSavePath;
+  saveModels.saveModel[params;savePath];
+  }
+
+// Input information
 saveModels.node.inputs  :"!"
+
+// Output information
 saveModels.node.outputs :"!"
-saveModels.node.function:{x}
+

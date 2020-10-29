@@ -6,7 +6,7 @@
 // @category saveGraphUtility
 // @fileoverview Create regression target distribution plot and save down locally
 // @param params    {dict} All data generated during the process
-// @param savePath  {int} Path to where plots are to be saved
+// @param savePath  {str} Path to where plots are to be saved
 // @return {null} Target distribution plot saved to appropriate location
 saveGraph.i.regTargetPlot:{[params;savePath]
   target:raze params[`ttsObject;`ytrain`ytest];
@@ -20,7 +20,7 @@ saveGraph.i.regTargetPlot:{[params;savePath]
 // @category saveGraphUtility
 // @fileoverview Create binary target distribution plot and save down locally
 // @param params    {dict} All data generated during the process
-// @param savePath  {int} Path to where plots are to be saved
+// @param savePath  {str} Path to where plots are to be saved
 // @return {null} Target distribution plot saved to appropriate location
 saveGraph.i.classTargetPlot:{[params;savePath]
   target:raze params[`ttsObject;`ytrain`ytest];
@@ -38,7 +38,7 @@ saveGraph.i.classTargetPlot:{[params;savePath]
 // @category saveGraphUtility
 // @fileoverview Save target plot locally
 // @param pltObj    {<} EmpedPy matplotlib object
-// @param savePath  {int} Path to where plots are to be saved
+// @param savePath  {str} Path to where plots are to be saved
 // @return {null} Target distribution plot saved to appropriate location
 saveGraph.i.targetPlot:{[pltObj;savePath]
   pltObj[`:title]["Target Distribution";`fontsize pykw 12];
@@ -101,7 +101,7 @@ saveGraph.i.addText:{[confMatrix;thresh;i;j]
 // @fileoverview Create impact plot and save down locally
 // @param impact    {float[]} The impact value of each feature
 // @param modelName {modelName} Name of best model
-// @param savePath  {int} Path to where plots are to be saved
+// @param savePath  {str} Path to where plots are to be saved
 // @return {null} Impact plot saved to appropriate location
 saveGraph.i.plotImpact:{[impact;modelName;savePath]
   utils.plt[`:figure][`figsize pykw 20 20];
@@ -129,7 +129,7 @@ saveGraph.i.plotImpact:{[impact;modelName;savePath]
 // @fileoverview Create residual plot and save down locally
 // @param residDict {dict} The resid and true values
 // @param modelName {modelName} Name of best model
-// @param savePath  {int} Path to where plots are to be saved
+// @param savePath  {str} Path to where plots are to be saved
 // @return {null} Residual plot saved to appropriate location
 saveGraph.i.plotResiduals:{[residDict;tts;modelName;savePath]
   resids:residDict[`residuals];
@@ -157,4 +157,28 @@ saveGraph.i.plotResiduals:{[residDict;tts;modelName;savePath]
   resid[`:plot][spacing;count[true]#0f;"k--"];
   filePath:savePath,sv["_";string(`Regression_Analysis;modelName)],".png";
   utils.plt[`:savefig][filePath;`bbox_inches pykw "tight"];
+  }
+
+// @kind function
+// @category saveGraphUtility
+// @fileoverview Create data split plot
+// @param cfg      {dict} configuration information related to the current run
+// @param fileName {str}  Filename to save plot under
+// @return {null} Data split plot saved to appropriate location
+saveGraph.i.dataSplit:{[config;fileName]
+  trn:(trnTst:1.-config`hld)*1-config`sz;
+  hld:1.;
+  utils.plt[`:figure][`figsize pykw 20 1.5];
+  utils.plt[`:rcParams.update]enlist[`$"font.size"]!enlist 22;
+  {x[`:barh][.4;y;`edgecolor pykw`black];
+    }[utils.plt]each hld,trnTst,trn;
+  utils.plt[`:title]"Data split";
+  utils.plt[`:text][trnTst+config[`hld]%3;.4;"Holdout"];
+  utils.plt[`:text][trn+(trnTst-trn)%3;.4;"Test"];
+  utils.plt[`:text][trn%3;.4;"Train"];
+  utils.plt[`:xlim]0 1;
+  utils.plt[`:ylim]0 .8;
+  utils.plt[`:xlabel]`Percentage;
+  utils.plt[`:yticks]();
+  utils.plt[`:savefig][fileName;`bbox_inches pykw"tight"];
   }

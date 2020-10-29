@@ -29,21 +29,22 @@ passingTest:{[function;data;applyType;expectedReturn]
 -1"\nCreating output directory";
 
 // Generate a path to save images to
-filePath:"/outputs/testing/models"
+filePath:"/outputs/testing/models/"
 savePath:.automl.utils.ssrwin .automl.path,filePath
 system"mkdir",$[.z.o like"w*";" ";" -p "],savePath;
 
 // Generate model meta data
-mdlMetaData:enlist[`pythonLib]!enlist `sklearn
+mdlMetaData:enlist[`modelLib]!enlist `sklearn
 
-// Generate config data
-configSave :enlist[`configSavePath]!enlist savePath
+// Gnerate normal feature extraction config
+configSave :enlist[`modelsSavePath]!enlist(savePath;())
+configNormal0:configSave,`featExtractType`saveopt!(`normal;0)
+configNormal1:configSave,`featExtractType`saveopt!(`normal;1)
+configNormal2:configSave,`featExtractType`saveopt!(`normal;2)
 
-// NLP w2v models cannot be tested as gensim is not a requirement
-configSave :enlist[`modelSavePath]!enlist savePath
-configNormal0:configSave,`saveopt`featExtractType!(0;`normal)
-configNormal1:configSave,`saveopt`featExtractType!(1;`normal)
-configNormal2:configSave,`saveopt`featExtractType!(2;`normal)
+configNlp0:configSave,`featExtractType`saveopt!(`nlp;0)
+configNlp1:configSave,`featExtractType`saveopt!(`nlp;1)
+configNlp2:configSave,`featExtractType`saveopt!(`nlp;2)
 
 // Generate Random Forest Regressor model
 
@@ -58,20 +59,37 @@ ttsReg:`xtrain`ytrain!(feats;tgtReg)
 
 // RandomForestRegressor model
 sklearnEnsemble   :{[mdl;train;test].p.import[`sklearn.ensemble][mdl][][`:fit][train;test]}
-randomForestRegMdl:sklearnEnsemble[`:RandomForestRegressor;;]. ttsReg`xtrain`ytrain
+randomForestRegMdl:sklearnEnsemble[`:RandomForestRegressor ;;] . ttsReg`xtrain`ytrain
 modelName         :`RandomForestRegressor
+
+// Generate w2v gensim model
+tokens      :100?`this`is`a`test
+gensimMdl   :.p.import`gensim.models;
+gensimFitted:gensimMdl[`:Word2Vec][tokens]
 
 // Input params
 paramDict :`bestModel`modelName`modelMetaData!(randomForestRegMdl;modelName;mdlMetaData)
-paramDict0:paramDict,enlist[`config]!enlist configNormal0
-paramDict1:paramDict,enlist[`config]!enlist configNormal1
-paramDict2:paramDict,enlist[`config]!enlist configNormal2
+paramNormal0:paramDict,enlist[`config]!enlist configNormal0
+paramNormal1:paramDict,enlist[`config]!enlist configNormal1
+paramNormal2:paramDict,enlist[`config]!enlist configNormal2
+
+paramDict,:enlist[`featModel]!enlist gensimFitted
+paramNlp0:paramDict,enlist[`config]!enlist configNlp0
+paramNlp1:paramDict,enlist[`config]!enlist configNlp1
+paramNlp2:paramDict,enlist[`config]!enlist configNlp2
+
 
 -1"\nTesting appropriate input data to saveModels";
 
-passingTest[.automl.saveModels.node.function;paramDict0;1b;(::)]
-passingTest[.automl.saveModels.node.function;paramDict1;1b;(::)]
-passingTest[.automl.saveModels.node.function;paramDict2;1b;(::)]
+// Testing normal functionality
+passingTest[.automl.saveModels.node.function;paramNormal0;1b;(::)]
+passingTest[.automl.saveModels.node.function;paramNormal1;1b;(::)]
+passingTest[.automl.saveModels.node.function;paramNormal2;1b;(::)]
+
+// Testing nlp functionality
+passingTest[.automl.saveModels.node.function;paramNlp0;1b;(::)]
+passingTest[.automl.saveModels.node.function;paramNlp1;1b;(::)]
+passingTest[.automl.saveModels.node.function;paramNlp2;1b;(::)]
 
 -1"\nRemoving any directories created";
 

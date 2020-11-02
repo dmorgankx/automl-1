@@ -166,19 +166,22 @@ saveGraph.i.plotResiduals:{[residDict;tts;modelName;savePath]
 // @param fileName {str}  Filename to save plot under
 // @return {null} Data split plot saved to appropriate location
 saveGraph.i.dataSplit:{[config;fileName]
-  trn:(trnTst:1.-config`hld)*1-config`sz;
-  hld:1.;
-  utils.plt[`:figure][`figsize pykw 20 1.5];
-  utils.plt[`:rcParams.update]enlist[`$"font.size"]!enlist 22;
-  {x[`:barh][.4;y;`edgecolor pykw`black];
-    }[utils.plt]each hld,trnTst,trn;
-  utils.plt[`:title]"Data split";
-  utils.plt[`:text][trnTst+config[`hld]%3;.4;"Holdout"];
-  utils.plt[`:text][trn+(trnTst-trn)%3;.4;"Test"];
-  utils.plt[`:text][trn%3;.4;"Train"];
+  trn:(trnHld:1.-config`sz)*1-config`sz;
+  sz:1.;
+  white :3#255;
+  blue  :153 204 255;
+  kxBlue:3 112 205;
+  utils.plt[`:figure][`figsize pykw 20 3];
+  {x[`:barh][.4;y;`color pykw z%255;`edgecolor pykw`black;`linewidth pykw 3];
+    }[utils.plt]'[(sz;trnHld;trn);(white;blue;kxBlue)];
+  utils.plt[`:title]["Data split";`fontsize pykw 20];
+  utils.plt[`:text][trnHld+config[`sz]%3;.4;"Test";`fontsize pykw 25];
+  utils.plt[`:text][trn+(trnHld-trn)%4;.4;"Holdout";`fontsize pykw 25];
+  utils.plt[`:text][trn%3;.4;"Train";`fontsize pykw 25];
+  utils.plt[`:xticks][`fontsize pykw 20];
   utils.plt[`:xlim]0 1;
   utils.plt[`:ylim]0 .8;
-  utils.plt[`:xlabel]`Percentage;
+  utils.plt[`:xlabel][`Percentage;`fontsize pykw 20];
   utils.plt[`:yticks]();
   utils.plt[`:savefig][fileName;`bbox_inches pykw"tight"];
   }

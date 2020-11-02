@@ -21,6 +21,6 @@ saveReport.reportDict:{[params]
 // @param params {dict} All data generated during the process
 // @return {} 
 saveReport.saveReport:{[params]
-  -1"\nSaving down procedure report to ",params[`config][`reportSavePath]0;
+  -1"\nSaving down procedure report to ",params[`config;`reportSavePath;0],"\n";
   saveReport.i.FPDFReport params
   }

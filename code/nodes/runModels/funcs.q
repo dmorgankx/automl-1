@@ -68,7 +68,7 @@ runModels.xValSeed:{[tts;cfg;mdl]
 runModels.scoringFunc:{[cfg;mdls]
   problemType:$[`reg in distinct mdls`typ;`reg;`class];
   scoreFunc:cfg[`scf]problemType;
-  -1"\nScores for all models, using ",string scoreFunc;
+  -1"\nScores for all models using ",string[scoreFunc],":";
   scoreFunc
   }
 
@@ -98,7 +98,7 @@ runModels.orderModels:{[mdls;scoreFunc;predicts]
 runModels.bestModelFit:{[scores;tts;mdls;scoreFunc;cfg]
   holdoutTimeStart:.z.T;
   bestModel:first key scores;
-  -1"\nBest scoring model = ",string bestModel;
+  -1"\nBest scoring model = ",string[bestModel],"\n";
   modelLib:first exec lib from mdls where model=bestModel;
   fitScore:$[modelLib in key models;
     runModels.i.customModel[bestModel;tts;mdls;scoreFunc;cfg];

@@ -10,9 +10,10 @@ np    :.p.import`numpy
 // @kind function
 // @category saveReportUtility
 // @fileoverview Generate report using FPDF outlining results from current run of automl
-// @param params {dict} All data generated during the process
+// @param params   {dict} All data generated during the process
+// @param filePath {str} Location to save report
 // @return {null} Associated pdf report saved to disk
-saveReport.i.FPDFReport:{[params]
+saveReport.i.FPDFReport:{[params;filePath]
 
   // main variables
 
@@ -20,8 +21,7 @@ saveReport.i.FPDFReport:{[params]
   modelMeta:params`modelMetaData;
   config   :params`config;
   ptype    :config`problemType;
-  pdf      :canvas[`:Canvas]config[`reportSavePath;0],"FPDFReport_",string[bestModel],".pdf";
-  imagePath:config[`imagesSavePath]0;
+  pdf      :canvas[`:Canvas]filePath,".pdf";
   plots    :params`savedPlots;
 
   // report generation
@@ -44,7 +44,7 @@ saveReport.i.FPDFReport:{[params]
   t:enlist[enlist[`col],cols descripTab],key[d],'flip value flip descripTab;
   f:mktab[pdf;t;f;(27-(dti%2))*dti;10;10];
 
-  f:image[pdf;imagePath,string plots`target;f;350;400;300];
+  f:image[pdf;plots`target;f;350;400;300];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 1: This plot shows the distribution of target data."];
 
@@ -69,7 +69,7 @@ saveReport.i.FPDFReport:{[params]
     ];
 
   f:cell[pdf;f;30;xval];
-  f:image[pdf;imagePath,string plots`data;f;90;500;70];
+  f:image[pdf;plots`data;f;90;500;70];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 2: This is representative image showing the data split into training, testing and holdout sets."];
 
@@ -84,7 +84,7 @@ saveReport.i.FPDFReport:{[params]
   cntf:first[count dd]{[m;h;s]ff:cell[m;h[0];15;s[h[1]]];(ff;1+h[1])}[pdf;;dd]/(f-5;0);
   f:first cntf;
 
-  f:image[pdf;imagePath,string plots`impact;f;350;400;300];
+  f:image[pdf;plots`impact;f;350;400;300];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 3: This is the feature impact for the most significant features as determined on the training set"];
 
@@ -126,10 +126,10 @@ saveReport.i.FPDFReport:{[params]
   f:cell[pdf;f;30;"The score for the best model fit on the entire training/testing set and scored on the holdout set was = ",string params`testScore];
 
   $[string[ptype]like"*class*";
-    [f:image[pdf;imagePath,string plots`conf;f;350;350;350];
+    [f:image[pdf;plots`conf;f;350;350;350];
      font[pdf;"Helvetica";10];
      cell[pdf;f;25;"Figure 4: This is the confusion matrix produced for predictions made on the holdout set"]];
-    [f:image[pdf;imagePath,string plots`rfr;f;350;350;350];
+    [f:image[pdf;plots`rfr;f;350;350;350];
      font[pdf;"Helvetica";10];
      cell[pdf;f;25;"Figure 4: This is a regression analysis plot produced for predictions made on the holdout set"]];
     ];

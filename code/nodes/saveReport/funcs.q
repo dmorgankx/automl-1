@@ -11,7 +11,7 @@ saveReport.reportDict:{[params]
   config:params`config;
   saveImage:config[`imagesSavePath][0];
   savedPlots:saveImage,/:string key hsym`$saveImage;
-  plotNames:$[`class~config`problemType;`conf`data`impact;`data`impact`rfr],`target;
+  plotNames:$[`class~config`problemType;`conf`data`impact;`data`impact`reg],`target;
   savedPlots:enlist[`savedPlots]!enlist plotNames!savedPlots;
   params,savedPlots
   }
@@ -24,10 +24,7 @@ saveReport.reportDict:{[params]
 saveReport.saveReport:{[params]
   savePath :params[`config;`reportSavePath]0;
   modelName:params`modelName;
-  startTime:params[`config;`startTime];
-  modelTime:"_" sv string(modelName;startTime);
-  modelTime:ssr[modelTime;":";"."];
-  filePath:savePath,"q_automl_report_",modelTime;
+  filePath:savePath,"FPDFReport_",string modelName;
   -1"\nSaving down procedure report to ",savePath;
   $[0~checkimport[2];
     @[{saveReport.latexGenerate . x};

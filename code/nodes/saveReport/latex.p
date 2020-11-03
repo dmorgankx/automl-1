@@ -121,7 +121,7 @@ def python_latex(dict,paths,dscrb,score,grid,exclude):
   else:
     with doc.create(Section('Regression summary')):
       doc.append('The following displays the performance of the regression model on the testing set\n\n')
-      createImage(doc,''.join(paths['rfr']),'Regression analysis plot produced for predictions made on the testing set')
+      createImage(doc,''.join(paths['reg']),'Regression analysis plot produced for predictions made on the testing set')
 
   # Generate the pdf using the pdflatex compiler (this compiler flag may change depending on final choice of install instructions)
   doc.generate_pdf(clean_tex=False, compiler='pdflatex')

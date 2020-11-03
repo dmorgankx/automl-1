@@ -10,17 +10,17 @@ np    :.p.import`numpy
 // @kind function
 // @category saveReportUtility
 // @fileoverview Generate report using FPDF outlining results from current run of automl
-// @param params {dict} All data generated during the process
+// @param params   {dict} All data generated during the process
+// @param filePath {str} Location to save report
 // @return {null} Associated pdf report saved to disk
-saveReport.i.FPDFReport:{[params]
+saveReport.i.FPDFReport:{[params;filePath]
 
   // Main variables
   bestModel:params`modelName;
   modelMeta:params`modelMetaData;
   config   :params`config;
-  ptype    :$[`class~ptype:config`problemType;"classification";`reg~ptype;"regression";`nlp~ptype;"NLP";];
-  pdf      :canvas[`:Canvas]config[`reportSavePath;0],"FPDFReport_",string[bestModel],".pdf";
-  imagePath:config[`imagesSavePath]0;
+  pdf      :canvas[`:Canvas]filePath,".pdf";
+  ptype    :$[`class~config`problemType;"classification";"regression"];
   plots    :params`savedPlots;
 
   // Report generation
@@ -43,7 +43,7 @@ saveReport.i.FPDFReport:{[params]
   ht:saveReport.i.printDescripTab params`dataDescription;
   f:mktab[pdf;ht`t;f;ht`h;10;10];
 
-  f:image[pdf;imagePath,string plots`target;f;250;280;210];
+  f:image[pdf;plots`target;f;250;280;210];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 1: Distribution of input target data"];
   
@@ -72,7 +72,7 @@ saveReport.i.FPDFReport:{[params]
     ];
 
   f:cell[pdf;f;30;xval];
-  f:image[pdf;imagePath,string plots`data;f;90;500;100];
+  f:image[pdf;plots`data;f;90;500;100];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 2: The data split used within this run of AutoML, with data split into training, holdout and testing sets"];
 
@@ -84,7 +84,7 @@ saveReport.i.FPDFReport:{[params]
 
   // Feature impact
   f:saveReport.i.printKDBTable[pdf;f;modelMeta`modelScores];
-  f:image[pdf;imagePath,string plots`impact;f;250;280;210];
+  f:image[pdf;plots`impact;f;250;280;210];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 3: Feature impact of each significant feature as determined by the training set"];
 
@@ -122,10 +122,10 @@ saveReport.i.FPDFReport:{[params]
     string params`testScore];
 
   $[ptype like"*class*";
-    [f:image[pdf;imagePath,string plots`conf;f;300;250;250];
+    [f:image[pdf;plots`conf;f;300;250;250];
      font[pdf;"Helvetica";10];
      cell[pdf;f;25;"Figure 4: This is the confusion matrix produced for predictions made on the testing set"]];
-    [f:image[pdf;imagePath,string plots`reg;f;300;250;250];
+    [f:image[pdf;plots`reg;f;300;250;250];
      font[pdf;"Helvetica";10];
      cell[pdf;f;25;"Figure 4: Regression analysis plot produced for predictions made on the testing set"]];
     ];

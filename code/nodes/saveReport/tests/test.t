@@ -35,8 +35,8 @@ savedPlots:`conf`data`impact`target!
 modelMetaData:`xValTime`metric`modelScores`holdoutScore`holdoutTime!
   (first 1?0t;`.ml.mse;`a`b`c!3?1f;first 1?1f;first 1?0t)
 
-params:`modelMetaData`savedPlots`creationTime`hyperParams`testScore!
-  (modelMetaData;savedPlots;first 1?0t;`a`b`c!3?1f;first 1?1f)
+params:`modelMetaData`savedPlots`creationTime`hyperParams`testScore`sigFeats!
+  (modelMetaData;savedPlots;first 1?0t;`a`b`c!3?1f;first 1?1f;`x`x1`x2)
 
 // Datasets and corresponding configs/param dictionaries
 

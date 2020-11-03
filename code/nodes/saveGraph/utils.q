@@ -42,8 +42,8 @@ saveGraph.i.classTargetPlot:{[params;savePath]
 // @return {null} Target distribution plot saved to appropriate location
 saveGraph.i.targetPlot:{[pltObj;savePath]
   pltObj[`:title]["Target Distribution";`fontsize pykw 12];
-  pltObj[`:xlabel]["Target"];
-  pltObj[`:ylabel]["Count"];
+  pltObj[`:xlabel]["Target";`fontsize pykw 12];
+  pltObj[`:ylabel]["Count";`fontsize pykw 12];
   filePath:savePath,"Target_Distribution.png";
   pltObj[`:savefig][filePath;`bbox_inches pykw"tight"];
   pltObj[`:close][];
@@ -64,7 +64,7 @@ saveGraph.i.displayConfMatrix:{[confMatrix;classes;modelName;savePath]
   fig:subPlots[`:__getitem__][0];
   ax:subPlots[`:__getitem__][1];
   ax[`:imshow][confMatrix;`interpolation pykw`nearest;`cmap pykw colorMap];
-  ax[`:set_title][`label pykw "Confusion Matrix"];
+  ax[`:set_title][`label pykw "Confusion Matrix";`fontsize pykw 12];
   tickMarks:til count classes;
   ax[`:xaxis.set_ticks]tickMarks;
   ax[`:set_xticklabels]classes;
@@ -104,7 +104,7 @@ saveGraph.i.addText:{[confMatrix;thresh;i;j]
 // @param savePath  {str} Path to where plots are to be saved
 // @return {null} Impact plot saved to appropriate location
 saveGraph.i.plotImpact:{[impact;modelName;savePath]
-  utils.plt[`:figure][`figsize pykw 20 20];
+  utils.plt[`:figure][`figsize pykw 20 1.5];
   subPlots:utils.plt[`:subplots][];
   fig:subPlots[@;0];
   ax:subPlots[@;1];
@@ -115,9 +115,9 @@ saveGraph.i.plotImpact:{[impact;modelName;savePath]
   ax[`:barh][nCount;valImpact;`align pykw`center];
   ax[`:set_yticks]nCount;
   ax[`:set_yticklabels]keyImpact;
-  ax[`:set_title]"Feature Impact: ",string modelName;
-  ax[`:set_ylabel]"Columns";
-  ax[`:set_xlabel]"Relative feature impact";
+  ax[`:set_title]["Feature Impact: ",string modelName;`fontsize pykw 12];
+  ax[`:set_ylabel]["Columns";`fontsize pykw 12];
+  ax[`:set_xlabel]["Relative feature impact";`fontsize pykw 12];
   filePath:savePath,sv["_";string(`Impact_Plot;modelName)],".png";
   utils.plt[`:savefig][filePath;`bbox_inches pykw"tight"];
   utils.plt[`:close][];
@@ -135,7 +135,6 @@ saveGraph.i.plotResiduals:{[residDict;tts;modelName;savePath]
   resids:residDict[`residuals];
   preds :residDict[`preds];
   true  :tts`ytest;
-  utils.plt[`:style.use]["seaborn-darkgrid"];
   subplots:utils.plt[`:subplots][2];
   fig:subplots[@;0];
   ax :subplots[@;1];
@@ -144,19 +143,20 @@ saveGraph.i.plotResiduals:{[residDict;tts;modelName;savePath]
   // Actual vs predicted plotting logic
   actual:ax[@;0];
   actual[`:scatter][true;preds;`s pykw 20;`marker pykw "."];
-  actual[`:set_title]"Plot of actual vs predicted values";
-  actual[`:set_xlabel]"Actual values";
-  actual[`:set_ylabel]"Predicted values";
+  actual[`:set_title]["Plot of actual vs predicted values";`fontsize pykw 12];
+  actual[`:set_xlabel]["Actual values";`fontsize pykw 12];
+  actual[`:set_ylabel]["Predicted values";`fontsize pykw 12];
   // Residuals plotting logic
   resid:ax[@;1];
   resid[`:scatter][true;resids;`color pykw "r";`marker pykw "."];
-  resid[`:set_title]"Plot of residuals";
-  resid[`:set_xlabel]"Actual values";
-  resid[`:set_ylabel]"Residuals";
+  resid[`:set_title]["Plot of residuals";`fontsize pykw 12];
+  resid[`:set_xlabel]["Actual values";`fontsize pykw 12];
+  resid[`:set_ylabel]["Residuals";`fontsize pykw 12];
   spacing:.ml.linspace[min true;max true;count true];
   resid[`:plot][spacing;count[true]#0f;"k--"];
   filePath:savePath,sv["_";string(`Regression_Analysis;modelName)],".png";
   utils.plt[`:savefig][filePath;`bbox_inches pykw "tight"];
+  utils.plt[`:close][];
   }
 
 // @kind function
@@ -184,4 +184,5 @@ saveGraph.i.dataSplit:{[config;fileName]
   utils.plt[`:xlabel][`Percentage;`fontsize pykw 20];
   utils.plt[`:yticks]();
   utils.plt[`:savefig][fileName;`bbox_inches pykw"tight"];
+  utils.plt[`:close][];
   }

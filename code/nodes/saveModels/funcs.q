@@ -18,7 +18,7 @@ saveModels.saveModel:{[params;savePath]
        joblib[`:dump][bestModel;filePath];
     `keras~modelLib;
        bestModel[`:save][filePath,".h5"];
-    `pytorch~modelLib;
+       `torch~modelLib;
       torch[`:save][bestModel;filePath,".pt"];
     -1"\nSaving of non keras/sklearn/torch models types is not currently supported\n"
   ]; 

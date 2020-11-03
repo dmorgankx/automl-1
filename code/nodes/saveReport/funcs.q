@@ -6,10 +6,11 @@
 // @category saveReport
 // @fileoverview  Create dictionary with image filenames for report generation
 // @param params {dict} All data generated during the process
-// @return {dict} Dictionary with image filenames for report generation
+// @return {dict} Image filenames for report generation
 saveReport.reportDict:{[params]
   config:params`config;
-  savedPlots:key hsym`$config[`imagesSavePath]0;
+  saveImage:config[`imagesSavePath][0];
+  savedPlots:saveImage,/:string key hsym`$saveImage;
   plotNames:$[`class~config`problemType;`conf`data`impact;`data`impact`reg],`target;
   savedPlots:enlist[`savedPlots]!enlist plotNames!savedPlots;
   params,savedPlots
@@ -19,8 +20,17 @@ saveReport.reportDict:{[params]
 // @category saveReport
 // @fileoverview  Generate and save down procedure report
 // @param params {dict} All data generated during the process
-// @return {} 
+// @return {null} Report saved to appropriate location 
 saveReport.saveReport:{[params]
-  -1"\nSaving down procedure report to ",params[`config;`reportSavePath;0],"\n";
-  saveReport.i.FPDFReport params
+  savePath :params[`config;`reportSavePath]0;
+  modelName:params`modelName;
+  filePath:savePath,"FPDFReport_",string modelName;
+  -1"\nSaving down procedure report to ",savePath;
+  $[0~checkimport[2];
+    @[{saveReport.latexGenerate . x};
+      (params;filePath);
+      {[params;err] -1"The following error occurred when attempting to run latex report generation";-1 err,"\n";
+       saveReport.i.FPDFReport . params;}[(params;filePath)]];
+    saveReport.i.FPDFReport[params;filePath]
+    ]
   }

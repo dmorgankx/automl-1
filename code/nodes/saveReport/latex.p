@@ -17,7 +17,6 @@ def createTable(doc,tab,ncols):
         table.add_row(list(tab.loc[row,:]))
       table.add_hline()
 
-
 #  Add an image to the document
 ## doc     = document to which the image is to be added
 ## img     = location of the image being added
@@ -27,7 +26,6 @@ def createImage(doc,img,caption):
   with doc.create(Figure(position='h!')) as images:
      images.add_image(img,width = NoEscape(r'0.75\textwidth'))
      images.add_caption(caption)
-
 
 # Main report generation function
 ## dict    = extensive configDictonary containing required information

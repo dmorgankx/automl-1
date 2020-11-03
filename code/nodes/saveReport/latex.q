@@ -8,7 +8,7 @@
 // @category saveReport
 // @fileoverview Load in python latex function
 // @return {<} Python latex function
-saveReport.reportGen:.p.get[`python_latex]
+saveReport.reportGen:.p.get`python_latex
 
 // @kind function
 // @category saveReport
@@ -20,22 +20,22 @@ saveReport.latexGenerate:{[params;filePath]
   dataDescribe:params`dataDescription;
   hyperParams :params`hyperParams;
   scoreDict   :params[`modelMetaData]`modelScores;
-  describeTab :saveReport.descriptionTab[dataDescribe];
-  scoreTab    :saveReport.scoringTab[scoreDict];
-  gridTab     :saveReport.gridSearch[hyperParams];
+  describeTab :saveReport.descriptionTab dataDescribe;
+  scoreTab    :saveReport.scoringTab scoreDict;
+  gridTab     :saveReport.gridSearch hyperParams;
   pathDict:params[`savedPlots],`fpath`path!(filePath;.automl.path);
   params:string each params;
   saveReport.reportGen[params;pathDict;describeTab;scoreTab;gridTab;utils.excludeList];
   }
-
 
 // @kind function
 // @category saveReport
 // @fileoverview Convert table to a pandas dataframe
 // @param tab {tab} To be converted to a pandas dataframe
 // @return {<} Pandas dataframe object  
-tab2dfFunc:{[tab].ml.tab2df[tab][`:round][3]}
-
+tab2dfFunc:{[tab]
+  .ml.tab2df[tab][`:round][3]
+  }
 
 // @kind function
 // @category saveReport
@@ -43,12 +43,11 @@ tab2dfFunc:{[tab].ml.tab2df[tab][`:round][3]}
 // @param describe {dict} Description of input data
 // @return {<} Pandas dataframe object 
 saveReport.descriptionTab:{[describe]
-  describeDict:enlist[`column]!enlist key[describe];
+  describeDict:enlist[`column]!enlist key describe;
   describeTab:flip[describeDict],'value describe;
   tab2dfFunc describeTab
   }
   
-
 // @kind function
 // @category saveReport
 // @fileoverview Convert table to a pandas dataframe
@@ -59,7 +58,6 @@ saveReport.scoringTab:{[scoreDict]
   tab2dfFunc scoreTab
   }
 
-
 // @kind function
 // @category saveReport
 // @fileoverview Convert table to a pandas dataframe
@@ -67,8 +65,8 @@ saveReport.scoringTab:{[scoreDict]
 // @return {<} Pandas dataframe object 
 saveReport.gridSearch:{[hyperParams]
   if[99h=type hyperParams;
-     grid:flip `param`val!(key hyperParams;value hyperParams);
-     hyperParams:tab2dfFunc grid
-     ];
-   hyperParams
+    grid:flip`param`val!(key hyperParams;value hyperParams);
+    hyperParams:tab2dfFunc grid
+    ];
+  hyperParams
   }

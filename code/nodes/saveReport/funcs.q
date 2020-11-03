@@ -10,7 +10,7 @@
 saveReport.reportDict:{[params]
   config:params`config;
   savedPlots:key hsym`$config[`imagesSavePath]0;
-  plotNames:$[`class~config`problemType;`conf`data`impact;`data`impact`rfr],`target;
+  plotNames:$[`class~config`problemType;`conf`data`impact;`data`impact`reg],`target;
   savedPlots:enlist[`savedPlots]!enlist plotNames!savedPlots;
   params,savedPlots
   }

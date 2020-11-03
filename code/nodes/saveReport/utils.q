@@ -93,7 +93,7 @@ saveReport.i.FPDFReport:{[params]
   f:cell[pdf;f;30;"Model selection summary"];
   font[pdf;"Helvetica";11];
   f:cell[pdf;f;30;"Best scoring model = ",string bestModel];
-  f:cell[pdf;f;30;"The score on the holdout set for this model was = ",raze[string modelMeta`holdoutScore],"."];
+  f:cell[pdf;f;30;"The score on the holdout set for this model was = ",string[ modelMeta`holdoutScore],"."];
   f:cell[pdf;f;30;"The total time taken to complete the running of this model on the holdout set was: ",string[modelMeta`holdoutTime],"."];
 
   // Hyperparameter search
@@ -125,7 +125,7 @@ saveReport.i.FPDFReport:{[params]
     [f:image[pdf;imagePath,string plots`conf;f;300;250;250];
      font[pdf;"Helvetica";10];
      cell[pdf;f;25;"Figure 4: This is the confusion matrix produced for predictions made on the testing set"]];
-    [f:image[pdf;imagePath,string plots`rfr;f;300;250;250];
+    [f:image[pdf;imagePath,string plots`reg;f;300;250;250];
      font[pdf;"Helvetica";10];
      cell[pdf;f;25;"Figure 4: Regression analysis plot produced for predictions made on the testing set"]];
     ];

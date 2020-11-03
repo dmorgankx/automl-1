@@ -43,7 +43,7 @@ saveReport.i.FPDFReport:{[params;filePath]
   ht:saveReport.i.printDescripTab params`dataDescription;
   f:mktab[pdf;ht`t;f;ht`h;10;10];
 
-  f:image[pdf;plots`target;f;350;400;300];
+  f:image[pdf;plots`target;f;250;280;210];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 1: Distribution of input target data"];
   
@@ -72,7 +72,7 @@ saveReport.i.FPDFReport:{[params;filePath]
     ];
 
   f:cell[pdf;f;30;xval];
-  f:image[pdf;plots`data;f;90;500;70];
+  f:image[pdf;plots`data;f;90;500;100];
   font[pdf;"Helvetica";10];
   f:cell[pdf;f;25;"Figure 2: The data split used within this run of AutoML, with data split into training, holdout and testing sets"];
 

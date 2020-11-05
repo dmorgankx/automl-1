@@ -41,7 +41,7 @@ def python_latex(dict,paths,dscrb,score,grid,exclude):
   ptype = configDict['problemType']
   filepath = paths['fpath']
 
-  if "class"==ptype:
+  if ptype=="class":
         ptype="classification"
   else:
         ptype="regression"
@@ -122,4 +122,4 @@ def python_latex(dict,paths,dscrb,score,grid,exclude):
       createImage(doc,''.join(paths['reg']),'Regression analysis plot produced for predictions made on the testing set')
 
   # Generate the pdf using the pdflatex compiler (this compiler flag may change depending on final choice of install instructions)
-  doc.generate_pdf(clean_tex=False, compiler='pdflatex')
+  doc.generate_pdf(clean_tex=False, compiler='pdfLatex')

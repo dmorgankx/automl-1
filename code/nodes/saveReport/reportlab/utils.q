@@ -30,19 +30,9 @@ saveReport.i.printDescripTab:{[tab]
 // @return {int} The placement height from the bottom of the page
 saveReport.i.printKDBTable:{[pdf;f;tab]
   dd:{(,'/)string(key x;count[x]#" ";count[x]#"=";count[x]#" ";value x)}tab;
-  cntf:first[count dd]{[m;h;s]ff:saveReport.i.cell[m;h 0;15;s h 1];(ff;1+h 1)}[pdf;;dd]/(f-5;0);
+  cntf:first[count dd]{[m;h;s]ff:saveReport.i.text[m;h 0;15;s h 1;"Helvetica";11];
+    (ff;1+h 1)}[pdf;;dd]/(f-5;0);
   first cntf
-  }
-
-// @kind function
-// @category saveReportUtility
-// @fileoverview Set FPDF font
-// @param m   {<} pdf gen module used
-// @param f   {int} font size
-// @param s   {int} font size
-// @return {null} Sets python font
-saveReport.i.font:{[m;f;s]
-  m[`:setFont][f;s];
   }
 
 // @kind function
@@ -52,9 +42,12 @@ saveReport.i.font:{[m;f;s]
 // @param h   {int} the placement height from the bottom of the page
 // @param i   {int} how far below is the text
 // @param txt {str} text to include
+// @param f   {int} font size
+// @param s   {int} font size
 // @return {int} the placement height from the bottom of the page
-saveReport.i.cell:{[m;h;i;txt]
-  if[(h-i)<100;h:795;m[`:showPage][]];
+saveReport.i.text:{[m;h;i;txt;f;s]
+  if[(h-i)<100;h:795;m[`:showPage][];];
+  m[`:setFont][f;s];
   m[`:drawString][30;h-:i;txt];
   h
   }
@@ -66,9 +59,12 @@ saveReport.i.cell:{[m;h;i;txt]
 // @param h   {int} the placement height from the bottom of the page
 // @param i   {int} how far below is the text
 // @param txt {str} text to include
+// @param f   {int} font size
+// @param s   {int} font size
 // @return {int} the placement height from the bottom of the page
-saveReport.i.title:{[m;h;i;txt]
+saveReport.i.title:{[m;h;i;txt;f;s]
   if[(h-i)<100;h:795;m[`:showPage][]];
+  m[`:setFont][f;s];
   m[`:drawString][150;h-:i;txt];
   h
   }

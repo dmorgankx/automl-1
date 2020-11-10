@@ -22,75 +22,73 @@ saveReport.reportlabGenerate:{[params;filePath]
   // Report generation
  
   // Title
-  saveReport.i.font[pdf;"Helvetica-BoldOblique";15];  
-  f:saveReport.i.title[pdf;775;0;"kdb+/q AutoML Procedure Report"];
+  f:saveReport.i.title[pdf;775;0;"kdb+/q AutoML Procedure Report";"Helvetica-BoldOblique";15];
 
   // Summary
-  saveReport.i.font[pdf;"Helvetica";11];
-  f:saveReport.i.cell[pdf;f;40;"This report outlines the results for a ",ptype," problem achieved through running kdb+/q AutoML."];
-  f:saveReport.i.cell[pdf;f;30;"This run started on ",string[config`startDate]," at ",string[config`startTime],"."];
+  f:saveReport.i.text[pdf;f;40;"This report outlines the results for a ",ptype,
+    " problem achieved through running kdb+/q AutoML.";"Helvetica";11];
+  f:saveReport.i.text[pdf;f;30;"This run started on ",string[config`startDate],
+    " at ",string[config`startTime],".";"Helvetica";11];
 
   // Input data
-  saveReport.i.font[pdf;"Helvetica-Bold";13];
-  f:saveReport.i.cell[pdf;f;30;"Description of Input Data"];
+  f:saveReport.i.text[pdf;f;30;"Description of Input Data";"Helvetica-Bold";13];
 
-  saveReport.i.font[pdf;"Helvetica";11];
-  f:saveReport.i.cell[pdf;f;30;"The following is a breakdown of information for each of the relevant columns in the dataset:"];
+  f:saveReport.i.text[pdf;f;30;"The following is a breakdown of information",
+    " for each of the relevant columns in the dataset:";"Helvetica";11];
   ht:saveReport.i.printDescripTab params`dataDescription;
   f:saveReport.i.makeTable[pdf;ht`t;f;ht`h;10;10];
 
   f:saveReport.i.image[pdf;plots`target;f;250;280;210];
-  saveReport.i.font[pdf;"Helvetica";10];
-  f:saveReport.i.cell[pdf;f;25;"Figure 1: Distribution of input target data"];
+  f:saveReport.i.text[pdf;f;25;"Figure 1: Distribution of input target data";"Helvetica";10];
   
   // Feature extraction and selection
-  saveReport.i.font[pdf;"Helvetica-Bold";13];
-  f:saveReport.i.cell[pdf;f;30;"Breakdown of Pre-Processing"];
+  f:saveReport.i.text[pdf;f;30;"Breakdown of Pre-Processing";"Helvetica-Bold";13];
 
   numSig:count params`sigFeats;
-  saveReport.i.font[pdf;"Helvetica";11];
-  f:saveReport.i.cell[pdf;f;30;@[string config`featExtractType;0;upper]," feature extraction and selection was performed",
-    " with a total of ",string[numSig]," feature",$[1~numSig;;"s",]" produced."];
-  f:saveReport.i.cell[pdf;f;30;"Feature extraction took ",string[params`creationTime]," time in total."];
+  f:saveReport.i.text[pdf;f;30;@[string config`featExtractType;0;upper],
+    " feature extraction and selection was performed with a total of ",string[numSig],
+    " feature",$[1~numSig;;"s",]" produced.";"Helvetica";11];
+  f:saveReport.i.text[pdf;f;30;"Feature extraction took ",string[params`creationTime],
+    " time in total.";"Helvetica";11];
 
   // Cross validation
-  saveReport.i.font[pdf;"Helvetica-Bold";13];
-  f:saveReport.i.cell[pdf;f;30;"Initial Scores"];
+  f:saveReport.i.text[pdf;f;30;"Initial Scores";"Helvetica-Bold";13];
 
-  saveReport.i.font[pdf;"Helvetica";11];
   xvalFunc:string config[`xv]0;
   xvalSize:config[`xv]1;
   xvalType:`$last"."vs xvalFunc;
   xval:$[xvalType in`mcsplit`pcsplit;
-    "Percentage based cross validation, ",xvalFunc,", was performed with a testing set created from ",string[100*xvalSize],
-      "% of the training data.";
-    string[xvalSize],"-fold cross validation was performed on the training set to find the best model using ",xvalFunc,"."
+    "Percentage based cross validation, ",xvalFunc,
+    ", was performed with a testing set created from ",
+    string[100*xvalSize],"% of the training data.";
+    string[xvalSize],"-fold cross validation was performed on the training",
+    " set to find the best model using ",xvalFunc,"."
     ];
 
-  f:saveReport.i.cell[pdf;f;30;xval];
+  f:saveReport.i.text[pdf;f;30;xval;"Helvetica";11];
   f:saveReport.i.image[pdf;plots`data;f;90;500;100];
-  saveReport.i.font[pdf;"Helvetica";10];
-  f:saveReport.i.cell[pdf;f;25;"Figure 2: The data split used within this run of AutoML, with data split into training, holdout and testing sets"];
+  f:saveReport.i.text[pdf;f;25;"Figure 2: The data split used within this run of AutoML,",
+    " with data split into training, holdout and testing sets";"Helvetica";10];
 
-  saveReport.i.font[pdf;"Helvetica";11];
-  f:saveReport.i.cell[pdf;f;30;"The total time taken to carry out cross validation for each model on the training set was ",
-    string[modelMeta`xValTime]];
-  f:saveReport.i.cell[pdf;f;15;"where models were scored and optimized using ",string[modelMeta`metric],"."];
-  f:saveReport.i.cell[pdf;f;30;"Model scores:"];
+  f:saveReport.i.text[pdf;f;30;"The total time taken to carry out cross validation for ",
+    "each model on the training set was ",string[modelMeta`xValTime];"Helvetica";11];
+  f:saveReport.i.text[pdf;f;15;"where models were scored and optimized using ",
+    string[modelMeta`metric],".";"Helvetica";11];
+  f:saveReport.i.text[pdf;f;30;"Model scores:";"Helvetica";11];
 
   // Feature impact
   f:saveReport.i.printKDBTable[pdf;f;modelMeta`modelScores];
   f:saveReport.i.image[pdf;plots`impact;f;250;280;210];
-  saveReport.i.font[pdf;"Helvetica";10];
-  f:saveReport.i.cell[pdf;f;25;"Figure 3: Feature impact of each significant feature as determined by the training set"];
+  f:saveReport.i.text[pdf;f;25;"Figure 3: Feature impact of each significant feature",
+    " as determined by the training set";"Helvetica";10];
 
   // Run models
-  saveReport.i.font[pdf;"Helvetica-Bold";13];
-  f:saveReport.i.cell[pdf;f;30;"Model selection summary"];
-  saveReport.i.font[pdf;"Helvetica";11];
-  f:saveReport.i.cell[pdf;f;30;"Best scoring model = ",string bestModel];
-  f:saveReport.i.cell[pdf;f;30;"The score on the holdout set for this model was = ",string[ modelMeta`holdoutScore],"."];
-  f:saveReport.i.cell[pdf;f;30;"The total time taken to complete the running of this model on the holdout set was: ",string[modelMeta`holdoutTime],"."];
+  f:saveReport.i.text[pdf;f;30;"Model selection summary";"Helvetica-Bold";13];
+  f:saveReport.i.text[pdf;f;30;"Best scoring model = ",string bestModel;"Helvetica";11];
+  f:saveReport.i.text[pdf;f;30;"The score on the holdout set for this model was = ",
+    string[ modelMeta`holdoutScore],".";"Helvetica";11];
+  f:saveReport.i.text[pdf;f;30;"The total time taken to complete the running of this",
+    " model on the holdout set was: ",string[modelMeta`holdoutTime],".";"Helvetica";11];
 
   // Hyperparameter search
   hptyp:@[;0;upper]string srch:config`hp;
@@ -100,30 +98,30 @@ saveReport.reportlabGenerate:{[params;filePath]
   hpSize:hpStr 1;
   hpMethod:`$last"."vs hpFunc;
 
-  saveReport.i.font[pdf;"Helvetica-Bold";13];
-  f:saveReport.i.cell[pdf;f;30;"Best Model"];
+  f:saveReport.i.text[pdf;f;30;"Best Model";"Helvetica-Bold";13];
 
   if[not bestModel in utils.excludeList;
-    saveReport.i.font[pdf;"Helvetica";11];
-    f:saveReport.i.cell[pdf;f;30;]$[hpMethod in`mcsplit`pcsplit;
-      "The hyperparameter search was completed using ",hpFunc," with a percentage of ",hpSize,"% of training data used for validation";
-      "A ",hpSize,"-fold ",lower[hptyp 0]," search was performed on the training set to find the best model using, ",hpFunc,"."
-      ];
-    f:saveReport.i.cell[pdf;f;30;"The following are the hyperparameters which have been deemed optimal for the model:"];
+    f:saveReport.i.text[pdf;f;30;;"Helvetica";11]$[hpMethod in`mcsplit`pcsplit;
+      "The hyperparameter search was completed using ",hpFunc,
+      " with a percentage of ",hpSize,"% of training data used for validation";
+      "A ",hpSize,"-fold ",lower[hptyp 0]," search was performed on the",
+      " training set to find the best model using, ",hpFunc,"."];
+    f:saveReport.i.text[pdf;f;30;"The following are the hyperparameters",
+      " which have been deemed optimal for the model:";"Helvetica";11];
     f:saveReport.i.printKDBTable[pdf;f;params`hyperParams];
     ];
   
   // Final results
-  f:saveReport.i.cell[pdf;f;30;"The score for the best model fit on the entire training set and scored on the testing set was = ",
-    string params`testScore];
+  f:saveReport.i.text[pdf;f;30;"The score for the best model fit on the entire",
+    " training set and scored on the testing set was = ",string params`testScore;"Helvetica";11];
 
   $[ptype like"*class*";
     [f:saveReport.i.image[pdf;plots`conf;f;300;250;250];
-     saveReport.i.font[pdf;"Helvetica";10];
-     saveReport.i.cell[pdf;f;25;"Figure 4: This is the confusion matrix produced for predictions made on the testing set"]];
+     saveReport.i.text[pdf;f;25;"Figure 4: This is the confusion matrix produced",
+       " for predictions made on the testing set";"Helvetica";10]];
     [f:saveReport.i.image[pdf;plots`reg;f;300;250;250];
-     saveReport.i.font[pdf;"Helvetica";10];
-     saveReport.i.cell[pdf;f;25;"Figure 4: Regression analysis plot produced for predictions made on the testing set"]];
+     saveReport.i.text[pdf;f;25;"Figure 4: Regression analysis plot produced",
+       " for predictions made on the testing set";"Helvetica";10]];
     ];
 
   pdf[`:save][];

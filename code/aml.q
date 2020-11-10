@@ -40,11 +40,6 @@ run:{[graph;xdata;ydata;ftype;ptype;params]
   graph:.ml.connectEdge[graph;`automlConfig     ;`output;`configuration;`input];
   graph:.ml.connectEdge[graph;`featureDataConfig;`output;`featureData  ;`input];
   graph:.ml.connectEdge[graph;`targetDataConfig ;`output;`targetData   ;`input];
-  .ml.execPipeline .ml.createPipeline[graph]
+  .ml.execPipeline .ml.createPipeline[graph];
+  automlConfig`startDate`startTime
   }[graph]
-
-
-// currently required in order to pass data check  
-prep.i.default:{x}
-xv.fitpredict:{x}
-.ml.ttsnonshuff:{x}

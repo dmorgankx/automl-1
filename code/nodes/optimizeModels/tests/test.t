@@ -1,49 +1,6 @@
 \l automl.q
 .automl.loadfile`:init.q
-
-// The following utilities are used to test that a function is returning the expected
-// error message or data, these functions will likely be provided in some form within
-// the test.q script provided as standard for the testing of q and embedPy code
-
-
-// @kind function
-// @category tests
-// @fileoverview Ensure that a test that is expected to fail, 
-//   does so with an appropriate message
-// @param function {(func;proj)} The function or projection to be tested
-// @param data {any} The data to be applied to the function as an individual item for
-//   unary functions or a list of variables for multivariant functions
-// @param applyType {boolean} Is the function to be applied unary(1b) or multivariant(0b)
-// @param expectedError {string} The expected error message on failure of the function
-// @return {boolean} Function errored with appropriate message (1b), function failed
-//   inappropriately or passed (0b)
-failingTest:{[function;data;applyType;expectedError]
-  // Is function to be applied unary or multivariant
-  applyType:$[applyType;@;.];
-  failureFunction:{[err;ret](`TestFailing;ret;err~ret)}[expectedError;];
-  functionReturn:applyType[function;data;failureFunction];
-  $[`TestFailing~first functionReturn;last functionReturn;0b]
-  }
-
-
-// @kind function
-// @category tests
-// @fileoverview Ensure that a test that is expected to pass, 
-//   does so with an appropriate return
-// @param function {(func;proj)} The function or projection to be tested
-// @param data {any} The data to be applied to the function as an individual item for
-//   unary functions or a list of variables for multivariant functions
-// @param applyType {boolean} Is the function to be applied unary(1b) or multivariant(0b)
-// @param expectedReturn {string} The data expected to be returned on 
-//   execution of the function with the supplied data
-// @return {boolean} Function returned the appropriate output (1b), function failed 
-//   or executed with incorrect output (0b)
-passingTest:{[function;data;applyType;expectedReturn]
-  // Is function to be applied unary or multivariant
-  applyType:$[applyType;@;.];
-  functionReturn:applyType[function;data];
-  expectedReturn~functionReturn
-  }
+.automl.loadfile`:code/tests/utils.q
 
 // Generate Congifs for grid and random search
 configDefault:`scf`prf`seed`trials`hld!((`class`reg!`.ml.accuracy`.ml.mse);`.automl.utils.fitPredict;1234;8;0.2)
@@ -78,18 +35,29 @@ regModelTab  :update minit:.automl.modelGeneration.mdlFunc .'flip(lib;fnc;model)
 classModelTab:update minit:.automl.modelGeneration.mdlFunc .'flip(lib;fnc;model)from classModelTab;
 
 // Random Forest best model
-randomForestFit      :{[mdl;train;test].p.import[`sklearn.ensemble][mdl][][`:fit][train;test]}
-randomForestClassMdl :randomForestFit[`:RandomForestClassifier;;] . ttsClass`xtrain`ytrain
-randomForestRegMdl   :randomForestFit[`:RandomForestRegressor ;;] . ttsReg`xtrain`ytrain
+randomForestMdl      :{[mdl;train;test].p.import[`sklearn.ensemble][mdl][][`:fit][train;test]}
+randomForestClassFit :randomForestMdl[`:RandomForestClassifier;;] . ttsClass`xtrain`ytrain
+randomForestRegFit   :randomForestMdl[`:RandomForestRegressor ;;] . ttsReg`xtrain`ytrain
 randomForestClassName:`RandomForestClassifier
 randomForestRegName  :`RandomForestRegressor
 
 // Knn best model
-knnFit      :{[mdl;train;test].p.import[`sklearn.neighbors][mdl][][`:fit][train;test]}
-knnClassMdl :knnFit[`:KNeighborsClassifier;;] . ttsClass`xtrain`ytrain
-knnRegMdl   :knnFit[`:KNeighborsRegressor ;;] . ttsReg`xtrain`ytrain
+knnMdl      :{[mdl;train;test].p.import[`sklearn.neighbors][mdl][][`:fit][train;test]}
+knnClassFit :knnMdl[`:KNeighborsClassifier;;] . ttsClass`xtrain`ytrain
+knnRegFit   :knnMdl[`:KNeighborsRegressor ;;] . ttsReg`xtrain`ytrain
 knnClassName:`KNeighborsClassifier
 knnRegName  :`KNeighborsRegressor
+
+// Keras best model
+kerasClass    :.automl.models.keras.binary
+kerasReg      :.automl.models.keras.reg
+kerasClassMdl :kerasClass[`model][ttsClass;1234]
+kerasRegMdl   :kerasReg[`model][ttsReg;1234]
+kerasClassFit :kerasClass[`fit][ttsClass;kerasClassMdl]
+kerasRegFit   :kerasReg[`fit][ttsReg;kerasRegMdl]
+kerasClassName:`binarykeras
+kerasRegName  :`regkeras
+
 
 // Generate function to check the types of element returned in the dictionary
 optimizeFunc:{[cfg;mdls;bmdl;bname;tts]
@@ -102,22 +70,32 @@ regReturn  :`bestModel`hyperParams`modelName`testScore`analyzeModel!105 99 -11 -
 -1"\nTesting appropriate optimization inputs for Random forest models";
 
 // Test appropriate inputs for reg and class problems
-passingTest[optimizeFunc;(configReg,configGrid    ;regModelTab  ;randomForestRegMdl  ;randomForestRegName  ;ttsReg  );0b;regReturn]
-passingTest[optimizeFunc;(configReg,configRandom  ;regModelTab  ;randomForestRegMdl  ;randomForestRegName  ;ttsReg  );0b;regReturn]
-passingTest[optimizeFunc;(configReg,configSobol   ;regModelTab  ;randomForestRegMdl  ;randomForestRegName  ;ttsReg  );0b;regReturn]
-passingTest[optimizeFunc;(configClass,configGrid  ;classModelTab;randomForestClassMdl;randomForestClassName;ttsClass);0b;classReturn]
-passingTest[optimizeFunc;(configClass,configRandom;classModelTab;randomForestClassMdl;randomForestClassName;ttsClass);0b;classReturn]
-passingTest[optimizeFunc;(configClass,configSobol ;classModelTab;randomForestClassMdl;randomForestClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configReg,configGrid    ;regModelTab  ;randomForestRegFit  ;randomForestRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configReg,configRandom  ;regModelTab  ;randomForestRegFit  ;randomForestRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configReg,configSobol   ;regModelTab  ;randomForestRegFit  ;randomForestRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configClass,configGrid  ;classModelTab;randomForestClassFit;randomForestClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configClass,configRandom;classModelTab;randomForestClassFit;randomForestClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configClass,configSobol ;classModelTab;randomForestClassFit;randomForestClassName;ttsClass);0b;classReturn]
 
 -1"\nTesting appropriate optimization inputs for Knearest neighbor models";
 
 // Test appropriate inputs for reg and class problems
-passingTest[optimizeFunc;(configReg,configGrid    ;regModelTab  ;knnRegMdl  ;knnRegName  ;ttsReg  );0b;regReturn]
-passingTest[optimizeFunc;(configReg,configRandom  ;regModelTab  ;knnRegMdl  ;knnRegName  ;ttsReg  );0b;regReturn]
-passingTest[optimizeFunc;(configReg,configSobol   ;regModelTab  ;knnRegMdl  ;knnRegName  ;ttsReg  );0b;regReturn]
-passingTest[optimizeFunc;(configClass,configGrid  ;classModelTab;knnClassMdl;knnClassName;ttsClass);0b;classReturn]
-passingTest[optimizeFunc;(configClass,configRandom;classModelTab;knnClassMdl;knnClassName;ttsClass);0b;classReturn]
-passingTest[optimizeFunc;(configClass,configSobol ;classModelTab;knnClassMdl;knnClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configReg,configGrid    ;regModelTab  ;knnRegFit  ;knnRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configReg,configRandom  ;regModelTab  ;knnRegFit  ;knnRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configReg,configSobol   ;regModelTab  ;knnRegFit  ;knnRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configClass,configGrid  ;classModelTab;knnClassFit;knnClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configClass,configRandom;classModelTab;knnClassFit;knnClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configClass,configSobol ;classModelTab;knnClassFit;knnClassName;ttsClass);0b;classReturn]
+
+-1"\nTesting appropriate optimization inputs for Keras models";
+
+// Test appropriate inputs for reg and class problems, assuming that keras is installed in the environment
+passingTest[optimizeFunc;(configReg,configGrid    ;regModelTab  ;kerasRegFit  ;kerasRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configReg,configRandom  ;regModelTab  ;kerasRegFit  ;kerasRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configReg,configSobol   ;regModelTab  ;kerasRegFit  ;kerasRegName  ;ttsReg  );0b;regReturn]
+passingTest[optimizeFunc;(configClass,configGrid  ;classModelTab;kerasClassFit;kerasClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configClass,configRandom;classModelTab;kerasClassFit;kerasClassName;ttsClass);0b;classReturn]
+passingTest[optimizeFunc;(configClass,configSobol ;classModelTab;kerasClassFit;kerasClassName;ttsClass);0b;classReturn]
 
 -1"\nTesting inappropriate optimization inputs";
 
@@ -127,4 +105,4 @@ inappConfig:configDefault,enlist[`hp]!enlist `inappType
 // Expected return error
 errReturn:"Unsupported hyperparameter generation method";
 
-failingTest[optimizeFunc;(configReg,inappConfig;regModelTab;randomForestRegMdl;randomForestRegName;ttsReg);0b;errReturn]
+failingTest[optimizeFunc;(configReg,inappConfig;regModelTab;randomForestRegFit;randomForestRegName;ttsReg);0b;errReturn]

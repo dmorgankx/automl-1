@@ -1,5 +1,5 @@
 import pylatex as pl
-from pylatex import Document, Section, Subsection, Command, Figure, NewPage, Center
+from pylatex import Document, Section, Subsection, Command, Figure, NewPage, Center, Package
 from pylatex.utils import italic, NoEscape
 
 #  Add a table to the document
@@ -23,7 +23,7 @@ def createTable(doc,tab,ncols):
 ## caption = caption to be displayed under to image
 
 def createImage(doc,img,caption):
-  with doc.create(Figure(position='h!')) as images:
+  with doc.create(Figure(position='H')) as images:
      images.add_image(img,width = NoEscape(r'0.75\textwidth'))
      images.add_caption(caption)
 
@@ -48,6 +48,7 @@ def python_latex(dict,paths,dscrb,score,grid,exclude):
 
   geometry_options = {"margin": "2.5cm"}
   doc = Document(filepath, geometry_options=geometry_options)
+  doc.packages.append(Package('float'))
   doc.preamble.append(Command('title', 'kdb+/q Automated Machine Learning - Generated Report'))
   doc.preamble.append(Command('author', 'KxSystems'))
   doc.preamble.append(Command('date', 'Date: ' + configDict['startDate']))

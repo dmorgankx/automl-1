@@ -1,0 +1,100 @@
+{
+  "Problem_Details":{
+    "Feature_Extraction_Type":"",
+    "Problem_Type":"",
+    "Feature_Data":{
+      "typ"      :"",
+      "schema"   :"",
+      "separator":"",
+      "port"     :"",
+      "select"   :""
+    },
+    "Target_Data" :{
+      "typ"      :"",
+      "schema"   :"",
+      "separator":"",
+      "port"     :"",
+      "select"   :""
+    }
+  },
+  "Problem_Parameters":{
+    "general":{
+      "Parameters":{
+        "saveOption":2,
+        "seed":inf,
+        "crossValidationFunction":".ml.xv.kfshuff",
+        "crossValidationArgument":5,
+        "gridSearchFunction":".automl.gs.kfshuff",
+        "gridSearchArgument":5,
+        "randomSearchFunction":".automl.rs.kfshuff",
+        "randomSearchArgument":5,
+        "hyperparameterSearchType":"grid",
+        "holdoutSize":0.2,
+        "testingSize":0.2,
+        "numberTrials":256,
+        "significantFeatures":".automl.featureSignificance.significance",
+        "predictionFunction":".automl.utils.fitPredict",
+        "scoringFunctionClassification":".ml.accuracy",
+        "scoringFunctionRegression":".ml.mse"
+      },
+      "meta":{
+        "typeConvert":{
+          "saveOption":"long",
+          "seed":"long",
+          "crossValidationFunction":"symbol",
+          "crossValidationFunction":"long",
+          "gridSearchFunction":"symbol",
+          "gridSearchArgument":"long",
+          "randomSearchFunction":"symbol",
+          "randomSearchArgument":"long",
+          "hyperparameterSearchType":"symbol",
+          "holdoutSize":"float",
+          "testingSize":"float",
+          "numberTrials":"long",
+          "significantFeatures":"symbol",
+          "predictionFunction":"symbol",
+          "scoringFunctionClassification":"symbol",
+          "scoringFunctionRegression":"symbol"
+        }
+      }
+    },
+    "fresh":{
+      "Parameters":{
+        "functions":".ml.fresh.params",
+        "trainTestSplit":".automl.utils.ttsNonShuff",
+        "aggregationColumns":"{first cols x}"
+      },
+      "meta":{
+        "typeConvert":{
+          "functions":"symbol",
+          "trainTestSplit":"symbol", 
+          "aggregationColumns":"lambda"
+        }        
+      }
+    },
+    "normal":{
+      "Parameters":{
+        "functions":[".automl.featureCreation.normal.default"],
+        "trainTestSplit":".ml.traintestsplit"
+      },
+      "meta":{
+        "typeConvert":{
+          "functions":"symbol",
+          "trainTestSplit":"symbol"
+        }
+      }
+    },
+    "nlp":{
+      "Parameters":{
+        "functions":[".automl.featureCreation.normal.default"],
+        "trainTestSplit":".ml.traintestsplit"
+      },
+      "meta":{
+        "typeConvert":{
+          "functions":"symbol",
+          "trainTestSplit":"symbol"
+        }
+      }
+    }
+  }
+}

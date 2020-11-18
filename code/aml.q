@@ -27,9 +27,15 @@
 // @return        {table} The full graph executed to completeness or with a diagnostic error
 //   highlight to the user.
 run:{[graph;xdata;ydata;ftype;ptype;params]
-  // Handle default parameters and retrieval from file path
-  if[params~(::);params:()!()];
-  if[type[params]in 10 -11h;params:enlist[`configPath]!enlist params];
+  // Retrieve default parameters parsed at startup and append necessary
+  // information for further parameter retrieval
+  defaultParams:generalParameters,get[`$".automl.",string[ftype],"Parameters"];
+  automlConfig :defaultParams,$[type[params]in 10 -11h;enlist[`configPath]!enlist params;
+    99h=type params;params;
+    params~(::);()!();
+    '"Unsupported input type for 'params'"
+    ];
+  `e+1;
   automlConfig:params,`featExtractType`problemType`startDate`startTime!(ftype;ptype;.z.D;.z.T);
   // Default = accept data from process. Overwritten if dictionary input
   xdata:$[99h=type xdata;xdata;`typ`data!(`process;xdata)];
@@ -43,3 +49,21 @@ run:{[graph;xdata;ydata;ftype;ptype;params]
   .ml.execPipeline .ml.createPipeline[graph];
   automlConfig`startDate`startTime
   }[graph]
+
+newDefault:{[fileName]
+  fileNameType:type fileName;
+  fileName:$[10h=fileNameType;fileName;
+    -11h=fileNameType;
+    $[":"~first strFileName;1_;]strFileName:string fileName;
+    '`$"fileName must be string, symbol or hsym"];
+  fileName:raze[path],"/code/customization/configuration/customConfig/",fileName;
+  filePath:hsym`$utils.ssrWindows fileName;
+  if[not ()~key filePath;
+    '"A configuration of this name already exists at:",fileName
+    ];
+  defaultConfig:read0 `$path,"/code/customization/configuration/default.json";
+  h:hopen filePath;
+  {x y,"\n"}[h]each defaultConfig;
+  hclose h;
+  }
+

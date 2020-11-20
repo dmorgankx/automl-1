@@ -52,10 +52,9 @@ saveGraph.confusionMatrix:{[params;savePath]
 saveGraph.residualPlot:{[params;savePath]
   residuals:params[`analyzeModel;`residuals];
   modelName:params`modelName;
-  tts      :params`tts;
+  tts      :params`ttsObject;
   saveGraph.i.plotResiduals[residuals;tts;modelName;savePath]
   }
-
 
 // @kind function
 // @category saveGraph
@@ -72,4 +71,16 @@ saveGraph.impactPlot:{[params;savePath]
   updKeys:sigFeats key impact;
   updImpact:updKeys!value impact;
   saveGraph.i.plotImpact[updImpact;modelName;savePath];
+  }
+
+// @kind function
+// @category saveGraph
+// @fileoverview Save down data split plot
+// @param params   {dict} All data generated during the process
+// @param savePath {str} Path where images are to be saved
+// return {null} Save data split plot to appropriate location
+saveGraph.dataSplitPlot:{[params;savePath]
+  config:params`config;
+  fileName:savePath,"Data_Split.png";
+  saveGraph.i.dataSplit[config;fileName]
   }

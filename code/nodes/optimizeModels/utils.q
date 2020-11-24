@@ -9,7 +9,7 @@
 // @param cfg        {dict} Configuration information assigned by the user and related to the current run
 // @return {dict} The hyperparameters appropriate for the model being used
 optimizeModels.i.extractdict:{[bestModel;cfg]
-  hyperParam:cfg`hp;
+  hyperParam:cfg`hyperparameterSearchType;
   // Get grid/random hyperparameter file name
   hyperTyp:$[`grid=hyperParam;
       `gs;
@@ -39,7 +39,7 @@ optimizeModels.i.splitCount:{[hyperFunc;numFolds;tts;cfg]
  $[hyperFunc in`mcsplit`pcsplit;
    1-numFolds;
    (numFolds-1)%numFolds
-   ]*count[tts`xtrain]*1-cfg`hld
+   ]*count[tts`xtrain]*1-cfg`holdoutSize
   }
 
 // @kind function

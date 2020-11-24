@@ -29,14 +29,13 @@
 run:{[graph;xdata;ydata;ftype;ptype;params]
   // Retrieve default parameters parsed at startup and append necessary
   // information for further parameter retrieval
-  defaultParams:generalParameters,get[`$".automl.",string[ftype],"Parameters"];
+  defaultParams:paramDict[`general],paramDict ftype;
   automlConfig :defaultParams,$[type[params]in 10 -11h;enlist[`configPath]!enlist params;
     99h=type params;params;
     params~(::);()!();
     '"Unsupported input type for 'params'"
     ];
-  `e+1;
-  automlConfig:params,`featExtractType`problemType`startDate`startTime!(ftype;ptype;.z.D;.z.T);
+  automlConfig:automlConfig,`featExtractType`problemType`startDate`startTime!(ftype;ptype;.z.D;.z.T);
   // Default = accept data from process. Overwritten if dictionary input
   xdata:$[99h=type xdata;xdata;`typ`data!(`process;xdata)];
   ydata:$[99h=type ydata;ydata;`typ`data!(`process;ydata)];
@@ -50,6 +49,17 @@ run:{[graph;xdata;ydata;ftype;ptype;params]
   automlConfig`startDate`startTime
   }[graph]
 
+runCommandLine:{[]
+  ptype:`$problemDict`Problem_Type;
+  ftype:`$problemDict`Feature_Extraction_Type;
+  configConvert:(`;"c";"c";"c";"J";"c")$;
+  features:.ml.i.loaddset configConvert problemDict`Feature_Data;
+  target:.ml.i.loaddset configConvert problemDict`Target_Data;
+  run[features;target;ftype;ptype;::]
+  }
+
+// Generation of a new command json file which can be used by a user to create 
+// bespoke/custom configurations for their runs of automl
 newDefault:{[fileName]
   fileNameType:type fileName;
   fileName:$[10h=fileNameType;fileName;

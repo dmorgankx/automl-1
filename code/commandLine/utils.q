@@ -9,7 +9,7 @@ cli.i.checkCustom:{[fileName]
   'fileName," doesn't exist in current or '",path,"code/configuration/customConfig' directories";
   }
 
-cli.i.parseJson:{[cliInput;sectionType]
+cli.i.parseParameters:{[cliInput;sectionType]
   dataset:cliInput[`Problem_Parameters;sectionType;`meta;`typeConvert];
   datasetTypes:value[cliInput[`Problem_Parameters;sectionType;`meta;`typeConvert]];
   lambdaLocations:where datasetTypes like "lambda";

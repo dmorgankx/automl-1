@@ -10,7 +10,7 @@
 // @return {dict} File path where paths/graphs are to be saved
 pathConstruct.constructPath:{[preProcParams]
   cfg:preProcParams`config;
-  saveOpt:cfg`saveopt;
+  saveOpt:cfg`saveOption;
   if[saveOpt=0;:()!()];
   fileNames:`config`models;
   if[saveOpt=2;fileNames,:`images`report];

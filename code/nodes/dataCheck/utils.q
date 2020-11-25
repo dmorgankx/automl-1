@@ -67,7 +67,7 @@ dataCheck.i.getData:{[fileName;ptype]
 // @fileoverview parse the hyperparameter flat file
 // @param fileName {char[]} name of the file to be parsed
 // @param filePath {char[]} file path to the hyperparmeter file relative to `.automl.path`
-/. returns  > dictionary mapping model name to possible hyper parameters 
+// @returns  > dictionary mapping model name to possible hyper parameters 
 dataCheck.i.paramParse:{[fileName;filePath]
   key[k]!(value@){(!).("S=;")0:x}each k:(!).("S*";"|")0:hsym`$.automl.path,filePath,fileName
   }
@@ -84,9 +84,36 @@ dataCheck.i.paramParse:{[fileName;filePath]
 dataCheck.i.pathConstruct:{[cfg]
   names:`config`models;
   if[cfg[`saveOption]=2;names:names,`images`report];
-  pname:path,"/",ssr["outputs/",string[cfg`startDate],"/run_",string[cfg`startTime],"/";":";"."];
+  pname:$[`~cfg`saveModelName;dataCheck.i.dateTimePath;dataCheck.i.customPath]cfg;
   paths:pname,/:string[names],\:"/";
   dictNames:`$string[names],\:"SavePath";
-  dictNames!flip(paths;{count[path]_x}each paths)
+  dictNames!paths
+  }
+
+// @kind function
+// @category dataCheckUtility
+// @fileoverview Construct save path using date and time of the run
+// @param cfg {dict} Configuration information assigned by the user and related to the current run
+// @return {str} Path constructed based on run date and time 
+dataCheck.i.dateTimePath:{[cfg]
+  date:string cfg`startDate;
+  time:string cfg`startTime;
+  path,"/",ssr["outputs/",date,"/run_",time,"/";":";"."]
+  }
+
+// @kind function
+// @category dataCheckUtility
+// @fileoverview Construct save path using custom model name
+// @param cfg {dict} Configuration information assigned by the user and related to the current run
+// @return {str} Path constructed based on user defined custom model name
+dataCheck.i.customPath:{[cfg]
+  modelName:cfg[`saveModelName];
+  modelName:$[10h=type modelName;modelName;
+   -11h=type modelName;string modelName;
+   '"unsupported input type, model name must be a symbol atom or string"];
+  filePath:path,"/outputs/namedModels/",modelName,"/";
+  if[count key hsym`$filePath;
+    '"This save path already exists, please choose another model name"];
+  filePath
   }
 

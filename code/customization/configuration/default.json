@@ -2,6 +2,7 @@
   "Problem_Details":{
     "Feature_Extraction_Type":"",
     "Problem_Type":"",
+    "Model_Name":"",
     "Feature_Data":{
       "typ"      :"",
       "schema"   :"",

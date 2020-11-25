@@ -50,15 +50,6 @@ run:{[graph;xdata;ydata;ftype;ptype;params]
   automlConfig`startDate`startTime
   }[graph]
 
-runCommandLine:{[]
-  ptype:`$problemDict`Problem_Type;
-  ftype:`$problemDict`Feature_Extraction_Type;
-  configConvert:(`;"c";"c";"c";"J";"c")$;
-  features:.ml.i.loaddset configConvert problemDict`Feature_Data;
-  target:.ml.i.loaddset configConvert problemDict`Target_Data;
-  run[features;target;ftype;ptype;::]
-  }
-
 // Generation of a new command json file which can be used by a user to create 
 // bespoke/custom configurations for their runs of automl
 newDefault:{[fileName]
@@ -78,3 +69,13 @@ newDefault:{[fileName]
   hclose h;
   }
 
+runCommandLine:{[]
+  ptype:`$problemDict`Problem_Type;
+  ftype:`$problemDict`Feature_Extraction_Type;
+  dataRetrieval:`$problemDict`Data_Retrieval_Method;
+  if[any(ptype;ftype;dataRetrieval)=\:`;
+    '"`Problem_Type,`Feature_Extraction_Type and Data_Retrieval_Method must be defined"
+  ];
+  data:i.getCommandLineData[dataRetrieval];
+  run[;;ftype;ptype;::]. data`features`target
+  }

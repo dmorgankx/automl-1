@@ -3,21 +3,30 @@
     "Feature_Extraction_Type":"",
     "Problem_Type":"",
     "Model_Name":"",
-    "Feature_Data":{
-      "typ"      :"",
-      "schema"   :"",
-      "separator":"",
-      "host"     :"",
-      "port"     :"",
-      "select"   :""
+    "Data_Retrieval_Method":""
+  },
+  "Retrieval_Methods":{
+    "ipc":{
+      "Feature_Data":{
+        "port"  :"",
+        "select":""
+      },
+      "Target_Data":{
+        "port"  :"",
+        "select":""
+      }
     },
-    "Target_Data" :{
-      "typ"      :"",
-      "schema"   :"",
-      "separator":"",
-      "host"     :"",
-      "port"     :"",
-      "select"   :""
+    "csv":{
+      "schema"       :"",
+      "separator"    :"",
+      "directory"    :"",
+      "file_name"    :"",
+      "target_column":""
+    },
+    "binary":{
+      "directory"    :"",
+      "file_name"    :"",
+      "target_column":""
     }
   },
   "Problem_Parameters":{

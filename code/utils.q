@@ -115,3 +115,24 @@ utils.ttsNonShuff:{[feat;tgt;size]
 utils.bestModelDef:{[mdls;modelName;col]
   first?[mdls;enlist(=;`model;enlist modelName);();col]
   }
+
+// @kind function
+// @fileoverview Retrieve the feature and target data based on user defined json
+i.getCommandLineData:{[method]
+  methodSpecification:cli.input`Retrieval_Methods;
+  // Using if statements rather than if else (neater as logic contained inside is slightly complicated)
+  if[`csv=method;
+    dict:methodSpecification[method],enlist[`typ]!enlist`csv;
+    data:.ml.i.loaddset[dict];
+    targetName:`$dict`target_column;
+    :`features`target!(flip targetName _ flip data;data targetName)
+  ];
+  if[`ipc=method;
+    dict:methodSpecification[method];
+    dict:("J";"c";`)$/:dict,\:enlist[`typ]!enlist"ipc";
+    features:.ml.i.loaddset dict`Feature_Data;
+    target  :.ml.i.loaddset dict`Target_Data;
+    :`features`target!.ml.i.loaddset each dict`Feature_Data`Target_Data
+  ];
+  '"Method defined by user for data retrieval not currently supported";
+  }

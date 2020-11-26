@@ -29,7 +29,7 @@
 run:{[graph;xdata;ydata;ftype;ptype;params]
   // Retrieve default parameters parsed at startup and append necessary
   // information for further parameter retrieval
-  modelName:enlist[`saveModelName]!enlist`$problemDict`Model_Name;
+  modelName:enlist[`saveModelName]!enlist`$problemDict`modelName;
   defaultParams:paramDict[`general],paramDict[ftype],modelName;
   automlConfig :defaultParams,$[type[params]in 10 -11h;enlist[`configPath]!enlist params;
     99h=type params;params;

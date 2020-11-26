@@ -62,7 +62,7 @@ dataCheck.i.getData:{[fileName;ptype]
   (,/)cli.i.parseParameters[customJson]each(`general;ptype)
   }
 
-/ @kind function
+// @kind function
 // @category dataCheckUtility
 // @fileoverview parse the hyperparameter flat file
 // @param fileName {char[]} name of the file to be parsed

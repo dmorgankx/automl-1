@@ -119,20 +119,20 @@ utils.bestModelDef:{[mdls;modelName;col]
 // @kind function
 // @fileoverview Retrieve the feature and target data based on user defined json
 i.getCommandLineData:{[method]
-  methodSpecification:cli.input`Retrieval_Methods;
+  methodSpecification:cli.input`retrievalMethods;
   // Using if statements rather than if else (neater as logic contained inside is slightly complicated)
   if[`csv=method;
     dict:methodSpecification[method],enlist[`typ]!enlist`csv;
     data:.ml.i.loaddset[dict];
-    targetName:`$dict`target_column;
+    targetName:`$dict`targetColumn;
     :`features`target!(flip targetName _ flip data;data targetName)
   ];
   if[`ipc=method;
     dict:methodSpecification[method];
     dict:("J";"c";`)$/:dict,\:enlist[`typ]!enlist"ipc";
-    features:.ml.i.loaddset dict`Feature_Data;
-    target  :.ml.i.loaddset dict`Target_Data;
-    :`features`target!.ml.i.loaddset each dict`Feature_Data`Target_Data
+    features:.ml.i.loaddset dict`featureData;
+    target  :.ml.i.loaddset dict`targetData;
+    :`features`target!.ml.i.loaddset each dict`featureData`targetData
   ];
   '"Method defined by user for data retrieval not currently supported";
   }

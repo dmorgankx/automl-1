@@ -1,17 +1,17 @@
 {
-  "Problem_Details":{
-    "Feature_Extraction_Type":"",
-    "Problem_Type":"",
-    "Model_Name":"",
-    "Data_Retrieval_Method":""
+  "problemDetails":{
+    "featureExtractionType":"",
+    "problemType":"",
+    "modelName":"",
+    "dataRetrievalMethod":""
   },
-  "Retrieval_Methods":{
+  "retrievalMethods":{
     "ipc":{
-      "Feature_Data":{
+      "featureData":{
         "port"  :"",
         "select":""
       },
-      "Target_Data":{
+      "targetData":{
         "port"  :"",
         "select":""
       }
@@ -20,92 +20,114 @@
       "schema"       :"",
       "separator"    :"",
       "directory"    :"",
-      "file_name"    :"",
-      "target_column":""
+      "fileName"    :"",
+      "targetColumn":""
     },
     "binary":{
       "directory"    :"",
-      "file_name"    :"",
-      "target_column":""
+      "fileName"    :"",
+      "targetColumn":""
     }
   },
-  "Problem_Parameters":{
+  "problemParameters":{
     "general":{
-      "Parameters":{
-        "saveOption":2,
-        "seed":inf,
-        "crossValidationFunction":".ml.xv.kfshuff",
-        "crossValidationArgument":5,
-        "gridSearchFunction":".automl.gs.kfshuff",
-        "gridSearchArgument":5,
-        "randomSearchFunction":".automl.rs.kfshuff",
-        "randomSearchArgument":5,
-        "hyperparameterSearchType":"grid",
-        "holdoutSize":0.2,
-        "testingSize":0.2,
-        "numberTrials":256,
-        "significantFeatures":".automl.featureSignificance.significance",
-        "predictionFunction":".automl.utils.fitPredict",
-        "scoringFunctionClassification":".ml.accuracy",
-        "scoringFunctionRegression":".ml.mse"
+      "saveOption":{
+        "value":2,
+        "type" :"long"
       },
-      "meta":{
-        "typeConvert":{
-          "saveOption":"long",
-          "seed":"long",
-          "crossValidationFunction":"symbol",
-          "crossValidationFunction":"long",
-          "gridSearchFunction":"symbol",
-          "gridSearchArgument":"long",
-          "randomSearchFunction":"symbol",
-          "randomSearchArgument":"long",
-          "hyperparameterSearchType":"symbol",
-          "holdoutSize":"float",
-          "testingSize":"float",
-          "numberTrials":"long",
-          "significantFeatures":"symbol",
-          "predictionFunction":"symbol",
-          "scoringFunctionClassification":"symbol",
-          "scoringFunctionRegression":"symbol"
-        }
+      "seed":{
+        "value":inf,
+        "type" :"long"
+      },
+      "crossValidationFunction":{
+        "value":".ml.xv.kfshuff",
+        "type" :"symbol"
+      },
+      "crossValidationArgument":{
+        "value":5,
+        "type" :"long"
+      },
+      "gridSearchFunction":{
+        "value":".automl.gs.kfshuff",
+        "type" :"symbol"
+      },
+      "gridSearchArgument":{
+        "value":5,
+        "type" :"long"
+      },
+      "randomSearchFunction":{
+        "value":".automl.rs.kfshuff",
+        "type" :"symbol"
+      },
+      "randomSearchArgument":{
+        "value":5,
+        "type" :"long"
+      },
+      "hyperparameterSearchType":{
+        "value":"grid",
+        "type" :"symbol"
+      },
+      "holdoutSize":{
+        "value":0.2,
+        "type" :"float"
+      },
+      "testingSize":{
+        "value":0.2,
+        "type" :"float"
+      },
+      "numberTrials":{
+        "value":256,
+        "type" :"long"
+      },
+      "significantFeatures":{
+        "value":".automl.featureSignificance.significance",
+        "type" :"symbol"
+      },
+      "predictionFunction":{
+        "value":".automl.utils.fitPredict",
+        "type" :"symbol"
+      },
+      "scoringFunctionClassification":{
+        "value":".ml.accuracy",
+        "type" :"symbol"
+      },
+      "scoringFunctionRegression":{
+        "value":".ml.mse",
+        "type" :"symbol"
       }
     },
     "fresh":{
-      "Parameters":{
-        "functions":".ml.fresh.params",
-        "trainTestSplit":".automl.utils.ttsNonShuff",
-        "aggregationColumns":"{first cols x}"
+      "functions":{
+        "value":".ml.fresh.params",
+        "type" :"symbol"
       },
-      "meta":{
-        "typeConvert":{
-          "functions":"symbol",
-          "trainTestSplit":"symbol", 
-          "aggregationColumns":"lambda"
-        }        
+      "trainTestSplit":{
+        "value":".automl.utils.ttsNonShuff",
+        "type":"symbol"
+      },
+      "aggregationColumns":{
+        "value":"{first cols x}",
+        "type":"lambda"
       }
     },
     "normal":{
-      "Parameters":{
-        "functions":[".automl.featureCreation.normal.default"],
-        "trainTestSplit":".ml.traintestsplit"
-      },
-      "meta":{
-        "typeConvert":{
-          "functions":"symbol",
-          "trainTestSplit":"symbol"
-        }
+      "functions":{
+        "value":[".automl.featureCreation.normal.default"],
+        "type" :"symbol"
+     },
+     "trainTestSplit":{
+       "value":".ml.traintestsplit",
+       "type" :"symbol"
       }
     },
     "nlp":{
-      "Parameters":{
-        "functions":[".automl.featureCreation.normal.default"],
-        "trainTestSplit":".ml.traintestsplit"
+      "functions":{
+        "value":[".automl.featureCreation.normal.default"],
+        "type":"symbol"
       },
-      "meta":{
-        "typeConvert":{
-          "functions":"symbol",
-          "trainTestSplit":"symbol"
-        }
+      "trainTestSplit":{
+        "value":".ml.traintestsplit",
+        "type" :"symbol"
       }
     }
   }

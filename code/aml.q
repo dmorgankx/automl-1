@@ -70,11 +70,11 @@ newDefault:{[fileName]
   }
 
 runCommandLine:{[]
-  ptype:`$problemDict`Problem_Type;
-  ftype:`$problemDict`Feature_Extraction_Type;
-  dataRetrieval:`$problemDict`Data_Retrieval_Method;
+  ptype:`$problemDict`problemType;
+  ftype:`$problemDict`featureExtractionType;
+  dataRetrieval:`$problemDict`dataRetrievalMethod;
   if[any(ptype;ftype;dataRetrieval)=\:`;
-    '"`Problem_Type,`Feature_Extraction_Type and Data_Retrieval_Method must be defined"
+    '"`problemType,`featureExtractionType and `dataRetrievalMethod must all be defined"
   ];
   data:i.getCommandLineData[dataRetrieval];
   run[;;ftype;ptype;::]. data`features`target

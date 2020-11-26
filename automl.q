@@ -9,7 +9,7 @@ loadfile:{$[.z.q;;-1]"Loading ",x:_[":"=x 0]x:$[10=type x;;string]x;system"l ",p
 // Retrieve command line parameters
 commandLineInput:first each .Q.opt .z.x
 
-if[`commandline in lower key commandLineInput;
+if[all `config`run in lower key commandLineInput;
   loadfile`:init.q;
   .ml.updDebug[];
   runCommandLine[];

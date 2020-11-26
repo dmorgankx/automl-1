@@ -1,6 +1,6 @@
 \d .automl
 
-cli.i.acceptableKeys:`UpdateDefault`CommandLine
+cli.i.acceptableKeys:`config`run
 
 cli.i.checkCustom:{[fileName]
   fileName:raze fileName;
@@ -10,14 +10,13 @@ cli.i.checkCustom:{[fileName]
   }
 
 cli.i.parseParameters:{[cliInput;sectionType]
-  dataset:cliInput[`Problem_Parameters;sectionType;`meta;`typeConvert];
-  datasetTypes:value[cliInput[`Problem_Parameters;sectionType;`meta;`typeConvert]];
-  lambdaLocations:where datasetTypes like "lambda";
-  notLambdaLocations:til[count datasetTypes]except lambdaLocations;
-  lambdaKeys:key[dataset] lambdaLocations;
-  symbolLocations:where datasetTypes like "symbol";
-  generalTypeConvert:@[`$datasetTypes notLambdaLocations;symbolLocations;{`}];
-  generalInfo:generalTypeConvert$lambdaKeys _ cliInput[`Problem_Parameters;sectionType;`Parameters];
-  lambdaInfo:((),lambdaKeys)!((),get each cliInput[`Problem_Parameters;sectionType;`Parameters][lambdaKeys]);
-  generalInfo,lambdaInfo
+  section:cliInput[`problemParameters;sectionType];
+  cli.i.convertParameters each section
+  }
+
+cli.i.convertParameters:{[param]
+  $["symbol"~param`type;`$param`value;
+    "lambda"~param`type;get param`value;
+    (`$param`type)$param`value
+  ]
   }

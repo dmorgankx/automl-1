@@ -1,9 +1,9 @@
 {
   "problemDetails":{
     "featureExtractionType":"",
-    "problemType":"",
-    "modelName":"",
-    "dataRetrievalMethod":""
+    "problemType"          :"",
+    "modelName"            :"",
+    "dataRetrievalMethod"  :""
   },
   "retrievalMethods":{
     "ipc":{
@@ -17,14 +17,14 @@
       }
     },
     "csv":{
-      "schema"       :"",
-      "separator"    :"",
-      "directory"    :"",
+      "schema"      :"",
+      "separator"   :"",
+      "directory"   :"",
       "fileName"    :"",
       "targetColumn":""
     },
     "binary":{
-      "directory"    :"",
+      "directory"   :"",
       "fileName"    :"",
       "targetColumn":""
     }
@@ -103,27 +103,27 @@
       },
       "trainTestSplit":{
         "value":".automl.utils.ttsNonShuff",
-        "type":"symbol"
+        "type" :"symbol"
       },
       "aggregationColumns":{
         "value":"{first cols x}",
-        "type":"lambda"
+        "type" :"lambda"
       }
     },
     "normal":{
       "functions":{
         "value":[".automl.featureCreation.normal.default"],
         "type" :"symbol"
-     },
-     "trainTestSplit":{
-       "value":".ml.traintestsplit",
-       "type" :"symbol"
+      },
+      "trainTestSplit":{
+        "value":".ml.traintestsplit",
+        "type" :"symbol"
       }
     },
     "nlp":{
       "functions":{
         "value":[".automl.featureCreation.normal.default"],
-        "type":"symbol"
+        "type" :"symbol"
       },
       "trainTestSplit":{
         "value":".ml.traintestsplit",

@@ -50,8 +50,15 @@ run:{[graph;xdata;ydata;ftype;ptype;params]
   automlConfig`startDate`startTime
   }[graph]
 
-// Generation of a new command json file which can be used by a user to create 
-// bespoke/custom configurations for their runs of automl
+// @kind function
+// @category automl
+// @fileoverview Generate a new json flat file for use in application of AutoML
+//   for command line or as an alternative to the param file in .automl.run.
+// @param  fileName {str/sym/hsym} Name to be associated with the json file
+//   to be generated in 'code/customization/configuration/customConfig'.
+// @return          {::} Returns generic null on successful invocation and saves
+//   a copy of the file 'code/customization/configuration/default.json' to the 
+//   appropriate named file.
 newDefault:{[fileName]
   fileNameType:type fileName;
   fileName:$[10h=fileNameType;fileName;
@@ -69,6 +76,16 @@ newDefault:{[fileName]
   hclose h;
   }
 
+// @kind function
+// @category automl
+// @fileoverview Run the AutoML framework based on user provided custom json flat files.
+//   This function is triggered when executing the automl.q file and invoking the functionality
+//   is based on the presence of an appropriately named configuration file and presence of the
+//   run command line argument on session startup i.e.
+//   $ q automl.q -config myconfig.json -run
+//   This function takes no parameters as input an does not returns any artifacts to be used 
+//   in process. Instead it executes the entirety of the automl pipeline saving the report/model
+//   images and metadata to disc and exits the process.
 runCommandLine:{[]
   ptype:`$problemDict`problemType;
   ftype:`$problemDict`featureExtractionType;
@@ -77,5 +94,5 @@ runCommandLine:{[]
     '"`problemType,`featureExtractionType and `dataRetrievalMethod must all be defined"
   ];
   data:i.getCommandLineData[dataRetrieval];
-  run[;;ftype;ptype;::]. data`features`target
+  run[;;ftype;ptype;::]. data`features`target;
   }

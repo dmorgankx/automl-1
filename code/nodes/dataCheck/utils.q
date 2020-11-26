@@ -59,7 +59,7 @@ dataCheck.i.getCustomConfig:{[feat;cfg;default;ptyp]
 dataCheck.i.getData:{[fileName;ptype]
   customFile:cli.i.checkCustom fileName;
   customJson:.j.k raze read0 `$customFile;
-  (,/)cli.i.parseJson[customJson]each(`general;ptype)
+  (,/)cli.i.parseParameters[customJson]each(`general;ptype)
   }
 
 / @kind function

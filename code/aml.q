@@ -26,7 +26,7 @@
 //   3. Null(::) allowing a user to run the AutoML framework using default parameters 
 // @return        {table} The full graph executed to completeness or with a diagnostic error
 //   highlight to the user.
-run:{[graph;xdata;ydata;ftype;ptype;params]
+fit:{[graph;xdata;ydata;ftype;ptype;params]
   // Retrieve default parameters parsed at startup and append necessary
   // information for further parameter retrieval
   modelName:enlist[`saveModelName]!enlist`$problemDict`modelName;
@@ -46,8 +46,9 @@ run:{[graph;xdata;ydata;ftype;ptype;params]
   graph:.ml.connectEdge[graph;`automlConfig     ;`output;`configuration;`input];
   graph:.ml.connectEdge[graph;`featureDataConfig;`output;`featureData  ;`input];
   graph:.ml.connectEdge[graph;`targetDataConfig ;`output;`targetData   ;`input];
-  .ml.execPipeline .ml.createPipeline[graph];
-  automlConfig`startDate`startTime
+  pipelineOutput:.ml.execPipeline .ml.createPipeline[graph];
+  predictFunc:util.generatePredict[pipelineOutput];
+  `modelInfo`predict!(automlConfig`startDate`startTime;predictFunc)
   }[graph]
 
 // @kind function

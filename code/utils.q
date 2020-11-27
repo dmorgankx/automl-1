@@ -136,3 +136,37 @@ i.getCommandLineData:{[method]
   ];
   '"Method defined by user for data retrieval not currently supported";
   }
+
+util.generatePredict:{[params;feats]
+  saveMetaInfo:exec from params where nodeId=`saveMeta;
+  config:saveMetaInfo[`outputs;`output];
+  bestModel:config`bestModel;
+  feats:util.featureCreation[config;feats];
+  modelLibrary:config[`modelMetaData;`modelLib];
+  if[`sklearn~modelLibrary;:bestModel[`:predict;<]feats];
+  if[`keras~modelLibrary;
+    feats:enlist[`xtest]!enlist feats;
+    :get[".automl.models.keras.",(neg[5]_string config`modelName),".predict"][feats;bestModel]
+    ];
+  '"NotYetImplemented";
+  }
+
+// Apply feature creation and encoding procedures for 'normal' on new data
+/. r > table with feature creation and encodings applied appropriately
+util.featureCreation:{[config;feats]
+  problemConfig:config`config;
+  sigFeats     :config`sigFeats;
+  extractType  :problemConfig`featExtractType;
+  if[`nlp  ~extractType;problemConfig[`w2v]:1b];
+  if[`fresh~extractType;
+    relevantFuncs:raze`$distinct{("_" vs string x)1}each sigFeats;
+    appropriateFuncs:1!select from 0!.ml.fresh where f in relevantFuncs;
+    problemConfig[`funcs]:appropriateFuncs];
+  feats:dataPreprocessing.node.function[problemConfig;feats;config`symEncode];
+  feats:featureCreation.node.function[problemConfig;feats]`features;
+  if[not all newFeats:sigFeats in cols feats;
+    newColumns:sigFeats where not newFeats;
+    feats:sigFeats xcols flip flip[feats],newColumns!((count newColumns;count feats)#0f),()];
+  flip value flip sigFeats#"f"$0^feats
+  }
+

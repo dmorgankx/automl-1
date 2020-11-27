@@ -7,12 +7,13 @@
 // @fileoverview Save all metadata information needed to predict on new data
 // @param params {dict} All data generated during the preprocessing and
 //  prediction stages
-// @return {null} All metadata needed is saved to appropriate location
+// @return {dict} All metadata information needed to generate predict function
 saveMeta.node.function:{[params]
   saveOpt:params[`config]`saveOption;
   if[0~saveOpt;:(::)];
   mdlMeta:saveMeta.extractMdlMeta params;
-  saveMeta.saveMeta[mdlMeta;params]
+  saveMeta.saveMeta[mdlMeta;params];
+  params
   }
 
 // Input information

@@ -47,9 +47,26 @@ fit:{[graph;xdata;ydata;ftype;ptype;params]
   graph:.ml.connectEdge[graph;`featureDataConfig;`output;`featureData  ;`input];
   graph:.ml.connectEdge[graph;`targetDataConfig ;`output;`targetData   ;`input];
   pipelineOutput:.ml.execPipeline .ml.createPipeline[graph];
-  predictFunc:util.generatePredict[pipelineOutput];
+  predictFunc:util.generatePredict[pipelineOutput;0b];
   `modelInfo`predict!(automlConfig`startDate`startTime;predictFunc)
   }[graph]
+
+// @kind function
+// @category automl
+// @fileoverview Retrieve a fit automl model and associated workflow for use in prediction
+// @param config {configuration related to }
+// @param modelDetails {dict} Information regarding where within the outputs folder the model
+//    and required metadata is to be retrieved
+// @return {dict} a dictionary containing the predict function (generated using util.generatePredict)
+//    and the relevant metadata information for the model
+getModel:{[modelDetails]
+  pathToOutputs:util.modelPath[modelDetails];
+  modelMeta:get hsym`$pathToOutputs,"/config/metadata";
+  loadModel:util.loadModel[modelMeta;pathToOutputs];
+  modelParams:modelMeta,enlist[`bestModel]!enlist loadModel;
+  predictFunc:util.generatePredict[modelParams;1b];
+  `modelInfo`predict!(modelParams;predictFunc)
+  }
 
 // @kind function
 // @category automl
@@ -68,9 +85,7 @@ newDefault:{[fileName]
     '`$"fileName must be string, symbol or hsym"];
   fileName:raze[path],"/code/customization/configuration/customConfig/",fileName;
   filePath:hsym`$utils.ssrWindows fileName;
-  if[not ()~key filePath;
-    '"A configuration of this name already exists at:",fileName
-    ];
+  if[not ()~key filePath;'"A configuration of this name already exists at:",fileName];
   defaultConfig:read0 `$path,"/code/customization/configuration/default.json";
   h:hopen filePath;
   {x y,"\n"}[h]each defaultConfig;

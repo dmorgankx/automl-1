@@ -137,30 +137,31 @@ i.getCommandLineData:{[method]
   '"Method defined by user for data retrieval not currently supported";
   }
 
-util.generatePredict:{[params;feats]
-  saveMetaInfo:exec from params where nodeId=`saveMeta;
-  config:saveMetaInfo[`outputs;`output];
-  bestModel:config`bestModel;
-  feats:util.featureCreation[config;feats];
-  modelLibrary:config[`modelMetaData;`modelLib];
-  if[`sklearn~modelLibrary;:bestModel[`:predict;<]feats];
-  if[`keras~modelLibrary;
-    feats:enlist[`xtest]!enlist feats;
-    :get[".automl.models.keras.",(neg[5]_string config`modelName),".predict"][feats;bestModel]
+util.generatePredict:{[params;saved;feats]
+  config:$[saved;params;
+    [saveMetaInfo:exec from params where nodeId=`saveMeta;
+     saveMetaInfo[`outputs;`output]]
     ];
-  '"NotYetImplemented";
+  bestModel:config`bestModel;
+  feats:util.featureCreation[config;saved;feats];
+  modelLibrary:$[saved;config`modelLib;config[`modelMetaData;`modelLib]];
+  $[`sklearn~modelLibrary;bestModel[`:predict;<]feats;
+    `keras~modelLibrary;
+    [feats:enlist[`xtest]!enlist feats;
+     get[".automl.models.keras.",(neg[5]_string config`modelName),".predict"][feats;bestModel]];
+    '"NotYetImplemented"]
   }
 
 // Apply feature creation and encoding procedures for 'normal' on new data
 /. r > table with feature creation and encodings applied appropriately
-util.featureCreation:{[config;feats]
-  problemConfig:config`config;
+util.featureCreation:{[config;saved;feats]
+  problemConfig:$[saved;config;config`config];
   sigFeats     :config`sigFeats;
   extractType  :problemConfig`featExtractType;
   if[`nlp  ~extractType;problemConfig[`w2v]:1b];
   if[`fresh~extractType;
     relevantFuncs:raze`$distinct{("_" vs string x)1}each sigFeats;
-    appropriateFuncs:1!select from 0!.ml.fresh where f in relevantFuncs;
+    appropriateFuncs:1!select from 0!.ml.fresh.params where f in relevantFuncs;
     problemConfig[`funcs]:appropriateFuncs];
   feats:dataPreprocessing.node.function[problemConfig;feats;config`symEncode];
   feats:featureCreation.node.function[problemConfig;feats]`features;
@@ -170,3 +171,32 @@ util.featureCreation:{[config;feats]
   flip value flip sigFeats#"f"$0^feats
   }
 
+util.loadModel:{[modelMeta;modelPath]
+  modelLibrary:modelMeta`modelLib;
+  loadFunction:$[modelLibrary~`sklearn;
+    .p.import[`joblib][`:load];
+    modelLibrary~`keras;
+    $[0~checkimport[0];.p.import[`keras.models][`:load_model];'"Keras model could not be loaded"]
+   ];
+  modelFile:modelPath,"models/",$[modelLibrary~`sklearn;
+    string[modelMeta`modelName];
+    modelLibrary~`keras;string[modelMeta`modelName],".h5";
+    '"Unsupported model type provided"];
+  loadFunction modelFile
+  }
+
+util.modelPath:{[dict]
+  pathStem:path,"/outputs/";
+  keyDict:key dict;
+  if[dateTime:all `startDate`startTime in keyDict;
+    if[not all (-14h;-19h)=type each dict`startDate`startTime;
+      '"Types provided for date/time retrieval must be a date and time respectively"]
+    ];
+  if[modelName:`savedModelName in keyDict;
+    if[not 10h=type dict`savedModelName;
+      '"Types provided for model name based retrieval must be a string"]
+    ];
+  if[modelName;:pathStem,"namedModels/",dict`savedModelName];
+  if[dateTime ;:pathStem,ssr[string[dict`startDate],"/run_",string[dict`startTime],"/";":";"."]];
+  '"A user must define model start date/time or model name.";
+  }

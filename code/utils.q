@@ -229,7 +229,7 @@ utils.modelPath:{[dict]
       '"Types provided for date/time retrieval must be a date and time respectively"];
     `savedModelName in keyDict;
     $[10h=type dict`savedModelName;
-      "namedModels/",dict`savedModelName;
+      "namedModels/",dict[`savedModelName],"/";
       '"Types provided for model name based retrieval must be a string"];
     '"A user must define model start date/time or model name.";
     ]

@@ -115,3 +115,29 @@ utils.ttsNonShuff:{[feat;tgt;size]
 utils.bestModelDef:{[mdls;modelName;col]
   first?[mdls;enlist(=;`model;enlist modelName);();col]
   }
+
+// @kind function
+// @category Utility
+// @fileoverview Retrieve the feature and target data based on user defined json
+// @param method {Dict} method of data retrieval
+// @return {dict} features and target data
+utils.getCommandLineData:{[method]
+  methodSpecification:cli.input`retrievalMethods;
+  dict:key[method]!methodSpecification'[value method;key method];
+  if[count n:where `ipc=method;dict[n]:("J";"c";"c")$/:3#'dict[n]];
+  dict:dict,'([]typ:value method);
+  featureData:.ml.i.loaddset dict`featureData;
+  featurePath:dict[`featureData]utils.dataType method`featureData;
+  targetPath :dict[`targetData]utils.dataType method`targetData;
+  targetName :`$dict[`targetData]`targetColumn;
+  data:$[featurePath~targetPath;
+      (flip targetName _ flip featureData;featureData targetName);
+      (featureData;.ml.i.loaddset[dict`targetData]targetName)
+      ];
+  `features`target!data 
+  }
+
+// @kind function
+// @category Utility
+// @fileoverview Dictionary to retrieve each datatype
+utils.dataType:`ipc`binary`csv!(`port`select;`directory`fileName;`directory`fileName)

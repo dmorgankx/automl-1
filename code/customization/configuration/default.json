@@ -3,10 +3,7 @@
     "featureExtractionType":"",
     "problemType"          :"",
     "modelName"            :"",
-    "dataRetrievalMethod"  :{
-      "featureData":"",
-      "targetData" :""
-    }
+    "dataRetrievalMethod"  :""
   },
   "retrievalMethods":{
     "ipc":{
@@ -15,37 +12,22 @@
         "select":""
       },
       "targetData":{
-        "port"        :"",
-        "select"      :"",
-	"targetColumn":""
+        "port"  :"",
+        "select":""
       }
     },
     "csv":{
-     "featureDate":{
-       "schema"   :"",
-       "separator":"",
-       "directory":"",
-       "fileName" :""
-     },
-     "targetData":{
-       "schema"      :"",
-       "separator"   :"",
-       "directory"   :"",
-       "fileName"    :"",
-       "targetColumn":""
-     }
+      "schema"      :"",
+      "separator"   :"",
+      "directory"   :"",
+      "fileName"    :"",
+      "targetColumn":""
     },
     "binary":{
-     "featureData":{
-       "directory":"",
-       "fileName" :""
-    },
-     "targetData":{
-       "directory"   :"",
-       "fileName"    :"",
-       "targetColumn":""
+      "directory"   :"",
+      "fileName"    :"",
+      "targetColumn":""
     }
-   }
   },
   "problemParameters":{
     "general":{
@@ -148,8 +130,8 @@
         "type" :"symbol"
       },
       "w2v":{
-	"value":0,
-	"type":"long"
+        "value":0,
+        "type":"boolean"
       }
     }
   }

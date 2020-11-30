@@ -108,9 +108,9 @@ runCommandLine:{[]
   ptype:`$problemDict`problemType;
   ftype:`$problemDict`featureExtractionType;
   dataRetrieval:`$problemDict`dataRetrievalMethod;
-  if[any(raze ptype,ftype,raze dataRetrieval)=\:`;
+  if[any(ptype;ftype;dataRetrieval)=\:`;
     '"`problemType,`featureExtractionType and `dataRetrievalMethod must all be defined"
   ];
-  data:utils.getCommandLineData[dataRetrieval];
+  data:i.getCommandLineData[dataRetrieval];
   run[;;ftype;ptype;::]. data`features`target;
   }

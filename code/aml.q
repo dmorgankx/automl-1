@@ -24,8 +24,9 @@
 //      modifying default parameters,  
 //   2. Dictionary containing the aspects of default behaviour which is to be overwritten
 //   3. Null(::) allowing a user to run the AutoML framework using default parameters 
-// @return        {table} The full graph executed to completeness or with a diagnostic error
-//   highlight to the user.
+// @return        {dict} A dictionary containing the important information used in the generation
+//   of the model and for creation of the prediction function, and the prediction function which
+//   can be used to make predictions using the generated model.
 fit:{[graph;xdata;ydata;ftype;ptype;params]
   // Retrieve default parameters parsed at startup and append necessary
   // information for further parameter retrieval
@@ -49,7 +50,7 @@ fit:{[graph;xdata;ydata;ftype;ptype;params]
   modelOutput:.ml.execPipeline .ml.createPipeline[graph];
   modelInfo  :exec from modelOutput where nodeId=`saveMeta;
   modelConfig:modelInfo[`outputs;`output];
-  predictFunc:util.generatePredict[modelConfig];
+  predictFunc:utils.generatePredict[modelConfig];
   `modelInfo`predict!(modelConfig;predictFunc)
   }[graph]
 
@@ -59,15 +60,15 @@ fit:{[graph;xdata;ydata;ftype;ptype;params]
 // @param config {configuration related to }
 // @param modelDetails {dict} Information regarding where within the outputs folder the model
 //    and required metadata is to be retrieved
-// @return {dict} a dictionary containing the predict function (generated using util.generatePredict)
+// @return {dict} a dictionary containing the predict function (generated using utils.generatePredict)
 //    and all relevant metadata information for the model
 getModel:{[modelDetails]
-  pathToOutputs:util.modelPath[modelDetails];
-  modelMeta:get hsym`$pathToOutputs,"/config/metadata";
-  loadModel:util.loadModel[modelMeta;pathToOutputs];
-  modelParams:modelMeta,enlist[`bestModel]!enlist loadModel;
-  predictFunc:util.generatePredict[modelParams];
-  `modelInfo`predict!(modelParams;predictFunc)
+  pathToOutputs:utils.modelPath[modelDetails];
+  config:get hsym`$pathToOutputs,"config/metadata";
+  loadModel:utils.loadModel[config];
+  modelConfig:config,enlist[`bestModel]!enlist loadModel;
+  predictFunc:utils.generatePredict[modelConfig];
+  `modelInfo`predict!(modelConfig;predictFunc)
   }
 
 // @kind function
@@ -107,10 +108,10 @@ newConfig:{[fileName]
 runCommandLine:{[]
   ptype:`$problemDict`problemType;
   ftype:`$problemDict`featureExtractionType;
-  dataRetrieval:`$problemDict`dataRetrievalMethod;
-  if[any(ptype;ftype;dataRetrieval)=\:`;
-    '"`problemType,`featureExtractionType and `dataRetrievalMethod must all be defined"
+  dataRetrieval:`$problemDict`dataRetrievalMethods;
+  if[any(raze ptype,ftype,raze dataRetrieval)=\:`;
+    '"`problemType,`featureExtractionType and `dataRetrievalMethods must all be fully defined"
   ];
-  data:i.getCommandLineData[dataRetrieval];
-  run[;;ftype;ptype;::]. data`features`target;
+  data:utils.getCommandLineData[dataRetrieval];
+  fit[;;ftype;ptype;::]. data`features`target;
   }

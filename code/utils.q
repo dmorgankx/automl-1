@@ -117,6 +117,7 @@ utils.bestModelDef:{[mdls;modelName;col]
   }
 
 // @kind function
+// @category automl
 // @fileoverview Retrieve the feature and target data based on user defined json
 i.getCommandLineData:{[method]
   methodSpecification:cli.input`retrievalMethods;
@@ -153,7 +154,7 @@ util.generatePredict:{[params;feats]
 util.featureCreation:{[config;feats]
   sigFeats     :config`sigFeats;
   extractType  :config`featExtractType;
-  if[`nlp  ~extractType;config[`w2v]:1b];
+  if[`nlp  ~extractType;config[`w2v]:1];
   if[`fresh~extractType;
     relevantFuncs:raze`$distinct{("_" vs string x)1}each sigFeats;
     appropriateFuncs:1!select from 0!.ml.fresh.params where f in relevantFuncs;

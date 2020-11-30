@@ -46,9 +46,11 @@ fit:{[graph;xdata;ydata;ftype;ptype;params]
   graph:.ml.connectEdge[graph;`automlConfig     ;`output;`configuration;`input];
   graph:.ml.connectEdge[graph;`featureDataConfig;`output;`featureData  ;`input];
   graph:.ml.connectEdge[graph;`targetDataConfig ;`output;`targetData   ;`input];
-  pipelineOutput:.ml.execPipeline .ml.createPipeline[graph];
-  predictFunc:util.generatePredict[pipelineOutput;0b];
-  `modelInfo`predict!(automlConfig`startDate`startTime;predictFunc)
+  modelOutput:.ml.execPipeline .ml.createPipeline[graph];
+  modelInfo  :exec from modelOutput where nodeId=`saveMeta;
+  modelConfig:modelInfo[`outputs;`output];
+  predictFunc:util.generatePredict[modelConfig];
+  `modelInfo`predict!(modelConfig;predictFunc)
   }[graph]
 
 // @kind function
@@ -58,13 +60,13 @@ fit:{[graph;xdata;ydata;ftype;ptype;params]
 // @param modelDetails {dict} Information regarding where within the outputs folder the model
 //    and required metadata is to be retrieved
 // @return {dict} a dictionary containing the predict function (generated using util.generatePredict)
-//    and the relevant metadata information for the model
+//    and all relevant metadata information for the model
 getModel:{[modelDetails]
   pathToOutputs:util.modelPath[modelDetails];
   modelMeta:get hsym`$pathToOutputs,"/config/metadata";
   loadModel:util.loadModel[modelMeta;pathToOutputs];
   modelParams:modelMeta,enlist[`bestModel]!enlist loadModel;
-  predictFunc:util.generatePredict[modelParams;1b];
+  predictFunc:util.generatePredict[modelParams];
   `modelInfo`predict!(modelParams;predictFunc)
   }
 
@@ -77,7 +79,7 @@ getModel:{[modelDetails]
 // @return          {::} Returns generic null on successful invocation and saves
 //   a copy of the file 'code/customization/configuration/default.json' to the 
 //   appropriate named file.
-newDefault:{[fileName]
+newConfig:{[fileName]
   fileNameType:type fileName;
   fileName:$[10h=fileNameType;fileName;
     -11h=fileNameType;

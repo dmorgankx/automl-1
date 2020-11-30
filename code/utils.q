@@ -137,34 +137,29 @@ i.getCommandLineData:{[method]
   '"Method defined by user for data retrieval not currently supported";
   }
 
-util.generatePredict:{[params;saved;feats]
-  config:$[saved;params;
-    [saveMetaInfo:exec from params where nodeId=`saveMeta;
-     saveMetaInfo[`outputs;`output]]
-    ];
-  bestModel:config`bestModel;
-  feats:util.featureCreation[config;saved;feats];
-  modelLibrary:$[saved;config`modelLib;config[`modelMetaData;`modelLib]];
+util.generatePredict:{[params;feats]
+  bestModel:params`bestModel;
+  feats:util.featureCreation[params;feats];
+  modelLibrary:params`modelLib;
   $[`sklearn~modelLibrary;bestModel[`:predict;<]feats;
     `keras~modelLibrary;
     [feats:enlist[`xtest]!enlist feats;
-     get[".automl.models.keras.",(neg[5]_string config`modelName),".predict"][feats;bestModel]];
+     get[".automl.models.keras.",(neg[5]_string params`modelName),".predict"][feats;bestModel]];
     '"NotYetImplemented"]
   }
 
 // Apply feature creation and encoding procedures for 'normal' on new data
 /. r > table with feature creation and encodings applied appropriately
-util.featureCreation:{[config;saved;feats]
-  problemConfig:$[saved;config;config`config];
+util.featureCreation:{[config;feats]
   sigFeats     :config`sigFeats;
-  extractType  :problemConfig`featExtractType;
-  if[`nlp  ~extractType;problemConfig[`w2v]:1b];
+  extractType  :config`featExtractType;
+  if[`nlp  ~extractType;config[`w2v]:1b];
   if[`fresh~extractType;
     relevantFuncs:raze`$distinct{("_" vs string x)1}each sigFeats;
     appropriateFuncs:1!select from 0!.ml.fresh.params where f in relevantFuncs;
-    problemConfig[`funcs]:appropriateFuncs];
-  feats:dataPreprocessing.node.function[problemConfig;feats;config`symEncode];
-  feats:featureCreation.node.function[problemConfig;feats]`features;
+    config[`functions]:appropriateFuncs];
+  feats:dataPreprocessing.node.function[config;feats;config`symEncode];
+  feats:featureCreation.node.function[config;feats]`features;
   if[not all newFeats:sigFeats in cols feats;
     newColumns:sigFeats where not newFeats;
     feats:sigFeats xcols flip flip[feats],newColumns!((count newColumns;count feats)#0f),()];
@@ -188,15 +183,14 @@ util.loadModel:{[modelMeta;modelPath]
 util.modelPath:{[dict]
   pathStem:path,"/outputs/";
   keyDict:key dict;
-  if[dateTime:all `startDate`startTime in keyDict;
-    if[not all (-14h;-19h)=type each dict`startDate`startTime;
-      '"Types provided for date/time retrieval must be a date and time respectively"]
-    ];
-  if[modelName:`savedModelName in keyDict;
-    if[not 10h=type dict`savedModelName;
-      '"Types provided for model name based retrieval must be a string"]
-    ];
-  if[modelName;:pathStem,"namedModels/",dict`savedModelName];
-  if[dateTime ;:pathStem,ssr[string[dict`startDate],"/run_",string[dict`startTime],"/";":";"."]];
-  '"A user must define model start date/time or model name.";
+  pathStem,$[dateTime:all `startDate`startTime in keyDict;
+    $[all(-14h;-19h)=type each dict`startDate`startTime;
+      ssr[string[dict`startDate],"/run_",string[dict`startTime],"/";":";"."];
+      '"Types provided for date/time retrieval must be a date and time respectively"];
+    modelName:`savedModelName in keyDict;
+    $[10h=type dict`savedModelName;
+      pathStem,"namedModels/",dict`savedModelName;
+      '"Types provided for model name based retrieval must be a string"];
+    '"A user must define model start date/time or model name.";
+    ]
   }

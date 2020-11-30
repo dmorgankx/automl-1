@@ -13,7 +13,9 @@ saveMeta.node.function:{[params]
   if[0~saveOpt;:(::)];
   mdlMeta:saveMeta.extractMdlMeta params;
   saveMeta.saveMeta[mdlMeta;params];
-  params
+  initConfig:params`config;
+  runOutput :mdlkeys!params mdlkeys:`sigFeats`symEncode`bestModel`modelName;
+  initConfig,runOutput,mdlMeta
   }
 
 // Input information

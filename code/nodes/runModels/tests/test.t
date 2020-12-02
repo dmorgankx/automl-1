@@ -26,20 +26,16 @@ ttsClass     :tts,`ytrain`ytest!(80#tgtClass     ;-20#tgtClass)
 ttsMultiClass:tts,`ytrain`ytest!(80#tgtMultiClass;-20#tgtMultiClass)
 ttsReg       :tts,`ytrain`ytest!(80#tgtReg       ;-20#tgtReg)
 
+// Generate model tables
+configReg    :enlist[`problemType]!enlist`reg
+configClass  :enlist[`problemType]!enlist`class
 
-// Generate model dictionaries
-configReg     :enlist[`problemType]!enlist`reg
-configClass   :enlist[`problemType]!enlist`class 
-modelDict     :.automl.modelGeneration.txtParse[;"/code/customization/"]
-regModelDict  :modelDict configReg
-classModelDict:modelDict configClass
-
-
-// Generate model table
-regModelTab  :flip`model`lib`fnc`seed`typ!flip key[regModelDict  ],'value regModelDict
-classModelTab:flip`model`lib`fnc`seed`typ!flip key[classModelDict],'value classModelDict
+regModelTab  :.automl.modelGeneration.jsonParse configReg
 regModelTab  :update minit:.automl.modelGeneration.mdlFunc .'flip(lib;fnc;model)from regModelTab;
+
+classModelTab:.automl.modelGeneration.jsonParse configClass
 classModelTab:update minit:.automl.modelGeneration.mdlFunc .'flip(lib;fnc;model)from classModelTab;
+
 binaryModelTab:select from classModelTab where typ=`binary
 multiModelTab :select from classModelTab where typ=`multi 
 
@@ -87,13 +83,6 @@ regDict   :`shape`typ!(5 2 16;9h)
 passingTest[xValDict;(configDefault;ttsClass     ;binarySkl);0b;binaryDict]
 passingTest[xValDict;(configDefault;ttsMultiClass;multiSkl );0b;multiDict]
 passingTest[xValDict;(configDefault;ttsReg       ;regSkl    );0b;regDict]
-
-// Test appropriate keras input values for xValSeed
-regDict[`typ]:8h
-passingTest[xValDict;(configDefault;ttsClass     ;binaryKeras);0b;binaryDict]
-passingTest[xValDict;(configDefault;ttsMultiClass;multiKeras );0b;multiDict]
-passingTest[xValDict;(configDefault;ttsReg       ;regKeras   );0b;regDict]
-
 
 -1"\nTesting appropriate input values for extracting the scoring function";
 

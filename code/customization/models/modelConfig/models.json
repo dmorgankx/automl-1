@@ -111,7 +111,7 @@
       "type":"reg"
     },
     "regkeras":{
-      "library":"sklearn",
+      "library":"keras",
       "module":"reg",
       "seed":"seed",
       "type":"reg"

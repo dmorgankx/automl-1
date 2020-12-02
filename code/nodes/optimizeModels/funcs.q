@@ -85,8 +85,7 @@ optimizeModels.paramSearch:{[mdls;modelName;tts;scoreFunc;cfg]
   // Extract HP dictionary
   hyperDict:hyperParams`hyperDict;
   txtPath:utils.txtParse[;"/code/customization/"];
-  module:` sv 2#txtPath[cfg`problemType]modelName;
-  embedPyMdl:.p.import[module]hsym modelName;
+  embedPyMdl:(exec first minit from mdls where model=modelName)[];
   hyperFunc:cfg`$hyperTyp,"Function";
   splitCnt:optimizeModels.i.splitCount[hyperFunc;numFolds;tts;cfg];
   hyperDict:optimizeModels.i.updDict[modelName;hyperParams`hyperTyp;splitCnt;hyperDict;cfg];

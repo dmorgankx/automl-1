@@ -80,7 +80,7 @@ runModels.scoringFunc:{[cfg;mdls]
 // @param predictions {(bool[];float[])} Predictions made by model
 // @return {dict} Scores returned by each model in appropriate order 
 runModels.orderModels:{[mdls;scoreFunc;predicts]
-  orderFunc:get string first runModels.i.txtParse[`score;"/code/customization/"]scoreFunc;
+  orderFunc:runModels.i.jsonParse scoreFunc;
   avgScore:avg each scoreFunc .''predicts;
   scoreDict:mdls[`model]!avgScore;
   orderFunc scoreDict

@@ -4,17 +4,6 @@
 
 // @kind function
 // @category runModelsUtility
-// @fileoverview Extraction of an appropriately valued dictionary from a json file
-// @param scoreFunc {sym} function used to score models run
-// @return {func} order function chosen from json file for specific scoring function
-runModels.i.jsonParse:{[scoreFunc]
-  jsonPath:hsym`$.automl.path,"/code/customization/scoring/scoring.json";
-  funcs:.j.k raze read0 jsonPath;
-  get first value funcs scoreFunc
-  }
-
-// @kind function
-// @category runModelsUtility
 // @fileoverview Extraction of data from a file
 // @param filePath {str} File path from which to extract the data from 
 // @return {dict} parsed from file

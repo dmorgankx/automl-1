@@ -13,10 +13,16 @@ modelGeneration.jsonParse:{[cfg]
   // Read in JSON file and select models based on problem type
   mdlTab:.j.k[raze read0 jsonPath]typ;
   // Convert to desired structure and convert all values to symbols
-  mdlTab:`model`lib`fnc`seed`typ xcol([]model:key mdlTab),'value mdlTab;
-  mdlTab:{![x;();0b;enlist[y]!enlist($;enlist`;y)]}/[mdlTab;`lib`fnc`seed`typ];
+  mdlTab:`model`lib`fnc`seed`typ`apply xcol([]model:key mdlTab),'value mdlTab;
+  // Convert to seed to either `seed or (::)
+  seed:mdlTab`seed;
+  toSeed:{@[x;y;:;z]}/[count[seed]#();(where;where not::)@\:seed;(`seed;::)];
+  mdlTab:update seed:toSeed from mdlTab;
+  // Convert rest of table to symbol values
+  mdlTab:{![x;();0b;enlist[y]!enlist($;enlist`;y)]}/[mdlTab;`lib`fnc`typ];
+  // Select valid models to apply
   if[1b~cfg`tensorFlow;mdlTab:select from mdlTab where lib<>`keras];
-  mdlTab
+  select from mdlTab where apply
   }
 
 // @kind function

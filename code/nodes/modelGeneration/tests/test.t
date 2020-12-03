@@ -14,7 +14,7 @@ configNormalReg  :startDateTime,`featureExtractionType`problemType!`normal`reg
 configNormalClass:startDateTime,`featureExtractionType`problemType!`normal`class
 configList:(configNLPReg;configNLPClass;configFRESHReg;configFRESHClass;configNormalReg;configNormalClass)
 
-parseCols:`model`lib`fnc`seed`typ
+parseCols:`model`lib`fnc`seed`typ`apply
 
 -1"Testing appropriate configurations passed to .automl.modelGeneration.jsonParse";
 all passingTest[type .automl.modelGeneration.jsonParse::;;1b;98h      ]each configList
@@ -29,7 +29,7 @@ tgtReg       :100?1f
 tgtClass     :100?0b
 tgtMultiClass:100?3
 
-modelCols:`model`lib`fnc`seed`typ`minit
+modelCols:`model`lib`fnc`seed`typ`apply`minit
 
 -1"Testing appropriate configurations passed to .automl.modelGeneration.modelPrep";
 passingTest[type .automl.modelGeneration.modelPrep::;(configNormalReg;regModelTab;tgtReg)           ;0b;98h      ]

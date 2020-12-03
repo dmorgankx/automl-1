@@ -42,7 +42,9 @@ multiModelTab :select from classModelTab where typ=`multi
 -1"\nTesting appropriate input values for holdoutSplit";
 
 // Return count from holdout split
-holdoutSetCount:{[config;tts]count each .automl.runModels.holdoutSplit[config;tts]}
+holdoutSetCount:{[config;tts]
+  count each .automl.runModels.holdoutSplit[config;tts]
+  }
 
 // Return values for holdoutSplit
 returnVals:`xtrain`ytrain`xtest`ytest!64 64 16 16
@@ -51,7 +53,6 @@ returnVals:`xtrain`ytrain`xtest`ytest!64 64 16 16
 passingTest[holdoutSetCount;(configDefault;ttsClass     );0b;returnVals]
 passingTest[holdoutSetCount;(configDefault;ttsMultiClass);0b;returnVals]
 passingTest[holdoutSetCount;(configDefault;ttsReg       );0b;returnVals]
-
 
 -1"\nTesting appropriate input values for xValSeed";
 
@@ -73,7 +74,6 @@ binaryKeras:first select from binaryModelTab where lib=`keras
 multiKeras :first select from multiModelTab where lib=`keras
 regKeras   :first select from regModelTab where lib=`keras
 
-
 // Return dictionaries for each problem type
 binaryDict:`shape`typ!(5 2 16;1h)
 multiDict :`shape`typ!(5 2 16;7h)
@@ -91,11 +91,13 @@ passingTest[.automl.runModels.scoringFunc;(configDefault;binaryModelTab);0b;`.ml
 passingTest[.automl.runModels.scoringFunc;(configDefault;multiModelTab );0b;`.ml.accuracy]
 passingTest[.automl.runModels.scoringFunc;(configDefault;regModelTab   );0b;`.ml.mse]
 
-
 -1"\nTesting appropriate input values for extracting the ordering model scores";
 
 // Generate function to get keys of dictionary returned from orderModels
-keyOrderModels:{[tab;score;preds]key .automl.runModels.orderModels[tab;score;preds]}
+keyOrderModels:{[tab;score;preds]
+  order:.automl.runModels.jsonParse score;
+  key .automl.runModels.orderModels[tab;score;order;preds]
+  }
 
 \S 42
 
@@ -113,7 +115,6 @@ passingTest[keyOrderModels;(binaryModelTab;`.ml.accuracy;binaryPreds);0b;binaryR
 passingTest[keyOrderModels;(multiModelTab ;`.ml.r2score ;multiPreds);0b;multiReturn]
 passingTest[keyOrderModels;(regModelTab   ;`.ml.mse     ;regPreds);0b;regReturn]
 
-
 -1"\nTesting appropriate input values for fitting the best model";
 
 // Generate model scoring dictionary
@@ -128,7 +129,6 @@ fitModel:{[mdlDict;tts;mdlTab;score;cfg]
   
 // Type of each key returned in dictionary
 fitModelReturn:`model`score`holdoutTime`bestModel!105 -9 -19 -11h
-
 
 // Test appropriate input values to bestModelFit
 passingTest[fitModel;(binaryModelDict;ttsClass     ;binaryModelTab;`.ml.accuracy;configDefault);0b;fitModelReturn]

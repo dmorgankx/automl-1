@@ -116,3 +116,17 @@ runCommandLine:{[]
   data:utils.getCommandLineData[dataRetrieval];
   fit[;;ftype;ptype;::]. data`features`target;
   }
+
+// @kind function
+// @category automl
+// @fileoverview Helper function similar to Python. User can see overview of different functionality.
+// @param func {str} Function name as a string - can be null for overview
+// @returns {null} Prints out relevant information
+help:{[func]
+  if[(::)~func;:utils.help.overview[]];
+  if[not 10h~type func;'"Input must be function name as a string"];
+  func:1_"."vs func;
+  if[not"automl"~first func;'"Queried function must be contained within the .automl namespace"];
+  node:`$func 1;
+  utils.help.node node
+  }

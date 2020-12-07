@@ -1,0 +1,104 @@
+{
+  "fit":{
+    "description":"AutoML pipeline application on training and testing datasets applying cross \nvalidation and hyperparameter search methods across a range of machine \nlearning models. Saves a reports, models, metadata information and graphics \nfor oversight purposes.",
+    "parameters":{
+      "xdata": "{(dict;table)} unkeyed tabular feature data or dictionary \n    outlining the instructions with which to retrieve the tabular feature \n    data in accordance with `.ml.i.loaddset`",
+      "ydata": "{(dict;#any[])} Target vector of any type or dictionary outlining \n    the instructions with which to retrieve the target data in accordance with \n    `.ml.i.loaddset`",
+      "ftype": "{sym} Feature extraction type (`nlp/`normal/`fresh)",
+      "ptype": "{sym} Problem type being solved (`reg/`class)",
+      "params": "{(dict;char[];::)} One of \n    1. Path relative to `.automl.path` pointing to a user defined flatfile \n      for modifying default parameters, \n    2. Dictionary containing the aspects of default behaviour which is to be \n      overwritten \n    3. Null(::) allowing a user to run the AutoML framework using default \n      parameters."
+    }
+  },
+  "getModel":{
+    "description":"Retrieve a fit automl model and associated workflow for use in prediction."
+  },
+  "newConfig":{
+    "description":"Generate a new json flat file for use in application of AutoML for command \nline or as an alternative to the param file in .automl.fit."
+  },
+  "runCommandLine":{
+    "description":"Run the AutoML framework based on user provided custom json flat files. This\n function is triggered when executing the automl.q file and invoking the \nfunctionality is based on the presence of an appropriately named \nconfiguration file and presence of the run command line argument on session \nstartup i.e.\n\n  $ q automl.q -config myconfig.json -run\n\nThis function takes no parameters as input an does not returns any artifacts\n to be used  in process. Instead it executes the entirety of the automl\n pipeline saving the report/model images and metadata to disc and exits the \nprocess."
+  },
+  "configuration":{
+    "description":"Retrieve and generate required configuration information including save paths."
+  },
+  "dataCheck":{
+    "description":"Update configuration to include default parameters. Check that various \naspects of the dataset and configuration are suitable for running with AutoML.",
+    "functions":["updateConfig","functions","NLPLoad","NLPSchema","featureTypes","length","target","ttsSize"]
+  },
+  "dataPreprocessing":{
+    "description":"Preprocess the dataset prior to application of ML algos, this includes the \napplication of Symbol encoding, handling of null data/infinities and removal \nof constant columns.",
+    "functions":["symEncoding","featPreprocess","nonTextPreprocess","textPreprocess","nullEncode"]
+  },
+  "featureCreation":{
+    "description":"This function contains the logic required to generate appropriate default/\ncustom feature for each of the problem types supported by the AutoML platform.",
+    "functions":{
+      "fresh":"create",
+      "nlp":["create","proc","boolTab","corpus","uniposTagging","getNamedEntity","sentimentCreate","regexTab","word2vec"],
+      "normal":["applyFunc","default","bulkTransform","truncSingleDecomp"]
+    }
+  },
+  "featureData":{
+    "description":"Loading of the feature dataset. This can be from in process or several \nalternative data sources."
+  },
+  "featureDescription":{
+    "description":"Update configuration to include default parameters. Check that various \naspects of the dataset and configuration are suitable for running with AutoML.",
+    "functions":["symEncodeSchema","dataDescription"]
+  },
+  "featureSignificance":{
+    "description":"Apply feature significance logic to data post feature extraction, returning \nthe original dataset and a list of significant features to be used both for \nselection of data from new runs and within the current run.",
+    "functions":["applySigFunc","significance","correlationCols","threshVal"]
+  },
+  "labelEncode":{
+    "description":"Apply label encoding on symbolic data returning an encoded version of the \ndata in this instance or the original dataset in the case that does not \nrequire this modification."
+  },
+  "modelGeneration":{
+    "description":"Based on the problem type being solved and user defined configuration \nretrieve the full list of models which can be applied in the running of \nAutoML, the list of models to be run may be reduced following the processing \nof the data and splitting to comply with the model requirements.",
+    "functions":["filesCheck","txtParse","modelPrep","mdlFunc"]
+  },
+  "optimizeModels":{
+    "description":"Following the initial selection of the most promising model apply the user \ndefined optimization grid/random/sobol if feasible (ignore for keras/\npytorch etc).",
+    "functions":["hyperSearch","scorePred","scoreCustom","scoreSklearn","paramSearch","confMatrix","impactDict","residuals","consolidateParams"]
+  },
+  "pathConstruct":{
+    "description":"Construct path to where all graphs/reports are to be saved down. Also join \ntogether all information collected during preprocessing, processing and \nconfiguration creation in order to provide all information required for the \ngeneration of report/meta/graph/model saving.",
+    "functions":["constructPath","createFile"]
+  },
+  "predictParams":{
+    "description":"Collect all the parameters relevant for the generation of reports/graphs etc \nin the prediction step such they can be consolidated into a single node \nlater in the workflow.",
+    "functions":"printScore"
+  },
+  "preprocParams":{
+    "description":"Collect all the parameters relevant for the generation of reports/graphs etc \nin the preprocessing phase such they can be consolidated into a single node \nlater in the workflow."
+  },
+  "runModels":{
+    "description":"Select the 'most promising' model from the list of provided models for the \nuser defined problem this is done in a cross validated manner with the best \nmodel selected based on its generalizability prior to the application of \ngrid/random/sobol search optimization.",
+    "functions":["setSeed","holdoutSplit","xValSeed","scoringFunc","orderModels","bestModelFit","createMeta"]
+  },
+  "saveGraph":{
+    "description":"Save all the graphs relevant for the generation of reports and for \nprosperity.",
+    "functions":["targetPlot","resultPlot","confusionMatrix","residualPlot","impactPlot","dataSplitPlot"]
+  },
+  "saveMeta":{
+    "description":"Save relevant metadata information for the use of a persisted model on new \ndata.",
+    "functions":["extractMdlMeta","saveMeta"]
+  },
+  "saveModels":{
+    "description":"Save an encoded representation of the best model retrieved during the \nautoml process.",
+    "functions":["saveModel","saveW2V"]
+  },
+  "saveReport":{
+    "description":"Save a Python generated report summarising the process of reaching the users \nfinal model via pyLatex/reportlab.",
+    "functions":["reportDict","saveReport"]
+  },
+  "selectModels":{
+    "description":"Sub select models based on limitations imposed by the dataset, this includes \nthe selecting removal of poorly scaling models and the refusal to run Keras \nmodels if sufficient samples of each class are not present across the folds \nof the dataset.",
+    "functions":["targetKeras","targetLimit"]
+  },
+  "targetData":{
+    "description":"Loading of the target dataset, data can be loaded from in process or \nalternative data sources."
+  },
+  "trainTestSplit":{
+    "description":"Apply the user defined train test split functionality onto the users feature/\ntarget datasets returning the train-test split data as a list of \n(xtrain;ytrain;xtest;ytest).",
+    "functions":["applyTTS","ttsReturnType"]
+  }
+}

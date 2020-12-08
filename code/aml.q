@@ -122,7 +122,7 @@ runCommandLine:{[]
   dataRetrieval:`$problemDict`dataRetrievalMethod;
   errorMessage:"`problemType,`featureExtractionType and `dataRetrievalMethods ",
     "must all be fully defined";
-  if[any(raze ptype,ftype,raze dataRetrieval)=\:`;'err];
+  if[any(raze ptype,ftype,raze dataRetrieval)=\:`;'errorMessage];
   data:utils.getCommandLineData dataRetrieval;
   fit[;;ftype;ptype;::]. data`features`target;
   }

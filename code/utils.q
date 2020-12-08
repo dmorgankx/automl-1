@@ -250,14 +250,15 @@ utils.loadModel:{[config]
 // @returns    {char[]} Path to the model detail information
 utils.modelPath:{[dict]
   pathStem:path,"/outputs/";
-  keyDict:key dict;
+  model:$[all `startDate`startTime in key dict;utils.nearestModel[dict];dict];
+  keyDict:key model;
   pathStem,$[all `startDate`startTime in keyDict;
     $[all(-14h;-19h)=type each dict`startDate`startTime;
-      ssr[string[dict`startDate],"/run_",string[dict`startTime],"/";":";"."];
+       ssr[string[model`startDate],"/run_",string[model`startTime],"/";":";"."];
       '"Types provided for date/time retrieval must be a date and time respectively"];
     `savedModelName in keyDict;
-    $[10h=type dict`savedModelName;
-      "namedModels/",dict[`savedModelName],"/";
+    $[10h=type model`savedModelName;
+      "namedModels/",model[`savedModelName],"/";
       '"Types provided for model name based retrieval must be a string"];
     '"A user must define model start date/time or model name.";
     ]
@@ -306,3 +307,37 @@ utils.printFunction:{[filename;val;nline1;nline2]
     ];
   if[utils.printing;-1 printString];
   }
+
+utils.nearestModel:{[dict]
+  timeMatch:sum dict`startDate`startTime;
+  datedTimed :utils.getTimes[];
+  namedModels:utils.parseNamedFiles[];
+  allTimes:raze datedTimed,key namedModels;
+  binLoc:bin[allTimes;timeMatch];
+  if[-1=binLoc;binLoc:binr[allTimes;timeMatch]];
+  nearestTime:allTimes binLoc;
+  modelName:namedModels nearestTime;
+  if[not (""~modelName)|()~modelName;
+    :enlist[`savedModelName]!enlist neg[1]_2_modelName];
+  `startDate`startTime!("d";"t")$\:nearestTime
+  }
+
+utils.getTimes:{
+  folders:key hsym`$path,"/outputs/";
+  namedModels:folders=`namedModels;
+  mappingFile:folders=`timeNameMapping.txt;
+  dateTimeFiles:folders where not namedModels|mappingFile;
+  if[(not any namedModels)&not count dateTimeFiles;
+    '"No named or dated and timed models in outputs folder, please generate models prior to model retrieval"];
+  $[count dateTimeFiles;utils.parseModelTimes each dateTimeFiles;()]
+  }
+
+utils.parseModelTimes:{
+  fileNames:string key hsym`$path,"/outputs/",string x;
+  "P"$string[x],/:"D",/:{@[;2 5;:;":"] 4_x}each fileNames,\:"000000"
+  }
+
+utils.parseNamedFiles:{
+  (!).("P*";"|")0:hsym`$path,"/outputs/timeNameMapping.txt"
+  }
+

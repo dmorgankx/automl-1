@@ -113,6 +113,9 @@ dataCheck.i.customPath:{[cfg]
   filePath:path,"/outputs/namedModels/",modelName,"/";
   if[count key hsym`$filePath;
     '"This save path already exists, please choose another model name"];
+  h:hopen hsym`$path,"/outputs/timeNameMapping.txt";
+  h .Q.s enlist[sum cfg`startDate`startTime]!enlist modelName;
+  hclose h;
   filePath
   }
 

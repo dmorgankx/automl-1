@@ -120,5 +120,5 @@ graph:.ml.connectEdge[graph;`pathConstruct;`output;`saveMeta;`input]
 // saveReport
 graph:.ml.connectEdge[graph;`saveGraph;`output;`saveReport;`input]
 
-// Save_Model
+// saveModel
 graph:.ml.connectEdge[graph;`pathConstruct;`output;`saveModels;`input]

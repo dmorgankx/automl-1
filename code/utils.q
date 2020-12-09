@@ -68,13 +68,13 @@ utils.plt:.p.import`matplotlib.pyplot;
 // @kind function
 // @category utility
 // @fileoverview Split data into training and testing sets without shuffling
-// @param xdata {tab} Unkeyed tabular feature data
-// @param ydata {num[]} Numerical target vector
+// @param features {tab} Unkeyed tabular feature data
+// @param target {num[]} Numerical target vector
 // @param size {float} Percentage of data in testing set
 // @return {dict} Data separated into training and testing sets
-utils.ttsNonShuff:{[xdata;ydata;size]
+utils.ttsNonShuff:{[features;target;size]
   `xtrain`ytrain`xtest`ytest!
-    raze(xdata;ydata)@\:/:(0,floor n*1-size)_til n:count xdata
+    raze(features;target)@\:/:(0,floor n*1-size)_til n:count features
   }
 
 // @kind function
@@ -145,18 +145,18 @@ utils.getCommandLineData:{[method]
 //   of the defined model and passes in new feature data to make predictions.
 // @param config {dict} Information about a previous run of AutoML including
 //   the feature extraction procedure used and the best model produced
-// @param feats {tab} Tabular feature data to make predictions on
+// @param features {tab} Tabular feature data to make predictions on
 // @returns {num[]} Predictions
-utils.generatePredict:{[config;feats]
+utils.generatePredict:{[config;features]
   bestModel:config`bestModel;
-  feats:utils.featureCreation[config;feats];
+  features:utils.featureCreation[config;features];
   modelLibrary:config`modelLib;
   $[`sklearn~modelLibrary;
-      bestModel[`:predict;<]feats;
+      bestModel[`:predict;<]features;
     modelLibrary in`keras`torch;
-      [feats:enlist[`xtest]!enlist feats;
+      [features:enlist[`xtest]!enlist features;
        customName:"." sv string config`modelLib`mdlFunc;
-       get[".automl.models.",customName,".predict"][feats;bestModel]
+       get[".automl.models.",customName,".predict"][features;bestModel]
 	   ];
     '"Not yet implemented"]
   }
@@ -167,9 +167,9 @@ utils.generatePredict:{[config;feats]
 //   data based on a previous run
 // @param config {dict} Information about a previous run of AutoML including
 //   the feature extraction procedure used and the best model produced
-// @param feats {tab} Tabular feature data to make predictions on
+// @param features {tab} Tabular feature data to make predictions on
 // @returns {tab} Features produced using config feature extraction procedures
-utils.featureCreation:{[config;feats]
+utils.featureCreation:{[config;features]
   sigFeats:config`sigFeats;
   extractType:config`featureExtractionType;
   if[`nlp~extractType;config[`savedWord2Vec]:1b];
@@ -178,12 +178,12 @@ utils.featureCreation:{[config;feats]
     appropriateFuncs:1!select from 0!.ml.fresh.params where f in relevantFuncs;
     config[`functions]:appropriateFuncs
 	];
-  feats:dataPreprocessing.node.function[config;feats;config`symEncode];
-  feats:featureCreation.node.function[config;feats]`features;
-  if[not all newFeats:sigFeats in cols feats;
-    newColumns:sigFeats where not newFeats;
-    feats:flip flip[feats],newColumns!((count newColumns;count feats)#0f),()];
-  flip value flip sigFeats#"f"$0^feats
+  features:dataPreprocessing.node.function[config;features;config`symEncode];
+  features:featureCreation.node.function[config;features]`features;
+  if[not all newFeats:sigFeats in cols features;
+    n:count newColumns:sigFeats where not newFeats;
+    features:flip flip[features],newColumns!((n;count features)#0f),()];
+  flip value flip sigFeats#"f"$0^features
   }
 
 // @kind function

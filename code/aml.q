@@ -10,9 +10,9 @@
 //   range of machine learning models, with the option to save outputs.
 // @param graph {dict} Fully connected graph nodes and edges following the
 //   structure outlined in `graph/Automl_Graph.png`
-// @param xdata {(dict;table)} Unkeyed tabular feature data or a dictionary
+// @param features {(dict;table)} Unkeyed tabular feature data or a dictionary
 //   outlining how to retrieve the data in accordance with `.ml.i.loaddset`
-// @param ydata {(dict;#any[])} Target vector of any type or a dictionary
+// @param target {(dict;#any[])} Target vector of any type or a dictionary
 //   outlining how to retrieve the target vector in accordance with
 //   `.ml.i.loaddset`
 // @param ftype {sym} Feature extraction type (`nlp/`normal/`fresh)
@@ -25,7 +25,7 @@
 // @return {dict} Configuration produced within the current run of AutoML along
 //   with a prediction function which can be used to make predictions using the
 //   best model produced
-fit:{[graph;xdata;ydata;ftype;ptype;params]
+fit:{[graph;features;target;ftype;ptype;params]
   runParams:`featureExtractionType`problemType`startDate`startTime!
     (ftype;ptype;.z.D;.z.T);
   // Retrieve default parameters parsed at startup and append necessary
@@ -42,11 +42,11 @@ fit:{[graph;xdata;ydata;ftype;ptype;params]
   automlConfig:paramDict[`general],paramDict[ftype],modelName;
   automlConfig:automlConfig,configPath,runParams;
   // Default = accept data from process. Overwritten if dictionary input
-  xdata:$[99h=type xdata;xdata;`typ`data!(`process;xdata)];
-  ydata:$[99h=type ydata;ydata;`typ`data!(`process;ydata)];
+  features:$[99h=type features;features;`typ`data!(`process;features)];
+  target:$[99h=type target;target;`typ`data!(`process;target)];
   graph:.ml.addCfg[graph;`automlConfig;automlConfig];
-  graph:.ml.addCfg[graph;`featureDataConfig;xdata];
-  graph:.ml.addCfg[graph;`targetDataConfig ;ydata];
+  graph:.ml.addCfg[graph;`featureDataConfig;features];
+  graph:.ml.addCfg[graph;`targetDataConfig ;target];
   graph:.ml.connectEdge[graph;`automlConfig;`output;`configuration;`input];
   graph:.ml.connectEdge[graph;`featureDataConfig;`output;`featureData;`input];
   graph:.ml.connectEdge[graph;`targetDataConfig;`output;`targetData;`input];
@@ -61,8 +61,8 @@ fit:{[graph;xdata;ydata;ftype;ptype;params]
 // @category automl
 // @fileoverview Retrieve a previously fit AutoML model and associated workflow
 //   to be used for predictions
-// @param modelDetails {dict} Information regarding the location of the model/
-//   metadata within the outputs directory
+// @param modelDetails {dict} Information regarding the location of the model
+//   and metadata within the outputs directory
 // @return {dict} The predict function (generated using utils.generatePredict)
 //   and all relevant metadata for the model
 getModel:{[modelDetails]

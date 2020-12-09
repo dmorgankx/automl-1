@@ -1,8 +1,8 @@
 \d .automl
 
 // This file includes the logic for requirement checks and loading of optional
-//   functionality within the framework, namely dependencies for deep learning/
-//   NLP models etc.
+//   functionality within the framework, namely dependencies for deep learning
+//   or NLP models etc.
 
 // Import checks and statements
 check.loadkeras:{

@@ -21,7 +21,7 @@ modelGeneration.jsonParse:{[cfg]
   // Convert rest of table to symbol values
   mdlTab:{![x;();0b;enlist[y]!enlist($;enlist`;y)]}/[mdlTab;`lib`fnc`typ];
   // Select valid models to apply
-  if[1b~cfg`tensorFlow;mdlTab:select from mdlTab where lib<>`keras];
+  if[not check.keras[];mdlTab:select from mdlTab where lib<>`keras];
   select from mdlTab where apply
   }
 

@@ -180,7 +180,7 @@ utils.generatePredict:{[config;feats]
   modelLibrary:config`modelLib;
   $[`sklearn~modelLibrary;
     bestModel[`:predict;<]feats;
-    modelLibrary in`keras`torch;
+    modelLibrary in`keras`torch`theano;
     [feats:enlist[`xtest]!enlist feats;
     customName:"." sv string config`modelLib`mdlFunc;
      get[".automl.models.",customName,".predict"][feats;bestModel]];
@@ -224,13 +224,15 @@ utils.loadModel:{[config]
   loadFunction:$[modelLibrary~`sklearn;
     .p.import[`joblib][`:load];
     modelLibrary~`keras;
-    $[0~checkimport[0];.p.import[`keras.models][`:load_model];'"Keras model could not be loaded"];
+    $[check.keras[];.p.import[`keras.models][`:load_model];'"Keras model could not be loaded"];
     modelLibrary~`torch;
     $[0~checkimport[1];.p.import[`torch][`:load];'"Torch model could not be loaded"];
+    modelLibrary~`theano;
+    $[0~checkimport[5];.p.import[`joblib][`:load];'"Theano model could not be loaded"];
     '"Model Library must be one of 'sklearn', 'keras' or 'torch'"
    ];
   modelPath:config[`modelsSavePath],string config`modelName;
-  modelFile:$[modelLibrary~`sklearn;
+  modelFile:$[modelLibrary in`sklearn`theano;
     modelPath;
     modelLibrary in`keras;modelPath,".h5";
     modelLibrary~`torch;modelPath,".pt";

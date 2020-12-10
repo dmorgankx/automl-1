@@ -10,7 +10,7 @@
 // @param tgt  {(num[];sym[])} numerical or symbol vector containing the target dataset
 // @return {tab} Keras model removed if needed and removal highlighted
 selectModels.targetKeras:{[mdls;tts;tgt]
-  if[1~checkimport[0];
+  if[not check.keras[];
     :?[mdls;enlist(<>;`lib;enlist `keras);0b;()]
     ];
   multiCheck:`multi in mdls`typ;

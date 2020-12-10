@@ -47,7 +47,7 @@ dataCheck.i.getCustomConfig:{[feat;cfg;default;ptyp]
                    '`$"aggcols must be passed function or list of columns"
                    ]
   ];
-  dict,enlist[`tensorFlow]!enlist 1~checkimport[0]
+  dict
   }
 
 // @kind function

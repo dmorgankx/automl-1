@@ -37,7 +37,7 @@ dataCheck.updateConfig:{[feat;cfg]
   // Check that no log/save path created already exists
   dataCheck.i.fileNameCheck[config];
   .p.import[`warnings][`:filterwarnings]$[config`pythonWarning;`module;`ignore];
-  if[not config`tensorFlow;.p.get[`tfWarnings]$[config`pythonWarning;`0;`2]];
+  if[0~checkimport[4];.p.get[`tfWarnings]$[config`pythonWarning;`0;`2]];
   savedWord2Vec:enlist[`savedWord2Vec]!enlist 0b;
   if[0W~config[`seed];config[`seed]:"j"$.z.t];
   config,savedWord2Vec

@@ -33,15 +33,17 @@ dataCheck.updateConfig:{[features;config]
   // If applicable add save path information to configuration dictionary
   config,:$[0<config`saveOption;dataCheck.i.pathConstruct config;()!()];
   if[utils.logging;config:dataCheck.i.logging config];
-  if[all not utils[`printing`logging],config`saveOption;
-    -1"\nIf saveOption is 0, logging or printing to screen must be enabled. ",
-	" Defaulting to .automl.printing:1b\n";
-    changePrinting[]
-	];
   config[`logFunc]:utils.printFunction[config`printFile;;1;1];
-  pyWarn:$[config`pythonWarning;`module;`ignore];
-  .p.import[`warnings][`:filterwarnings]pyWarn;
-  if[not config`tensorFlow;.p.get[`tfWarnings]$[config`pythonWarning;`0;`2]];
+  checks:all not utils[`printing`logging],config`saveOption;
+  if[(2=utils.ignoreWarnings)&checks;
+    updatePrinting[];
+    config[`logFunc]utils.printWarnings`printDefault
+	];
+  // Check that no log/save path created already exists
+  dataCheck.i.fileNameCheck config;
+  warnType:$[config`pythonWarning;`module;`ignore];
+  .p.import[`warnings][`:filterwarnings]warnType;
+  if[0~checkimport 4;.p.get[`tfWarnings]$[config`pythonWarning;`0;`2]];
   savedWord2Vec:enlist[`savedWord2Vec]!enlist 0b;
   if[0W~config`seed;config[`seed]:"j"$.z.t];
   config,savedWord2Vec
@@ -78,16 +80,13 @@ dataCheck.functions:{[config]
 // @return {(Null;err)} Null on success, error if requirements insufficient
 dataCheck.NLPLoad:{[config]
   if[not`nlp~config`featureExtractionType;:()];
-  if[not(0~checkimport[3])&((::)~@[{system"l ",x};"nlp/nlp.q";{0b}]);
-    '"User attempting to run NLP models with insufficient requirements, see ",
-	  "documentation"
+  if[not(0~checkimport 3)&(::)~@[{system"l ",x};"nlp/nlp.q";{0b}];
+    '"User attempting to run NLP models with insufficient requirements,",
+	 " see documentation"
 	];
-  if[""~getenv`PYTHONHASHSEED;
-    -1"For full reproducibility between q processes of the NLP word2vec ",
-      "implementation, the PYTHONHASHSEED environment variable must be set upon",
-      " initialization of q. See https://code.kx.com/q/ml/automl/ug/options/",
-	  "#seed for details.";
-    ];
+  if[(""~getenv`PYTHONHASHSEED)&utils.ignoreWarnings>0;
+    config[`logFunc]utils.printWarnings`pythonHashSeed
+	];
   }
 
 // @kind function
@@ -130,7 +129,7 @@ dataCheck.featureTypes:{[features;config]
 	   ];
     '`$"This form of feature extraction is not currently supported"
 	];
-  dataCheck.i.errColumns[cols features;fCols;typ];
+  dataCheck.i.errColumns[cols features;fCols;typ;config];
   tab
   }
 

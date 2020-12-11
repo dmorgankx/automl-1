@@ -16,8 +16,9 @@
 // @return {tab} Appropriate models to be applied to feature data
 selectModels.node.function:{[tts;target;modelTab;config]
   config[`logFunc]utils.printDict`select;
-  models:selectModels.targetKeras[modelTab;tts;target];
-  selectModels.targetLimit[models;target]
+  modelTab:selectModels.targetKeras[modelTab;tts;target;config];
+  modelTab:selectModels.removeUnavailable[config]/[modelTab;`theano`torch];
+  selectModels.targetLimit[modelTab;target;config]
   }
 
 // Input information

@@ -52,7 +52,7 @@ dirCheck:{[preProcParams;predictionStore;saveOpt]
   outputDir:.automl.utils.ssrWindows .automl.path,"/outputs/testing/";  
   returns:key hsym`$outputDir;  if[0~count returns;returns:`];  
   if[0<>saveOpt;@[{system"rm -r ",x};outputDir;{`}]];  
-  returns  
+  returns
   }
 
 returnDir0:`

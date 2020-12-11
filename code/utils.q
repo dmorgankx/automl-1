@@ -89,30 +89,6 @@ utils.bestModelDef:{[modelTab;modelName;col]
   }
 
 // @kind function
-// @category Utility
-// @fileoverview Dictionary with mappings for console printing to reduce clutter
-utils.printDict:(!) . flip(
-  (`describe  ;"The following is a breakdown of information for each of the ",
-    "relevant columns in the dataset");
-  (`preproc   ;"Data preprocessing complete, starting feature creation");
-  (`sigFeat   ;"Feature creation and significance testing complete");
-  (`totalFeat ;"Total number of significant features being passed to the models",
-    " = ");
-  (`select    ;"Starting initial model selection - allow ample time for large ",
-    "datasets");
-  (`scoreFunc ;"Scores for all models using ");
-  (`bestModel ;"Best scoring model = ");
-  (`modelFit  ;"Continuing to final model fitting on testing set");
-  (`hyperParam;"Continuing to hyperparameter search and final model fitting on ",
-    "testing set");
-  (`score     ;"Best model fitting now complete - final score on testing set = ");
-  (`confMatrix;"Confusion matrix for testing set:");
-  (`graph     ;"Saving down graphs to ");
-  (`report    ;"Saving down procedure report to ");
-  (`meta      ;"Saving down model parameters to ");
-  (`model     ;"Saving down model to "))
-
-// @kind function
 // @category automl
 // @fileoverview Retrieve feature and target data using information contained
 //   in user-defined JSON file
@@ -148,17 +124,21 @@ utils.getCommandLineData:{[method]
 // @param features {tab} Tabular feature data to make predictions on
 // @returns {num[]} Predictions
 utils.generatePredict:{[config;features]
+  original_print:utils.printing;
+  utils.printing:0b;
   bestModel:config`bestModel;
   features:utils.featureCreation[config;features];
   modelLibrary:config`modelLib;
+  utils.printing:original_print;
   $[`sklearn~modelLibrary;
       bestModel[`:predict;<]features;
-    modelLibrary in`keras`torch;
+    modelLibrary in`keras`torch`theano;
       [features:enlist[`xtest]!enlist features;
-       customName:"." sv string config`modelLib`mdlFunc;
+       customName:"." sv string config`modelLib`modelFunc;
        get[".automl.models.",customName,".predict"][features;bestModel]
 	   ];
-    '"Not yet implemented"]
+    '"NotYetImplemented"
+	]
   }
 
 // @kind function
@@ -197,19 +177,24 @@ utils.loadModel:{[config]
   loadFunction:$[modelLibrary~`sklearn;
       .p.import[`joblib][`:load];
     modelLibrary~`keras;
-      $[0~checkimport[0];
+      $[check.keras[];
 	    .p.import[`keras.models][`:load_model];
-		'"Keras model could not be loaded"
-		];
+	    '"Keras model could not be loaded"
+	    ];
     modelLibrary~`torch;
-      $[0~checkimport[1];
+      $[0~checkimport 1;
 	    .p.import[`torch][`:load];
 		'"Torch model could not be loaded"
+		];
+    modelLibrary~`theano;
+      $[0~checkimport 5;
+	    .p.import[`joblib][`:load];
+		'"Theano model could not be loaded"
 		];
     '"Model Library must be one of 'sklearn', 'keras' or 'torch'"
     ];
   modelPath:config[`modelsSavePath],string config`modelName;
-  modelFile:$[modelLibrary~`sklearn;
+  modelFile:$[modelLibrary~`sklearn`theano;
       modelPath;
     modelLibrary in`keras;
 	  modelPath,".h5";
@@ -253,12 +238,13 @@ utils.modelPath:{[dict]
 // @category utility
 // @fileoverview Extract model meta while checking that the directory for the
 //    specified model exists
+// @param modelDetails {dict} Details of current model
 // @param pathToMeta {hsym} Path to previous model metadata
 // @returns {dict} Returns either extracted model metadata or errors out
 utils.extractModelMeta:{[modelDetails;pathToMeta]
-  errFunc:{[modelDetails;err]
-    '"Model ",sv[" - ";string value modelDetails]," does not exist\n"
-	}modelDetails;
+  dets:raze modelDetails;
+  modelName:$[10h=type raze value modelDetails;;{sv[" - ";string x]}dets;
+  errFunc:{[modelName;err]'"Model ",modelName," does not exist\n"}modelName;
   @[get;pathToMeta;errFunc]
   }
 
@@ -270,7 +256,74 @@ utils.extractModelMeta:{[modelDetails;pathToMeta]
 utils.dataType:`ipc`binary`csv!
   (`port`select;`directory`fileName;`directory`fileName)
 
-// Printing and logging functionality
+// @kind function
+// @category Utility
+// @fileoverview Dictionary with console print statements to reduce clutter
+utils.printDict:(!) . flip(
+  (`describe;"The following is a breakdown of information for each of the ",
+    "relevant columns in the dataset");
+  (`errColumns;"The following columns were removed due to type restrictions",
+    " for ");
+  (`preproc;"Data preprocessing complete, starting feature creation");
+  (`sigFeat;"Feature creation and significance testing complete");
+  (`totalFeat;"Total number of significant features being passed to the ",
+    "models = ");
+  (`select;"Starting initial model selection - allow ample time for large",
+    " datasets");
+  (`scoreFunc;"Scores for all models using ");
+  (`bestModel;"Best scoring model = ");
+  (`modelFit;"Continuing to final model fitting on testing set");
+  (`hyperParam;"Continuing to hyperparameter search and final model fitting ",
+    "on testing set");
+  (`kerasClass;"Test set does not contain examples of each class removing ",
+    "multi-class keras models");
+  (`torchModels;"Attempting to run Torch models without Torch installed, ",
+    "removing Torch models");
+  (`theanoModels;"Attempting to run Theano models without Theano installed, ",
+    "removing Theano models");
+  (`score;"Best model fitting now complete - final score on testing set = ");
+  (`confMatrix;"Confusion matrix for testing set:");
+  (`graph;"Saving down graphs to ");
+  (`report;"Saving down procedure report to ");
+  (`meta;"Saving down model parameters to ");
+  (`model;"Saving down model to "))
+
+// @kind function
+// @category Utility
+// @fileoverview Dictionary of warning print statements that can be turned 
+//   on/off. If two elements are within a key,first element is the warning 
+//   given when ignoreWarnings=2, the second is the warning given when 
+//   ignoreWarnings=1.
+utils.printWarnings:(!) . flip(
+  (`configExists;("A configuration file of this name already exists, this run",
+    " will be exited";"A configuration file of this name already exists and ",
+	"will be overwritten"));
+  (`savePathExists;("The savePath chosen already exists, this run will be",
+     " exited";"The savePath chosen already exists and will be overwritten"));
+  (`loggingPathExists;("The logging path chosen already exists, this run will",
+    " be overwritten";"The logging path chosen already exists and will be ",
+	"overwritten"));
+  (`printDefault;"If saveOption is 0, logging or printing to screen must be ",
+     "enabled. Defaulting to .automl.utils.printing:1b");
+  (`pythonHashSeed;"For full reproducibility between q processes of the NLP ",
+    "word2vec implementation, the PYTHONHASHSEED environment variable must ",
+    "be set upon initialization of q. See ",
+    "https://code.kx.com/q/ml/automl/ug/options/#seed for details.");
+  (`neuralNetWarning;("Limiting the models being applied. No longer running ",
+    "neural networks or SVMs. Upper limit for number of targets set to: ";
+    "It is advised to remove any neural network or SVM based models from ",
+    "model evaluation. Currently running with in a number of data points in",
+    " excess of: "))
+  )
+
+
+// @kind function
+// @category Utility
+// @fileoverview Decide how warning statements should be handles.
+//   0=No warning or action taken
+//   1=Warning given but no action taken.
+//   2=Warning given and appropriate action taken.
+utils.ignoreWarnings:2
 
 // @kind function
 // @category utility

@@ -44,9 +44,9 @@ utils.qpyFuncSearch:{[funcName]
 //   the NLP library if requirements are met. If not, a statement printed to 
 //   terminal.
 utils.loadNLP:{
-  notSatisfied:"Requirements for NLP models are not satisfied. gensim must be ",
-    "installed. NLP module will not be available.";
-  $[(0~checkimport[3])&(::)~@[{system"l ",x};"nlp/nlp.q";{0b}];
+  notSatisfied:"Requirements for NLP models are not satisfied. gensim must be",
+    " installed. NLP module will not be available.";
+  $[(0~checkimport 3)&(::)~@[{system"l ",x};"nlp/nlp.q";{0b}];
     .nlp.loadfile`:init.q;
     -1 notSatisfied;
     ];

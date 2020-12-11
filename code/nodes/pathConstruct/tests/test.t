@@ -62,10 +62,10 @@ predictionStoreDict:predictionStoreKeys!predictionStoreVals
 // Generate function to check that all directories are created 
 dirCheck:{[preProcParams;predictionStore;saveOpt]
   .automl.pathConstruct.node.function[preProcParams;predictionStore];
-  outputDir:.automl.path,"/outputs/testing/";
-  returns:key hsym `$outputDir;
+  outputDir:.automl.utils.ssrWindows .automl.path,"/outputs/testing/";
+  returns:key hsym`$outputDir;
   if[0~count returns;returns:`];
-  if[0<>saveOpt;@[{system$[.z.o like "w*";"rmdir ",x," /s";"rm -r ",x]};outputDir;{`}]];
+  if[0<>saveOpt;@[{system"rm -r ",x};outputDir;{`}]];
   returns
   }
 
@@ -94,9 +94,8 @@ passingTest[pathConstructFunc;(preProcDict0;predictionStoreDict);0b;paramReturn]
 passingTest[pathConstructFunc;(preProcDict1;predictionStoreDict);0b;paramReturn]
 passingTest[pathConstructFunc;(preProcDict2;predictionStoreDict);0b;paramReturn]
 
-
 -1"\nRemoving any directories created";
 
 // Remove any folders created
 rmPath:.automl.utils.ssrWindows .automl.path,"/outputs/testing/";
-system $[.z.o like "w*";"rmdir ",rmPath," /s";"rm -r ",rmPath];
+system"rm -r ",rmPath;

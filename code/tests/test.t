@@ -27,7 +27,6 @@ passingTest[.test.checkFit;(featureDataNormal;targetBinary    ;`normal;`class;en
 
 -1"\nTesting appropriate inputs to fit function for FRESH feature extraction type\n";
 
-
 passingTest[.test.checkFit;(featureDataFresh;targetRegression;`fresh;`reg  ;::);1b;11 99 104h]
 passingTest[.test.checkFit;(featureDataFresh;targetBinary    ;`fresh;`class;::);1b;11 99 104h]
 passingTest[.test.checkFit;(featureDataFresh;targetMulti     ;`fresh;`class;::);1b;11 99 104h]
@@ -35,7 +34,6 @@ passingTest[.test.checkFit;(featureDataFresh;targetRegression;`fresh;`reg  ;enli
 passingTest[.test.checkFit;(featureDataFresh;targetMulti     ;`fresh;`class;`functions`saveOption!(`newFreshParams;1));1b;11 99 104h]
 
 -1"\nTesting appropriate inputs to fit function for NLP feature extraction type\n";
-
 
 passingTest[.test.checkFit;(featureDataNLP;targetRegression;`nlp;`reg  ;::);1b;11 99 104h]
 passingTest[.test.checkFit;(featureDataNLP;targetBinary    ;`nlp;`class;::);1b;11 99 104h]

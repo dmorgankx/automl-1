@@ -22,7 +22,7 @@ saveModels.saveModel:{[params;savePath]
     `torch~modelLib;
       torch[`:save][bestModel;filePath,".pt"];
     -1"\nSaving of non keras/sklearn/torch models types is not currently ",
-	  "supported\n"
+      "supported\n"
     ]; 
   printPath:utils.printDict[`model],savePath;
   params[`config;`logFunc]printPath;

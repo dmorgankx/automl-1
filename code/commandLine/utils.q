@@ -14,7 +14,7 @@ cli.i.checkCustom:{[fileName]
   filePath:path,"/code/customization/configuration/customConfig/",fileName;
   $[not()~key hsym`$filePath;
       :filePath;
-	not()~key hsym`$filePath:"./",fileName;
+    not()~key hsym`$filePath:"./",fileName;
       :filePath;
     'fileName," does not exist in current directory or '",path,
       "code/configuration/customConfig'"
@@ -50,9 +50,9 @@ cli.i.convertParameters:{[param]
   $["symbol"~param`type;
       `$param`value;
     "lambda"~param`type;
-	  get param`value;
+      get param`value;
     "string"~param`type;
-	  param`value;
+      param`value;
     (`$param`type)$param`value
     ]
   }

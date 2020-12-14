@@ -11,8 +11,8 @@
 // @return {table} Models extracted from JSON file
 modelGeneration.jsonParse:{[config]
   typ:$[`class~config`problemType;`classification;`regression];
-  jsonPath:hsym`$.automl.path,
-    "/code/customization/models/modelConfig/models.json";
+  modelPath:path,"/code/customization/models/modelConfig/models.json";
+  jsonPath:hsym`$modelPath;
   // Read in JSON file and select models based on problem type
   modelTab:.j.k[raze read0 jsonPath]typ;
   // Convert to desired structure and convert all values to symbols
@@ -24,8 +24,6 @@ modelGeneration.jsonParse:{[config]
   modelTab:update seed:toSeed from modelTab;
   // Convert rest of table to symbol values
   modelTab:{![x;();0b;enlist[y]!enlist($;enlist`;y)]}/[modelTab;`lib`fnc`typ];
-  // Select valid models to apply
-  if[1b~config`tensorFlow;modelTab:select from modelTab where lib<>`keras];
   select from modelTab where apply
   }
 

@@ -14,17 +14,17 @@ featureCreation.normal.applyFunc:{[features;func]
   typ:type func;
   func:$[-11h=typ;
       utils.qpyFuncSearch func;
-	100h=typ;
-	  func;
-	.automl.featureCreation.normal.default
-	];
+    typ in 100 104h;
+      func;
+    .automl.featureCreation.normal.default
+    ];
   returnTab:func features;
   $[98h~type returnTab;
-     returnTab;
-   98h~type dfTab:@[.ml.df2tab;returnTab;returnTab];
-     dfTab;
-   '"Normal feature creation function did not return a simple table"
-   ]
+      returnTab;
+    98h~type dfTab:@[.ml.df2tab;returnTab;returnTab];
+      dfTab;
+    '"Normal feature creation function did not return a simple table"
+    ]
   }
 
 // @kind function

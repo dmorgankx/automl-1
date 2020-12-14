@@ -18,17 +18,19 @@
 optimizeModels.node.function:{[config;modelInfo;bestModel;modelName;tts;orderFunc]
   ptype:$[`reg=config`problemType;"Regression";"Classification"];
   scoreFunc:config`$"scoringFunction",ptype;
-  modelDict:`modelLib`modelFunc!
-    utils.bestModelDef[modelInfo;modelName]each`lib`fnc;
-  hyperSearch:optimizeModels.hyperSearch[modelDict;modelInfo;bestModel;modelName;tts;scoreFunc;orderFunc;config];
-  confMatrix:optimizeModels.confMatrix[hyperSearch`predictions;tts;modelName;config];
-  impactReport:optimizeModels.impactDict[modelDict;hyperSearch;modelName;tts;config;scoreFunc;orderFunc];
+  modelDictKeys:`tts`scoreFunc`orderFunc`modelName`modelLib`modelFunc;
+  modelLibFunc:utils.bestModelDef[modelInfo;modelName]each`lib`fnc;
+  modelDictVals:(tts;scoreFunc;orderFunc;modelName),modelLibFunc;
+  modelDict:modelDictKeys!modelDictVals;
+  hyperSearch:optimizeModels.hyperSearch[modelDict;modelInfo;bestModel;config];
+  confMatrix:optimizeModels.confMatrix[hyperSearch`predictions;tts;config];
+  impactReport:optimizeModels.impactDict[modelDict;hyperSearch;config];
   residuals:optimizeModels.residuals[hyperSearch;tts;config];
   optimizeModels.consolidateParams[hyperSearch;confMatrix;impactReport;residuals] 
   }
 
 // Input information
-optimizeModels.node.inputs  :`config`models`bestModel`bestScoringName`ttsObject`orderFunc!"!+<s!<"
+optimizeModels.node.inputs:`config`models`bestModel`bestScoringName`ttsObject`orderFunc!"!+<s!<"
 
 // Output information
-optimizeModels.node.outputs :`bestModel`hyperParams`modelName`testScore`analyzeModel!"<!sf!"
+optimizeModels.node.outputs:`bestModel`hyperParams`modelName`testScore`analyzeModel!"<!sf!"

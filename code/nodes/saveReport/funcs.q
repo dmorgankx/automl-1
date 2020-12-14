@@ -14,8 +14,8 @@ saveReport.reportDict:{[params]
   savedPlots:saveImage,/:string key hsym`$saveImage;
   plotNames:$[`class~config`problemType;
     `conf`data`impact;
-	`data`impact`reg
-	],`target;
+    `data`impact`reg
+    ],`target;
   savedPlots:enlist[`savedPlots]!enlist plotNames!savedPlots;
   params,savedPlots
   }
@@ -35,11 +35,11 @@ saveReport.saveReport:{[params]
   $[0~checkimport 2;
     @[{saveReport.latexGenerate . x};
       (params;filePath);
-      {[params;err] 
-       -1"The following error occurred when attempting to run latex report ",
-	     "generation:\n",err,"\n";
+      {[params;logFunc;err]
+       errorMessage:utils.printDict[`latexError],err,"\n";
+       logFunc errorMessage;
        saveReport.reportlabGenerate . params;
-       }[(params;filePath)]
+       }[(params;filePath);logFunc]
       ];
     saveReport.reportlabGenerate[params;filePath]
     ]

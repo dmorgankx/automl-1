@@ -130,7 +130,7 @@ optimizeModels.i.confTab:{[confMatrix]
 optimizeModels.i.predShuffle:{[modelDict;bestModel;tts;scoreFunc;seed;idx]
   tts[`xtest]:optimizeModels.i.shuffle[tts`xtest;idx];
   preds:$[modelDict[`modelLib] in key models;
-    [customModel:"." sv string value modelDict;
+    [customModel:"." sv string modelDict`modelLib`modelFunc;
      predFunc:get".automl.models.",customModel,".predict";
      predFunc[tts;bestModel]];
     bestModel[`:predict][tts`xtest]`

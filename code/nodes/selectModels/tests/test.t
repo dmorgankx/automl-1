@@ -6,6 +6,8 @@
 configReg     :enlist[`problemType]!enlist`reg
 configClass   :enlist[`problemType]!enlist`class
 
+targetLimitConfig:`targetLimit`logFunc!(10000;())
+
 // Target values
 tgtReg       :100?1f
 tgtClass     :100?0b
@@ -36,9 +38,9 @@ multiModelReturn :delete from multiModelTab where lib=`keras
 -1"\nTesting that the number of target values < 10000 does not update the model table";
 
 // Test all appropriate model tables and target values that are less than threshold
-passingTest[.automl.selectModels.targetLimit;(regModelTab   ;tgtReg       );0b;regModelTab  ]
-passingTest[.automl.selectModels.targetLimit;(binaryModelTab;tgtClass     );0b;binaryModelTab]
-passingTest[.automl.selectModels.targetLimit;(multiModelTab ;tgtMultiClass);0b;multiModelTab]
+passingTest[.automl.selectModels.targetLimit;(regModelTab   ;tgtReg       ;targetLimitConfig);0b;regModelTab  ]
+passingTest[.automl.selectModels.targetLimit;(binaryModelTab;tgtClass     ;targetLimitConfig);0b;binaryModelTab]
+passingTest[.automl.selectModels.targetLimit;(multiModelTab ;tgtMultiClass;targetLimitConfig);0b;multiModelTab]
 
 -1"\nTesting that the number of target values > 10000 does update the model table";
 
@@ -57,12 +59,12 @@ if[not 0~.automl.checkimport 0;-1"Insufficient requirements to run Keras models,
 -1"\nTesting appropriate model selection for keras";
 
 // Test all appropriate model tables and target values that are greater than threshold
-passingTest[.automl.selectModels.targetLimit;(regModelTab   ;tgtRegLarge       );0b;regModelUpd  ]
-passingTest[.automl.selectModels.targetLimit;(binaryModelTab;tgtClassLarge     );0b;binaryModelUpd]
-passingTest[.automl.selectModels.targetLimit;(multiModelTab ;tgtMultiClassLarge);0b;multiModelUpd]
+passingTest[.automl.selectModels.targetLimit;(regModelTab   ;tgtRegLarge       ;targetLimitConfig);0b;regModelUpd  ]
+passingTest[.automl.selectModels.targetLimit;(binaryModelTab;tgtClassLarge     ;targetLimitConfig);0b;binaryModelUpd]
+passingTest[.automl.selectModels.targetLimit;(multiModelTab ;tgtMultiClassLarge;targetLimitConfig);0b;multiModelUpd]
 
 // These tests assume that keras is installed in the environment
-passingTest[.automl.selectModels.targetKeras;(regModelTab   ;ttsReg       ;tgtReg       );0b;regModelTab]
-passingTest[.automl.selectModels.targetKeras;(binaryModelTab;ttsClass     ;tgtClass     );0b;binaryModelTab]
-passingTest[.automl.selectModels.targetKeras;(multiModelTab ;ttsMultiClass;tgtMultiClass);0b;multiModelTab]
-passingTest[.automl.selectModels.targetKeras;(multiModelTab ;ttsUnbalanced;tgtUnbalanced);0b;multiModelReturn]
+passingTest[.automl.selectModels.targetKeras;(regModelTab   ;ttsReg       ;tgtReg       ;targetLimitConfig);0b;regModelTab]
+passingTest[.automl.selectModels.targetKeras;(binaryModelTab;ttsClass     ;tgtClass     ;targetLimitConfig);0b;binaryModelTab]
+passingTest[.automl.selectModels.targetKeras;(multiModelTab ;ttsMultiClass;tgtMultiClass;targetLimitConfig);0b;multiModelTab]
+passingTest[.automl.selectModels.targetKeras;(multiModelTab ;ttsUnbalanced;tgtUnbalanced;targetLimitConfig);0b;multiModelReturn]

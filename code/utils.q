@@ -178,30 +178,30 @@ utils.loadModel:{[config]
       .p.import[`joblib][`:load];
     modelLibrary~`keras;
       $[check.keras[];
-	    .p.import[`keras.models][`:load_model];
-	    '"Keras model could not be loaded"
-	    ];
+        .p.import[`keras.models][`:load_model];
+        '"Keras model could not be loaded"
+        ];
     modelLibrary~`torch;
       $[0~checkimport 1;
-	    .p.import[`torch][`:load];
-		'"Torch model could not be loaded"
-		];
+       .p.import[`torch][`:load];
+       '"Torch model could not be loaded"
+       ];
     modelLibrary~`theano;
       $[0~checkimport 5;
-	    .p.import[`joblib][`:load];
-		'"Theano model could not be loaded"
-		];
+        .p.import[`joblib][`:load];
+        '"Theano model could not be loaded"
+        ];
     '"Model Library must be one of 'sklearn', 'keras' or 'torch'"
     ];
   modelPath:config[`modelsSavePath],string config`modelName;
   modelFile:$[modelLibrary~`sklearn`theano;
       modelPath;
     modelLibrary in`keras;
-	  modelPath,".h5";
+      modelPath,".h5";
     modelLibrary~`torch;
-	  modelPath,".pt";
+      modelPath,".pt";
     '"Unsupported model type provided"
-	];
+    ];
   loadFunction modelFile
   }
 
@@ -224,12 +224,12 @@ utils.modelPath:{[dict]
       $[all(-14h;-19h)=type each dict`startDate`startTime;
         ssr[string[dict`startDate],"/run_",string[dict`startTime],"/";":";"."];
         '"Types for date/time retrieval must be date and time respectively"
-	    ];
+        ];
     `savedModelName in keyDict;
       $[10h=type dict`savedModelName;
         "namedModels/",dict[`savedModelName],"/";
         '"Types provided for model name based retrieval must be a string"
-		];
+        ];
     '"A user must define model start date/time or model name.";
     ]
   }
@@ -242,8 +242,8 @@ utils.modelPath:{[dict]
 // @param pathToMeta {hsym} Path to previous model metadata
 // @returns {dict} Returns either extracted model metadata or errors out
 utils.extractModelMeta:{[modelDetails;pathToMeta]
-  dets:raze modelDetails;
-  modelName:$[10h=type raze value modelDetails;;{sv[" - ";string x]}dets;
+  details:raze modelDetails;
+  modelName:$[10h=type raze value modelDetails;;{sv[" - ";string x]}]details;
   errFunc:{[modelName;err]'"Model ",modelName," does not exist\n"}modelName;
   @[get;pathToMeta;errFunc]
   }
@@ -281,6 +281,8 @@ utils.printDict:(!) . flip(
     "removing Torch models");
   (`theanoModels;"Attempting to run Theano models without Theano installed, ",
     "removing Theano models");
+  (`latexError;"The following error occurred when attempting to run latex",
+     " report generation:\n");
   (`score;"Best model fitting now complete - final score on testing set = ");
   (`confMatrix;"Confusion matrix for testing set:");
   (`graph;"Saving down graphs to ");
@@ -297,12 +299,12 @@ utils.printDict:(!) . flip(
 utils.printWarnings:(!) . flip(
   (`configExists;("A configuration file of this name already exists, this run",
     " will be exited";"A configuration file of this name already exists and ",
-	"will be overwritten"));
+    "will be overwritten"));
   (`savePathExists;("The savePath chosen already exists, this run will be",
      " exited";"The savePath chosen already exists and will be overwritten"));
   (`loggingPathExists;("The logging path chosen already exists, this run will",
     " be overwritten";"The logging path chosen already exists and will be ",
-	"overwritten"));
+    "overwritten"));
   (`printDefault;"If saveOption is 0, logging or printing to screen must be ",
      "enabled. Defaulting to .automl.utils.printing:1b");
   (`pythonHashSeed;"For full reproducibility between q processes of the NLP ",

@@ -34,10 +34,12 @@ regModelTab:.automl.modelGeneration.jsonParse configReg
 regModelTab:.automl.modelGeneration.modelPrep[configReg;regModelTab;tgtReg]
 
 classModelTab:.automl.modelGeneration.jsonParse configClass
-classModelTab:.automl.modelGeneration.modelPrep[configClass;classModelTab;tgtClass]
 
-binaryModelTab:select from classModelTab where typ=`binary
-multiModelTab :select from classModelTab where typ=`multi 
+classBinaryModelTab:.automl.modelGeneration.modelPrep[configClass;classModelTab;tgtClass]
+classMultiModelTab:.automl.modelGeneration.modelPrep[configClass;classModelTab;tgtMultiClass]
+
+binaryModelTab:select from classBinaryModelTab where typ=`binary
+multiModelTab :select from classMultiModelTab where typ=`multi 
 
 -1"\nTesting appropriate input values for holdoutSplit";
 

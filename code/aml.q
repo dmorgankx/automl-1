@@ -72,6 +72,25 @@ getModel:{[modelDetails]
   `modelInfo`predict!(modelConfig;predictFunc)
   }
 
+// @kind function
+// @fileoverview Delete an individual model or set of models from the output directory
+// @param config {dict} configuration outlining what models are to be deleted, the provided
+//   input must contain `savedModelName mapping to a string (potentially wildcarded)
+//   or a combination of `startDate`startTime where startDate
+//   and startTime can be a date and time respectively or a wildcarded string.
+// @return {null} does not return any output unless as a result of an error
+deleteModels:{[config]
+  pathStem:raze path,"/outputs/";
+  allFiles:key hsym`$pathStem;
+  configKey:key config;
+  if[all `startDate`startTime in configKey;
+    utils.deleteDateTimeModel[config;allFiles;pathStem]
+    ];
+  if[`savedModelName in configKey;
+    utils.deleteNamedModel[config;allFiles;pathStem]
+    ];
+  }
+
 
 // @kind function
 // @category automl

@@ -308,6 +308,16 @@ utils.printFunction:{[filename;val;nline1;nline2]
   if[utils.printing;-1 printString];
   }
 
+// @kind function
+// @category Utility
+// @fileoverview Retrieve the model which is closest in time to
+//   the user specified `startDate`startTime where nearest is
+//   here defined at the closest preceding model
+// @param dict {dict} information about the start date and
+//   start time of the model to be retrieved mapping `startDate`startTime
+//   to their associated values
+// @returns {dict} The model whose start date and time most closely matches
+//   the input
 utils.nearestModel:{[dict]
   timeMatch:sum dict`startDate`startTime;
   datedTimed :utils.getTimes[];
@@ -322,22 +332,203 @@ utils.nearestModel:{[dict]
   `startDate`startTime!("d";"t")$\:nearestTime
   }
 
+// @kind function
+// @category Utility
+// @fileoverview Retrieve the timestamp associated
+//   with all dated/timed models generated historically
+// @return {timestamp[]} The timestamps associated with
+//   each of the previously generated non named models
 utils.getTimes:{
   folders:key hsym`$path,"/outputs/";
   namedModels:folders=`namedModels;
   mappingFile:folders=`timeNameMapping.txt;
   dateTimeFiles:folders where not namedModels|mappingFile;
   if[(not any namedModels)&not count dateTimeFiles;
-    '"No named or dated and timed models in outputs folder, please generate models prior to model retrieval"];
+    '"No named or dated and timed models in outputs folder,",
+     " please generate models prior to model retrieval"];
   $[count dateTimeFiles;utils.parseModelTimes each dateTimeFiles;()]
   }
 
-utils.parseModelTimes:{
-  fileNames:string key hsym`$path,"/outputs/",string x;
-  "P"$string[x],/:"D",/:{@[;2 5;:;":"] 4_x}each fileNames,\:"000000"
+// @kind function
+// @category Utility
+// @fileoverview Generate a timestamp for each timed file within the
+//   outputs folder
+// @param folder {symbol} name of a dated folder within the outputs directory
+// @return {timestamp} an individual timestamp denoting the date+time of a run
+utils.parseModelTimes:{[folder]
+  fileNames:string key hsym`$path,"/outputs/",string folder;
+  "P"$string[folder],/:"D",/:{@[;2 5;:;":"] 4_x}each fileNames,\:"000000"
   }
 
+// @kind function
+// @category Utility
+// @fileoverview Retrieve the dictionary mapping timestamp of 
+//   model generation to the name of the associated model
+// @return {dict} A mapping between the timestamp associated with start date/time
+//   and the name of the model produced
 utils.parseNamedFiles:{
   (!).("P*";"|")0:hsym`$path,"/outputs/timeNameMapping.txt"
   }
 
+// @kind function
+// @category Utility
+// @fileoverview delete models based on user provided information 
+//   surrounding the date and time of model generation
+// @param config {dict} User provided config containing, start date/time
+//   information these can be date/time types in the former case or a
+//   wildcarded string
+// @param allFiles {symbol[]} list of all folders contained within the
+//   .automl.path,"/outputs/" folder
+// @param pathStem {string} the start of all paths to be constructed, this
+//   is in the general case .automl.path,"/outputs/"
+// @return {null} returns an error if attempting to delete folders which do
+//   not have a match
+utils.deleteDateTimeModel:{[config;allFiles;pathStem]
+  dateInfo:config`startDate;
+  timeInfo:config`startTime;
+  relevantDates:utils.getRelevantDates[dateInfo;allFiles];
+  relevantDates:string $[1=count relevantDates;enlist;]relevantDates;
+  datePaths:(pathStem,/:relevantDates),\:"/";
+  fileList:raze{x,/:string key hsym`$x}each datePaths;
+  relevantFiles:utils.getRelevantFiles[timeInfo;fileList];
+  {system"rm -r ",x}each relevantFiles
+  }
+
+// @kind function
+// @category Utility
+// @fileoverview Retrieve all files/models which meet the criteria
+//   set out by the date/time information provided by the user
+// @param dateInfo {date|string} user provided string (for wildcarding)
+//   or individual date
+// @param allFiles {symbol[]} list of all folders contained within the 
+//   .automl.path,"/outputs/" folder
+// @return all dates matching the user provided criteria
+utils.getRelevantDates:{[dateInfo;allFiles]
+  allDates:allFiles except `namedModels`timeNameMapping.txt;
+  if[0=count allDates;'"No dated models available"];
+  relevantDates:$[-14h=type dateInfo;
+      $[(`$string dateInfo)in allDates;
+        dateInfo;
+        '"startDate provided was not present within the list of available dates"];
+    10h=abs type dateInfo;
+      $["*"~dateInfo;
+        allDates;
+        allDates where allDates like dateInfo
+       ];
+    '"startDate provided must be an individual date or regex string"
+    ];
+  if[0=count relevantDates;'"No dates requested matched a presently saved model folder"];
+  relevantDates
+  }
+
+// @kind function
+// @category Utility
+// @fileoverview Retrieve all files/models which meet the criteria
+//   set out by the date/time information provided by the user
+// @param timeInfo {time|string} user provided string (for wildcarding)
+//   or individual time
+// @param fileList {string[]} list of all folders matching the requested
+//   dates supplied by the user
+// @return {string[]} all files meeting both the date and time criteria
+//   provided by the user.
+utils.getRelevantFiles:{[timeInfo;fileList]
+  relevantFiles:$[-19h=type timeInfo;
+     $[any timedString:fileList like ("*",ssr[string[timeInfo];":";"."]);
+       fileList where timedString;
+       '"startTime provided was not present within the list of available times"
+       ];
+    10h=abs type timeInfo;
+     $["*"~timeInfo;
+       fileList;
+       fileList where fileList like ("*",ssr[timeInfo;":";"."])
+       ];
+    '"startTime provided must be an individual time or regex string"
+    ];
+  if[0=count relevantFiles;
+    '"No files matching the user provided date and time were found for deletion"
+    ];
+  relevantFiles
+  }
+
+// @kind function
+// @category Utility
+// @fileoverview Delete models pased on named input, this may be a direct match
+//   or a regex matching string
+// @param config {dict} User provided config containing, a mapping from 
+//   the save model name to the defined name as a string (direct match/wildcard)
+// @param allFiles {symbol[]} list of all folders contained within the
+//   .automl.path,"/outputs/" folder
+// @param pathStem {string} the start of all paths to be constructed, this
+//   is in the general case .automl.path,"/outputs/"
+// @return {null} returns an error if attempting to delete folders which do
+//   not have a match
+utils.deleteNamedModel:{[config;allFiles;pathStem]
+  nameInfo:config[`savedModelName];
+  namedPathStem:pathStem,"namedModels/";
+  relevantNames:utils.getRelevantNames[nameInfo;allFiles;namedPathStem];
+  namedPaths:namedPathStem,/:string relevantNames;
+  utils.deleteFromNameMapping[relevantNames;pathStem];
+  {system "rm -r ",x}each namedPaths
+  }
+
+// @kind function
+// @category Utility
+// @fileoverview Retrieve all named models matching the user supplied
+//   string representation of the search
+// @param nameInfo {string} string used to compare all named models to
+//   during a search
+// @param allFiles {symbol[]} list of all folders contained within the
+//   .automl.path,"/outputs/" folder
+// @param namedPathStem {string} the start of all paths to be constructed,
+//   in this case .automl.path,"/outputs/namedModels"
+// @return {symbol[]} the names of all named models which match the user
+//   provided string pattern
+utils.getRelevantNames:{[nameInfo;allFiles;namedPathStem]
+  allNamedModels:key hsym`$namedPathStem;
+  if[0=count allNamedModels;'"No named models available"];
+  relevantModels:$[10h=abs type nameInfo;
+    $["*"~nameInfo;
+      allNamedModels;
+      allNamedModels where allNamedModels like nameInfo
+     ];
+    '"savedModelName must be a string"
+    ];
+  if[0=count relevantModels;
+    '"No files matching the user provided savedModelName were found for deletion"
+    ];
+  relevantModels
+  }
+
+// @kind function
+// @category Utility
+// @fileoverview In the case that a named model is to be deleted, in order to
+//   facilitate retrieval 'nearest' timed model a text file mapping timestamp
+//   to model name is provided. If a model is to be deleted then this timestamp
+//   also needs to be removed from the mapping. This function is used to
+//   facilitate this by rewriting the timeNameMapping.txt file following
+//   model deletion.
+// @param relevantNames {symbol[]} the names of all named models which match the
+//   user provided string pattern
+// @param pathStem {string} the start of all paths to be constructed,
+//   this is in the general case .automl.path,"/outputs"
+// @return {null} On successful execution will return null, otherwise raises 
+//   an error indicating that the timeNameMapping.txt file contains
+//   no information.
+utils.deleteFromNameMapping:{[relevantNames;pathStem]
+  timeMapping:hsym`$pathStem,"timeNameMapping.txt";
+  fileInfo:("P*";"|")0:timeMapping;
+  if[all 0=count each fileInfo;
+    '"timeNameMapping.txt contains no information"
+    ];
+  originalElements:til count first fileInfo;
+  modelNames:{trim x except ("\"";"\\")}each last fileInfo;
+  relevantNames:string relevantNames;
+  locs:raze{where x like y}[modelNames]each relevantNames;
+  relevantLocs:originalElements except locs;
+  relevantData:(first fileInfo;modelNames)@\:relevantLocs;
+  writeData:$[count relevantData;(!). relevantData;""];
+  hdel timeMapping;
+  h:hopen timeMapping;
+  if[not writeData~"";{x each .Q.s[y]}[h;writeData]];
+  hclose h;
+  }

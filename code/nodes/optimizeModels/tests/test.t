@@ -124,12 +124,12 @@ if[not 0~.automl.checkimport 0;-1"Insufficient requirements to run Keras models,
 
 kerasReg:.automl.models.keras.reg;
 kerasModelReg:kerasReg[`model][ttsReg;1234];
-kerasFitReg:kerasReg[`fit][ttsReg;kerasRegModel];
+kerasFitReg:kerasReg[`fit][ttsReg;kerasModelReg];
 kerasNameReg:`regkeras;
 
 kerasClass:.automl.models.keras.binary;
 kerasModelClass:kerasClass[`model][ttsClass;1234];
-kerasFitClass:kerasClass[`fit][ttsClass;kerasClassModel];
+kerasFitClass:kerasClass[`fit][ttsClass;kerasModelClass];
 kerasNameClass:`binarykeras
 
 passingTest[typCheck;(configRegGrid  ;regModelTab;kerasFitReg;kerasNameReg;ttsReg;orderFuncReg);1b;returnTypes]

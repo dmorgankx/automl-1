@@ -25,7 +25,7 @@ selectModels.targetKeras:{[modelTab;tts;target;config]
 
 // @kind function
 // @category selectModels
-// @fileoverview Update models available for use based on the number data
+// @fileoverview Update models available for use based on the number of data
 //   points in the target vector
 // @param modelTab {tab} Models which are to be applied to the dataset
 // @param target {(num[];sym[])} Numerical or symbol target vector
@@ -34,15 +34,15 @@ selectModels.targetKeras:{[modelTab;tts;target;config]
 selectModels.targetLimit:{[modelTab;target;config]
   if[config[`targetLimit]<count target;
     if[utils.ignoreWarnings=2;
-	  tlim:string config`targetLimit;
+      tlim:string config`targetLimit;
       config[`logFunc](utils.printWarnings[`neuralNetWarning]0),tlim;
       :select from modelTab where lib<>`keras,not fnc in`neural_network`svm
       ];
     if[utils.ignoreWarnings=1;
       tlim:string config`targetLimit;
-	  config[`logFunc](utils.printWarnings[`neuralNetWarning]1),tlim
-	  ]
-	];
+      config[`logFunc](utils.printWarnings[`neuralNetWarning]1),tlim
+      ]
+    ];
    modelTab
    }
 

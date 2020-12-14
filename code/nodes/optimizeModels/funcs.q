@@ -7,21 +7,22 @@
 // @category optimizeModels
 // @fileoverview Optimize models using hyperparmeter search procedures if 
 //   appropriate, otherwise predict on test data
-// @param modelDict {dict} Library and function for best model
+// @param modelDict {dict} Data related to model retrieval and various
+//   configuration associated with a run
 // @param modelInfo {tab} Information about models applied to the data
 // @param bestModel {<} Fitted best model
-// @param modelName {sym} Name of best model
-// @param tts {dict} Feature and target data split into training/testing sets
-// @param scoreFunc {func} Scoring function
-// @param orderFunc {func} Ordering function
 // @param config {dict} Information relating to the current run of AutoML
 // @return {dict} Score, prediction and best model
-optimizeModels.hyperSearch:{[modelDict;modelInfo;bestModel;modelName;tts;scoreFunc;orderFunc;config]
-  custom:modelDict[`modelLib]in key models;
+optimizeModels.hyperSearch:{[modelDict;modelInfo;bestModel;config]
+  tts:modelDict`tts;
+  scoreFunc:modelDict`scoreFunc;
+  modelName:modelDict`modelName;
+  modelLib:modelDict`modelLib;
+  custom:modelLib in key models;
   exclude:modelName in utils.excludeList; 
   predDict:$[custom|exclude;
-    optimizeModels.scorePred[custom;modelDict;bestModel;tts;config];
-    optimizeModels.paramSearch[modelInfo;modelName;tts;scoreFunc;orderFunc;config]
+    optimizeModels.scorePred[custom;modelDict;bestModel;config];
+    optimizeModels.paramSearch[modelInfo;modelDict;config]
     ];
   score:get[scoreFunc][predDict`predictions;tts`ytest];
   printScore:utils.printDict[`score],string score;
@@ -33,12 +34,14 @@ optimizeModels.hyperSearch:{[modelDict;modelInfo;bestModel;modelName;tts;scoreFu
 // @category optimizeModels
 // @fileoverview Predict sklearn and custom models on test data
 // @param custom {bool} Whether it is a custom model or not
-// @param modelDict {dict} Library and function for best model
+// @param modelDict {dict} Data related to model retrieval and various
+//   configuration associated with a run
 // @param bestModel {<} Fitted best model
 // @param tts {dict} Feature and target data split into training/testing sets
 // @param config {dict} Information relating to the current run of AutoML
 // @return {(float[];bool[];int[])} Predicted values  
-optimizeModels.scorePred:{[custom;modelDict;bestModel;tts;config]
+optimizeModels.scorePred:{[custom;modelDict;bestModel;config]
+  tts:modelDict`tts;
   config[`logFunc]utils.printDict`modelFit;
   pred:$[custom;
     optimizeModels.scoreCustom modelDict;
@@ -50,12 +53,13 @@ optimizeModels.scorePred:{[custom;modelDict;bestModel;tts;config]
 // @kind function
 // @category optimizeModels
 // @fileoverview Predict custom models on test data
-// @param modelDict {dict} Library and function for best model
+// @param modelDict {dict} Data related to model retrieval and various
+//   configuration associated with a run
 // @param bestModel {<} Fitted best model
 // @param tts {dict} Feature and target data split into training/testing sets
 // @return {(float[];bool[];int[])} Predicted values  
 optimizeModels.scoreCustom:{[modelDict;bestModel;tts]
-  customName:"."sv string value modelDict;
+  customName:"."sv string modelDict`modelLib`modelFunc;
   get[".automl.models.",customName,".predict"][tts;bestModel]
   }
 
@@ -73,13 +77,15 @@ optimizeModels.scoreSklearn:{[bestModel;tts]
 // @category optimizeModels
 // @fileoverview Predict custom models on test data
 // @param modelInfo {tab} Information about models applied to the data
-// @param modelName {sym} Name of best model
-// @param tts {dict} Feature and target data split into training/testing sets
-// @param scoreFunc {func} Scoring function
-// @param orderFunc {func} Order function
+// @param modelDict {dict} Data related to model retrieval and various
+//   configuration associated with a run
 // @param config {dict} Information relating to the current run of AutoML
 // @return {(float[];bool[];int[])} Predicted values 
-optimizeModels.paramSearch:{[modelInfo;modelName;tts;scoreFunc;orderFunc;config]
+optimizeModels.paramSearch:{[modelInfo;modelDict;config]
+  tts:modelDict`tts;
+  scoreFunc:modelDict`scoreFunc;
+  orderFunc:modelDict`orderFunc;
+  modelName:modelDict`modelName;
   config[`logFunc]utils.printDict`hyperParam;
   // Hyperparameter (HP) search inputs
   hyperParams:optimizeModels.i.extractdict[modelName;config];
@@ -111,10 +117,9 @@ optimizeModels.paramSearch:{[modelInfo;modelName;tts;scoreFunc;orderFunc;config]
 // @fileoverview Create confusion matrix
 // @param pred {dict} All data generated during the process
 // @param tts {dict} Feature and target data split into training/testing sets
-// @param modelName {str} Name of best model
 // @param config {dict} Information relating to the current run of AutoML
 // return {dict} Confusion matrix created from predictions and true values
-optimizeModels.confMatrix:{[pred;tts;modelName;config]
+optimizeModels.confMatrix:{[pred;tts;config]
   if[`reg~config`problemType;:()!()];
   yTest:tts`ytest;
   if[not type[pred]~type yTest;
@@ -132,13 +137,15 @@ optimizeModels.confMatrix:{[pred;tts;modelName;config]
 // @fileoverview Create impact dictionary
 // @param modelDict {dict} Library and function for best model
 // @param hyperSearch {dict} Values returned from hyperParameter search
-// @param modelName {str} Name of best model
 // @param tts {dict} Feature and target data split into training/testing sets
 // @param config {dict} Information relating to the current run of AutoML
 // @param scoreFunc {func} Scoring function
 // @param orderFunc {func} Ordering function
 // return {dict} Impact of each column in the data set 
-optimizeModels.impactDict:{[modelDict;hyperSearch;modelName;tts;config;scoreFunc;orderFunc]
+optimizeModels.impactDict:{[modelDict;hyperSearch;config]
+  tts:modelDict`tts;
+  scoreFunc:modelDict`scoreFunc;
+  orderFunc:modelDict`orderFunc;
   bestModel:hyperSearch`bestModel;
   countCols:count first tts`xtest;
   scores:optimizeModels.i.predShuffle[modelDict;bestModel;tts;scoreFunc;config`seed]each til countCols;

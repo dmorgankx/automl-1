@@ -1,4 +1,3 @@
-\c 2000 2000
 \l automl.q
 .automl.loadfile`:init.q
 .automl.loadfile`:code/tests/utils.q
@@ -65,7 +64,6 @@ passingTest[dirCheck;(preProcDict1;predictionStoreDict;1);0b;returnDir1]
 passingTest[dirCheck;(preProcDict2;predictionStoreDict;2);0b;returnDir2]
 
 -1"\nTesting appropriate inputs for pathConstruct";
-.test.try:0
 
 // Create function to extract keys of return dictionary
 pathConstructFunc:{[preProcParams;predictionStore]

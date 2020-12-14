@@ -19,18 +19,18 @@
 featureDescription.symEncodeSchema:{[features;nVals;config]
   aggcols:$[`fresh~config`featureExtractionType;
     config`aggregationColumns;
-	(::)
-	];
+    (::)
+    ];
   symbolCols:.ml.i.fndcols[features;"s"]except aggcols;
   $[0=count symbolCols;
     `freq`ohe!``;
     [
      // List of frequency encoding columns
-	 symDict:symbolCols!flip[features]symbolCols;
-	 frequencyCols:where nVals<count each distinct each symDict;
+     symDict:symbolCols!flip[features]symbolCols;
+     frequencyCols:where nVals<count each distinct each symDict;
      // List of one-hot encoded columns
      oneHotCols:symbolCols where not symbolCols in frequencyCols;
-     // Return encoding schema or appy encoding as appropriate
+     // Return encoding schema or apply encoding as appropriate
      `freq`ohe!(frequencyCols;oneHotCols)
      ]
     ]

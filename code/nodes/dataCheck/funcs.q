@@ -38,7 +38,7 @@ dataCheck.updateConfig:{[features;config]
   if[(2=utils.ignoreWarnings)&checks;
     updatePrinting[];
     config[`logFunc]utils.printWarnings`printDefault
-	];
+    ];
   // Check that no log/save path created already exists
   dataCheck.i.fileNameCheck config;
   warnType:$[config`pythonWarning;`module;`ignore];
@@ -61,7 +61,7 @@ dataCheck.functions:{[config]
   // List of possible objects where user may input a custom function
   funcs2Search:`predictionFunction`trainTestSplit`significantFeatures,
     `scoringFunctionClassification`scoringFunctionRegression,
-	`gridSearchFunction`randomSearchFunction`crossValidationFunction;
+    `gridSearchFunction`randomSearchFunction`crossValidationFunction;
   funcs:raze config funcs2Search;
   // Ensure the custom inputs are suitably typed
   typeCheck:{$[not type[utils.qpyFuncSearch x]in(99h;100h;104h;105h);'err;0b]};
@@ -82,11 +82,11 @@ dataCheck.NLPLoad:{[config]
   if[not`nlp~config`featureExtractionType;:()];
   if[not(0~checkimport 3)&(::)~@[{system"l ",x};"nlp/nlp.q";{0b}];
     '"User attempting to run NLP models with insufficient requirements,",
-	 " see documentation"
-	];
+     " see documentation"
+    ];
   if[(""~getenv`PYTHONHASHSEED)&utils.ignoreWarnings>0;
     config[`logFunc]utils.printWarnings`pythonHashSeed
-	];
+    ];
   }
 
 // @kind function
@@ -99,8 +99,8 @@ dataCheck.NLPSchema:{[config;features]
   if[not`nlp~config`featureExtractionType;:()];
   if[0~count .ml.i.fndcols[features;"C"];
     '`$"User wishing to apply nlp functionality must pass a table containing ",
-	  "a character column."
-	];
+     "a character column."
+    ];
   }
 
 // @kind function
@@ -126,9 +126,9 @@ dataCheck.featureTypes:{[features;config]
     typ=`nlp;
       [fCols:.ml.i.fndcols[features;"sfihjbepmdznuvtC"];
        tab:flip fCols!features fCols
-	   ];
+       ];
     '`$"This form of feature extraction is not currently supported"
-	];
+    ];
   dataCheck.i.errColumns[cols features;fCols;typ;config];
   tab
   }
@@ -146,15 +146,15 @@ dataCheck.length:{[features;target;config]
     $[`fresh=typ;
         // Check that the number of unique aggregate equals the number of targets
         [aggcols:config`aggregationColumns;
-	     featAggCols:$[1=count aggcols;features aggcols;(,'/)features aggcols];
+         featAggCols:$[1=count aggcols;features aggcols;(,'/)features aggcols];
          if[count[target]<>count distinct featAggCols;
            '`$"Target count must equal count of unique agg values for FRESH"
            ];
          ];
       typ in`normal`nlp;
         if[count[target]<>count features;
-		  '"Must have the same number of targets as values in table"
-		  ];
+          '"Must have the same number of targets as values in table"
+          ];
       '"Input for typ must be a supported type"
       ];
     '"Input for typ must be a supported symbol"
@@ -179,5 +179,5 @@ dataCheck.target:{[target]
 dataCheck.ttsSize:{[config]
   if[(sz<0.)|(sz>1.)|-9h<>type sz:config`testingSize;
     '"Testing size must be in range 0-1"
-	]
+    ]
   }

@@ -10,8 +10,7 @@
 // @return {func} Order function retrieved from JSON file for specific scoring 
 //   function
 runModels.jsonParse:{[scoreFunc]
-  jsonPath:hsym`$.automl.path,
-    "/code/customization/scoring/scoringFunctions.json";
+  jsonPath:hsym`$path,"/code/customization/scoring/scoringFunctions.json";
   funcs:.j.k raze read0 jsonPath;
   get first value funcs scoreFunc
   }

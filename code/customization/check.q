@@ -56,17 +56,7 @@ check.loadtheano:{
      ];
     [-1"Requirements for Theano models not satisfied. Theano must be ",
      "installed. Theano models will be excluded from model evaluation."
-	 ];
+     ];
     ]
   }
 
-
-check.loadtheano:{
-  $[0~checkimport[5];
-    [loadfile`:code/customization/models/libSupport/theano.p;
-     loadfile`:code/customization/models/libSupport/theano.q
-    ];
-    [-1"Requirements for Theano models not satisfied. Theano must be installed.",
-     " Theano models will be excluded from model evaluation.";]
-  ]
-  }

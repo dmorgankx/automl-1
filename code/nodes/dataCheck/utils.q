@@ -90,7 +90,8 @@ dataCheck.i.pathConstruct:{[config]
 dataCheck.i.dateTimePath:{[config]
   date:string config`startDate;
   time:string config`startTime;
-  path,"/",dataCheck.i.dateTimeStr["outputs/dateTimeModels/",date,"/run_",time,"/"]
+  dirString:"outputs/dateTimeModels/",date,"/run_",time,"/";
+  path,"/",dataCheck.i.dateTimeStr[dirString]
   }
 
 // @kind function
@@ -130,7 +131,8 @@ dataCheck.i.logging:{[config]
     date:string config`startDate;
     time:string config`startTime;
     logStr:"logFile_",date,"_",time,".txt";
-    config[`loggingFile]:dataCheck.i.dateTimeStr logStr];
+    config[`loggingFile]:dataCheck.i.dateTimeStr logStr
+    ];
   typeLoggingFile:type config[`loggingFile];
   loggingFile:$[10h=typeLoggingFile;;
     -11h=typeLoggingFile;string;
@@ -139,12 +141,13 @@ dataCheck.i.logging:{[config]
   config
   }
 
-// @kind function
-// @category dataCheckUtility
-// @fileoverview Construct date time string path in appropriate format
-// @param strPath {str} Date time path string
-// @return {str} Date and time path converted to appropriate format
+// @kind function	
+// @category dataCheckUtility	
+// @fileoverview Construct date time string path in appropriate format	
+// @param strPath {str} Date time path string	
+// @return {str} Date and time path converted to appropriate format	
 dataCheck.i.dateTimeStr:{[strPath]ssr[strPath;":";"."]}
+
 
 // @kind function
 // @category dataCheckUtility

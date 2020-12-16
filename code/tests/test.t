@@ -68,7 +68,7 @@ passingTest[type;nlpModel.predict[featureDataNLP]      ;1b;9h]
 latestModel:.automl.getModel[`startDate`startTime!(.z.D;.z.t)]
 passingTest[type;latestModel.predict[featureDataNLP];1b;9h]
 
-// Retrieve the 'normal' named model based on time .i.e. just before Fresh model 
+// Retrieve the 'normal' named model based on time .i.e. just before Fresh model
 normalModel:.automl.getModel[`startDate`startTime!(fitFresh[`modelInfo;`startDate];fitFresh[`modelInfo;`startTime]-1)]
 passingTest[{x[`modelInfo;`savedModelName]};normalModel;1b;"normalModel"]
 

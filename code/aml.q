@@ -30,7 +30,7 @@ fit:{[graph;features;target;ftype;ptype;params]
     (ftype;ptype;.z.D;.z.T);
   // Retrieve default parameters parsed at startup and append necessary
   // information for further parameter retrieval
-  modelName:enlist[`saveModelName]!enlist`$problemDict`modelName;
+  modelName:enlist[`savedModelName]!enlist`$problemDict`modelName;
   configPath:$[type[params]in 10 -11h;
       enlist[`configPath]!enlist params;
     99h=type params;
@@ -76,6 +76,25 @@ getModel:{[modelDetails]
   }
 
 // @kind function
+// @fileoverview Delete an individual model or set of models from the output directory
+// @param config {dict} configuration outlining what models are to be deleted, the provided
+//   input must contain `savedModelName mapping to a string (potentially wildcarded)
+//   or a combination of `startDate`startTime where startDate
+//   and startTime can be a date and time respectively or a wildcarded string.
+// @return {null} does not return any output unless as a result of an error
+deleteModels:{[config]
+  pathStem:raze path,"/outputs/";
+  configKey:key config;
+  if[all `startDate`startTime in configKey;
+    utils.deleteDateTimeModel[config;pathStem]
+    ];
+  if[`savedModelName in configKey;
+    utils.deleteNamedModel[config;pathStem]
+    ];
+  }
+
+
+// @kind function
 // @category automl
 // @fileoverview Generate a new JSON file for use in the application of AutoML
 //   via command line or as an alternative to the param file in .automl.fit.
@@ -118,7 +137,13 @@ newConfig:{[fileName]
 //   artifacts to be used in process. Instead it executes the entirety of the
 //   AutoML pipeline saving the report/model images/metadata to disc and exits
 //   the process
-runCommandLine:{[]
+// @param testRun {bool} Is the run being completed a test or not, running in
+//   test mode results in an 'exit 1' from the process to indicate that the
+//   test failed, otherwise for debugging purposes the process is left 'open'
+//   to allow a user to drill down into any potential issues.
+runCommandLine:{[testRun]
+  // update graphDebug behaviour such that command line run fails loudly
+  .ml.graphDebug:1b;
   ptype:`$problemDict`problemType;
   ftype:`$problemDict`featureExtractionType;
   dataRetrieval:`$problemDict`dataRetrievalMethod;
@@ -126,7 +151,11 @@ runCommandLine:{[]
     " must all be fully defined";
   if[any(raze ptype,ftype,raze dataRetrieval)=\:`;'errorMessage];
   data:utils.getCommandLineData dataRetrieval;
-  fit[;;ftype;ptype;::]. data`features`target;
+  errorFunction:{[err] -1"The following error occurred '",err,"'";exit 1};
+  automlRun:$[testRun;
+    .[fit[;;ftype;ptype;::];data`features`target;errorFunction];
+    fit[;;ftype;ptype;::] . data`features`target];
+  automlRun
   }
 
 // @kind function
